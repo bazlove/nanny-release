@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 — Страница не найдена</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FFF7EC">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/uikit.css">
+  <style>
+    /* Локальные штрихи под UI Kit (используем токены палитры из uikit.css) */
+    .notfound-wrap{
+      min-height: 70vh;
+      display: grid;
+      place-items: center;
+      padding: var(--space-12) 0;
+    }
+    .nf-card{
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+      padding: var(--space-8);
+    }
+    .nf-emoji{
+      display:inline-grid; place-items:center;
+      width: 80px; height: 80px; border-radius: 16px;
+      background: var(--primary-50);
+      border: 1px solid #B9E0D1;
+      color: var(--primary-700);
+      font-size: 40px; line-height: 1;
+      margin-bottom: var(--space-6);
+    }
+    .nf-title{
+      font-size: clamp(28px, 4.2vw, 40px);
+      line-height: 1.15;
+      margin: 0 0 var(--space-4);
+      color: var(--neutral-900);
+      font-weight: 800;
+    }
+    .nf-text{
+      color: var(--neutral-600);
+      margin: 0 auto var(--space-8);
+      max-width: 60ch;
+    }
+    .nf-actions{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      justify-items: center;
+    }
+    @media (max-width: 480px){
+      .nf-actions{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Пропустить меню и перейти к содержанию</a>
+
+  <header class="site-header">
+    <div class="container header-bar">
+      <div class="brand">
+        <a href="/" class="logo" aria-label="На главную">👶</a>
+        <div class="brand-meta">
+          <strong>Екатерина</strong>
+          <small>Нови-Сад</small>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="section">
+      <div class="container notfound-wrap">
+        <article class="card nf-card">
+          <span class="nf-emoji" aria-hidden="true">🧭</span>
+          <h1 class="nf-title">Страница не найдена</h1>
+          <p class="nf-text">
+            Возможно, ссылка устарела или адрес был введён с опечаткой. Давайте вернёмся на главную
+            или напишите мне — подскажу и помогу найти нужный раздел.
+          </p>
+          <div class="nf-actions">
+            <a class="btn btn-primary btn-lg" href="/">На главную</a>
+            <a class="btn btn-outline btn-lg" href="/#contact">Написать мне</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container" style="padding: var(--space-8) 0; color: var(--neutral-500); font-size: 14px;">
+      © <span id="y"></span> Екатерина — няня в Нови-Саде
+    </div>
+  </footer>
+
+  <script>
+    // Год в футере
+    (function(){ try{ document.getElementById('y').textContent = new Date().getFullYear(); }catch(e){} })();
+  </script>
+</body>
+</html>
