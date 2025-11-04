@@ -39,15 +39,39 @@
 <!-- Safari pinned tab (монохромная маска, цвет задаём параметром) -->
 <link rel="mask-icon" href="/heart-circle.svg" color="#15803D">
 
-
+<script>
+  // gtag stub + default denied
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('consent','default',{
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    functionality_storage: 'granted',
+    security_storage: 'granted'
+  });
+  try {
+    var raw = localStorage.getItem('cookieConsent:v1');
+    if (raw){
+      var c = JSON.parse(raw)||{};
+      var ana = !!c.analytics, mkt = !!c.marketing;
+      gtag('consent','update',{
+        analytics_storage:  ana ? 'granted' : 'denied',
+        ad_storage:         mkt ? 'granted' : 'denied',
+        ad_user_data:       mkt ? 'granted' : 'denied',
+        ad_personalization: mkt ? 'granted' : 'denied',
+        wait_for_update: 500
+      });
+    }
+  } catch(e){}
+	</script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-74CLB809PN"></script>
 <script>
-window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config','G-74CLB809PN',{ anonymize_ip:true });
-</script>
+	</script>
 
 		<link rel="stylesheet" href="css/styles.css"/>
 			<link rel="stylesheet" href="css/uikit.css"/>
@@ -913,6 +937,7 @@ window.dataLayer = window.dataLayer || [];
 
 	</body>
 </html>
+
 
 
 
