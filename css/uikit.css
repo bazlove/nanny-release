@@ -1,0 +1,1316 @@
+/* ===================== TOKENS ===================== */
+:root{
+  /* — Цвета */
+  --brand:        #0B4870;      /* «инфо»-бренд, используется в вторичных кнопках */
+  --primary:      #15803D;      /* зелёный акцент */
+  --primary-700:  #146C43;
+  --primary-50:   #F2FAF6;
+
+  --neutral-900:  #0F172A;
+  --neutral-800:  #111827;
+  --neutral-700:  #374151;
+  --neutral-600:  #4B5563;
+  --neutral-500:  #6B7280;
+  --neutral-300:  #E5E7EB;
+  --neutral-200:  #ECEFF3;
+  --neutral-100:  #F4F6F9;
+  --white:        #FFFFFF;
+
+  --info-bg:      #EEF6FF;  /* голубые «инфо»-плашки */
+  --info-brd:     #9EC5E8;
+  --info-ink:     #0B4870;
+
+  --success:      #16A34A;
+  --warning:      #F59E0B;
+  --danger:       #DC2626;
+
+  /* — Радиусы */
+  --r-sm: 10px; --r-md: 12px; --r-lg: 14px; --r-xl: 16px;
+
+  /* — Тени */
+  --elev-1: 0 8px 24px rgba(0,0,0,.04);
+  --elev-2: 0 12px 28px rgba(0,0,0,.08);
+  --elev-3: 0 20px 60px rgba(0,0,0,.06);
+
+  /* — Типографика (база) */
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+               "Segoe UI Emoji", "Segoe UI Symbol";
+  --fz-base: 16px;      /* десктоп базовый */
+  --lh-base: 1.55;
+
+  /* — Сетка/контейнер */
+  --container: 1200px;
+  --gutter:    20px;
+
+  /* — Отступы (шкала 4px) */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-9: 36px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px;
+
+
+  /* — Анимации */
+  --trans-1: .12s ease;
+  --trans-2: .18s ease;
+}
+
+/* Breakpoints (используем в медиа) */
+@media (max-width: 1024px){ :root{ --fz-base: 15.5px; } } /* tablet */
+@media (max-width: 640px){  :root{ --fz-base: 15px;   } } /* mobile */
+
+/* Глобалка */
+html{ font-size: var(--fz-base); }
+body{
+  font-family: var(--font-sans);
+  color: var(--neutral-800);
+  line-height: var(--lh-base);
+  background: #FFF5E9; /* общий теплый фон — подложка страницы */
+  margin: 0;
+}
+
+/* Контейнер/секция (общие, не блок-специфичные) */
+.container{
+  max-width: var(--container);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+  box-sizing: border-box;
+}
+.section{
+  padding-block: var(--space-16);
+}
+.section--white{
+  background: var(--white);
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50% + var(--gutter));
+}
+
+/* ===================== Типографика ===================== */
+/* Заголовки — адаптив через clamp: desktop / tablet / mobile */
+h1, .h1{
+  max-width: 22ch;   
+  font-weight: 700;
+  color: var(--neutral-900);
+    letter-spacing: -0.015em; 
+  line-height: 1.08;
+  margin: 0 0 var(--space-8);
+  font-size: clamp(40px, 4.4vw, 64px);
+}
+h2, .h2{
+  font-weight: 800; color: var(--neutral-900);
+  font-size: clamp(22px, 2.6vw, 28px);
+  line-height: 1.22;
+  margin-top: var(--space-12);
+  margin-bottom: var(--h2-gap); 
+}
+h3, .h3{
+  font-weight: 700; color: var(--neutral-900);
+  font-size: clamp(18px, 2vw, 20px);
+  line-height: 1.25;
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+/* Параграф, мелкий текст */
+p{ margin: 0 0 var(--space-4); }
+.small{ font-size: .875rem; color: var(--neutral-600); }
+
+
+/* ===================== Ссылки ===================== */
+a{
+  color: var(--brand);
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  transition: color var(--trans-1), text-decoration-color var(--trans-1);
+}
+a:hover{
+  color: var(--primary-700);
+  text-decoration-style: solid;
+}
+a:focus-visible{
+  outline: 3px solid rgba(21,128,61,.28);
+  outline-offset: 2px;
+}
+a[disabled], .link--muted{ color: var(--neutral-500); pointer-events:none; }
+
+
+/* ===================== Кнопки (UI Kit — чистовая версия) ===================== */
+.btn{
+  --btn-bg:  var(--primary-50);
+  --btn-brd: var(--primary);
+  --btn-ink: var(--primary-700);
+
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:10px;
+  padding:12px 16px;
+  border:1px solid var(--btn-brd);
+  border-radius: var(--r-md);
+  background: var(--btn-bg);
+  color: var(--btn-ink);
+  font-weight:700; letter-spacing:.2px;
+  cursor:pointer; user-select:none; text-decoration:none;
+
+  transition:
+    background var(--trans-2),
+    border-color var(--trans-2),
+    color var(--trans-2),
+    transform .05s;
+}
+.btn:hover{ transform: translateY(-1px); }
+.btn:active{ transform: translateY(0); }
+.btn:focus-visible{ outline:3px solid rgba(21,128,61,.28); outline-offset:2px; }
+.btn[disabled]{ opacity:.6; pointer-events:none; }
+
+/* размеры */
+.btn-sm{ padding:9px 12px; border-radius: var(--r-sm); font-weight:600; }
+.btn-lg{ padding:14px 18px; border-radius: var(--r-lg); }
+
+/* виды */
+.btn-primary{
+  --btn-bg:  var(--primary);
+  --btn-brd: var(--primary);
+  --btn-ink: #fff;
+}
+/* SWAP-логика: filled → hover как outline (прозрачный фон, зелёный текст/бордер) */
+.btn-primary:hover,
+.btn-primary:focus-visible{
+  --btn-bg:  transparent;
+  --btn-brd: var(--primary-700);
+  --btn-ink: var(--primary-700);
+  background: transparent;
+  color: var(--primary-700);
+}
+
+.btn-outline{
+  --btn-bg:  transparent;
+  --btn-ink: var(--primary-700);
+  --btn-brd: var(--primary-700);
+  background: transparent;
+}
+/* SWAP-логика: outline → hover как filled (зелёная заливка, белый текст) */
+.btn-outline:hover,
+.btn-outline:focus-visible{
+  --btn-bg:  var(--primary);
+  --btn-brd: var(--primary);
+  --btn-ink: #fff;
+  background: var(--primary);
+  color:#fff;
+}
+
+.btn-secondary{
+  --btn-bg:  var(--info-bg);
+  --btn-brd: var(--info-brd);
+  --btn-ink: var(--info-ink);
+}
+
+.btn-ghost{
+  --btn-bg:  transparent;
+  --btn-brd: transparent;
+  --btn-ink: var(--neutral-800);
+  border-color: var(--neutral-300);
+  background:#fff;
+}
+
+.btn-danger{
+  --btn-bg:  #FEE2E2;
+  --btn-brd: #FCA5A5;
+  --btn-ink: #B91C1C;
+}
+
+/* иконки в кнопках */
+.btn > .icon{ width:18px; height:18px; display:inline-block; }
+
+
+
+
+/* ===================== Формы (inputs/select/textarea) ===================== */
+.input, select, textarea{
+  width:100%; box-sizing:border-box;
+  padding:12px 14px;
+  border:1px solid var(--neutral-300);
+  border-radius: var(--r-md);
+  background:#fff; color: var(--neutral-800);
+  box-shadow: inset 0 1px 0 rgba(0,0,0,.03);
+  transition: border-color var(--trans-2), box-shadow var(--trans-2);
+  min-height: 48px;
+}
+textarea{ min-height: 120px; resize: vertical; }
+.input:focus, select:focus, textarea:focus{
+  outline:0;
+  border-color:#B9E0D1;
+  box-shadow:0 0 0 4px rgba(34,197,94,.12);
+}
+.input.is-invalid, select.is-invalid, textarea.is-invalid{
+  border-color: #FCA5A5; box-shadow:0 0 0 4px rgba(220,38,38,.12);
+}
+label{ color: var(--neutral-700); font-weight:600; margin-bottom:6px; display:block; }
+
+/* чекбоксы/радио (нативные) */
+input[type="checkbox"], input[type="radio"]{
+  accent-color: var(--primary);
+  width: 16px; height: 16px; vertical-align: middle;
+}
+
+/* ===================== Карточки / Плашки ===================== */
+.card{
+  background:#fff; border:1px solid var(--neutral-300);
+  border-radius: var(--r-lg);
+  box-shadow: var(--elev-1);
+  padding: var(--space-4);
+}
+.card--elev2{ box-shadow: var(--elev-2); }
+.card--bleached{ background: var(--neutral-100); }
+
+/* ===================== Бейджи / Чипы ===================== */
+.badge{
+  display:inline-block; font-size:12px; line-height:1;
+  padding:4px 8px; border-radius:999px;
+  background: var(--primary-50);
+  border:1px solid #B9E0D1; color: var(--primary-700);
+}
+.tag{
+  display:inline-block; font-size:14px; padding:6px 12px;
+  border:1px solid var(--neutral-300);
+  border-radius: 999px; background:#fff; color: var(--neutral-800);
+  transition: transform var(--trans-1), border-color var(--trans-1), background var(--trans-1);
+}
+.tag:hover{ transform: translateY(-1px); background: var(--neutral-100); }
+
+/* ===================== Утилиты отступов (минимальный набор) ===================== */
+.mt-0{ margin-top:0!important; } .mb-0{ margin-bottom:0!important; }
+.mt-4{ margin-top:var(--space-4)!important; } .mb-4{ margin-bottom:var(--space-4)!important; }
+.mt-6{ margin-top:var(--space-6)!important; } .mb-6{ margin-bottom:var(--space-6)!important; }
+.mt-8{ margin-top:var(--space-8)!important; } .mb-8{ margin-bottom:var(--space-8)!important; }
+.mt-12{ margin-top:var(--space-12)!important; } .mb-12{ margin-bottom:var(--space-12)!important; }
+
+/* ===================== Доступность / motion ===================== */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ transition: none !important; }
+}
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+  clip: rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+
+
+
+
+/* Плавность смены цвета текста тоже анимируем */
+.btn{
+  transition:
+    background var(--trans-2),
+    border-color var(--trans-2),
+    color var(--trans-2),
+    transform .05s;
+}
+
+/* 1) PRIMARY (зелёная заливка) → hover как outline: прозрачный фон + зелёный текст/бордер */
+.btn-primary:hover,
+.btn-primary:focus-visible{
+  --btn-bg:  transparent;
+  --btn-brd: var(--primary-700);
+  --btn-ink: var(--primary-700);
+  background: transparent;           /* на случай локальных переопределений */
+  color: var(--primary-700);
+}
+
+/* 2) OUTLINE (прозрачная) → hover как filled: зелёная заливка + белый текст */
+.btn-outline:hover,
+.btn-outline:focus-visible{
+  --btn-bg:  var(--primary);
+  --btn-brd: var(--primary);
+  --btn-ink: #fff;
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Без «прыжка» при тапе */
+.btn-primary:active,
+.btn-outline:active{ transform: translateY(0); }
+
+
+
+
+
+
+
+
+/* ============= MOBILE FIX v3 — header, lang, hero chips, quote ============= */
+/* Глобально выключаем горизонтальный скролл от полноширинных блоков */
+html, body { overflow-x: clip; }
+
+
+/* ——— Header badge ——— */
+@media (max-width: 480px){
+  .site-header .avail-badge{
+    font-size: clamp(11px, 3.3vw, 13px); /* меньше кегль */
+    padding: 6px 10px;                   /* компактнее внутренние отступы */
+    border-radius: 999px;                /* капсула даже в 2 строки */
+    white-space: nowrap;                 /* не переносить на 2 строки */
+  }
+  .site-header .avail-badge .dot{
+    inline-size: 8px; block-size: 8px;  /* стабильный круг */
+  }
+}
+@media (max-width: 360px){
+  .site-header .avail-badge{ font-size: 11px; padding: 6px 8px; }
+}
+
+
+
+
+
+/* CONTACT: поле "Сообщение" растягивается по вертикали вручную */
+
+#contact .fld-message textarea{
+  /* стартовая высота */
+  min-height: 150px;              /* без !important */
+  height: auto;                   /* не фиксируем */
+  max-height: 60vh;               /* чтобы не разъезжалось на полэкрана */
+  resize: vertical;               /* ручной ресайз только по вертикали */
+  overflow: auto;                 /* условие для сработки resize в некоторых браузерах */
+  box-sizing: border-box;
+}
+
+@media (min-width: 980px) {
+  #contact .fld-message textarea {
+    height: 150px !important;
+    min-height: 0;
+  }
+}
+
+/* ============================================================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ================ HERO — мобильный фикс (≤768px) ================== */
+@media (max-width: 768px){
+
+  /* 1) Сетка: одна колонка, фото строго после левой колонки/CTA */
+  #top.hero{ padding: 56px 0 28px; }
+  #top .container.hero-grid{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    align-items: start;
+  }
+  #top .hero-copy{  grid-column: 1; grid-row: 1; min-width: 0; }
+  #top .hero-visual{ grid-column: 1; grid-row: 2; min-width: 0; }
+  /* если есть отдельный блок отзывов/рейтинга — он третий */
+  #top .hero-reviews{ grid-column: 1; grid-row: 3; }
+
+  /* 2) Заголовок и подзаголовок: без вылета за экран, размер компактнее */
+  #top .hero-copy h1{
+    /* убираем ограничение 26ch и делаем адаптив меньше */
+    max-inline-size: none;
+    font-size: clamp(24px, 8.6vw, 40px);
+    line-height: 1.12;
+    /* страховка от длинных слов/переносов */
+    overflow-wrap: anywhere;
+    word-break: normal;
+    hyphens: auto;
+  }
+  #top .hero-copy .sub{
+    font-size: 18px;
+    overflow-wrap: anywhere;
+  }
+
+
+  /* 4) CTA-кнопки — на всю ширину, одна под другой */
+  #top .cta{
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 16px 0 0;
+  }
+  #top .cta .btn{
+    width: 100% !important;
+    justify-content: center;
+  }
+
+  /* 5) Фото: всегда видно и вписывается по ширине */
+  #top .hero-photo{
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 4 / 3;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  #top .hero-photo img{
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  /* 6) Рейтинг/цитата — не ломают строку */
+  #top .hero-visual .hero-social{
+    margin-top: 12px;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  #top .hero-visual .hero-social .quote-wrap{
+    text-align: left;
+    margin-left: 0;
+    height: auto;
+    line-height: inherit;
+  }
+  #top .hero-visual .hero-social .quote-wrap .quote{
+    position: static; opacity: .9;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 640px){
+  .hero-social .quote-wrap{ display:none; }
+}
+
+/* ================================================================== */
+
+
+
+
+
+/* === SERVICES: отступы ================================ */
+#services{
+  
+  --srv-title-hint: 12px;   
+  --srv-hint-cards: 32px;   
+}
+
+@media (min-width: 1024px){
+  #services{
+    --srv-title-hint: 14px;
+    --srv-hint-cards: 40px;
+  }
+}
+
+#services .section-head .section-hint{
+  margin-top: 0 !important; /* чтобы не суммировалось */
+}
+
+/* 2) Описание → карточки */
+#services .svc-grid{
+  margin-top: var(--srv-hint-cards) !important;
+}
+/* ============================================================= */
+
+
+
+/* ================== HERO TUNE: 14–16" ноутбуки и десктопы ================== */
+
+/* 1) Ноутбуки ≤1440px: заголовок компактнее и шире по "символьной" колонке,
+      чтобы держаться в 2 строки; добавляем фикс-зазор перед CTA */
+@media (min-width: 1280px) and (max-width: 1600px){
+  #top .hero-copy h1{
+    /* меньше кегль + шире измеритель строки → чаще 2 строки */
+    font-size: clamp(36px, 2.8vw, 52px);
+    max-inline-size: 30ch;
+    line-height: 1.1;
+  }
+  /* небольшой предзазор от бейджей, даже если margin-top:auto не сработал */
+  #top .hero-copy .cta{ margin-top: clamp(14px, 2vh, 24px); }
+  }
+
+/* 2) Широкие десктопы ≥1600px: держим аккуратные 2 строки и не даём гигантского "провала" */
+@media (min-width: 1600.98px){
+  #top .hero-copy h1{
+    /* чуть уже колонка текста — заголовок чаще балансируется в 2 строки */
+    max-inline-size: 24ch;
+    font-size: clamp(36px, 3.2vw, 52px);
+  }
+  /* авто-прижим к низу уже есть, но ограничим верхний зазор, чтобы не «проваливалось» */
+  #top .hero-copy .cta{ margin-top: clamp(16px, 2.5vh, 32px); }
+}
+
+/* 3) Страховка: если высоты всё равно не хватает (маленький экран по высоте),
+      даём минимальный "стержень" левой колонке, чтобы поместились бейджи + CTA */
+@media (max-height: 820px) and (min-width: 1025px){
+  #top .hero-copy{
+    min-height: 520px; /* подгони 480–560px по вкусу под свой контент */
+  }
+}
+
+
+
+
+
+
+
+
+
+/* === HERO chips — стабильные отступы и раскладка ======= */
+:root{
+  --hero-tags-mt: 24px;      /* отступ сверху блока чипов */
+  --hero-tags-mb: 24px;      /* отступ снизу блока чипов  */
+  --hero-tags-gap-x: 8px;    /* горизонтальный зазор между чипами */
+  --hero-tags-gap-y: 8px;    /* вертикальный зазор между строками */
+}
+
+/* Общий блок списка чипов */
+#top .hero-tags{
+  margin: var(--hero-tags-mt) 0 var(--hero-tags-mb) !important;
+  padding: 0;
+  list-style: none;
+}
+
+/* Базовый вид «капсул» */
+#top .hero-tags li{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #d9dee6;
+  border-radius: 999px;
+  background: #fff;
+  font: 500 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
+  color: #0f172a;
+  white-space: nowrap;       /* внутри чипа не переносим строки */
+  text-align: center;
+  justify-content: center;
+}
+
+/* ===== Desktop/Laptop (≥1025px): 4 колонки по контенту, ровно 2 строки ===== */
+@media (min-width: 1025px){
+  #top .hero-tags{
+    display: grid !important;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(4, max-content);
+    column-gap: var(--hero-tags-gap-x) !important;
+    row-gap: var(--hero-tags-gap-y) !important;
+    justify-content: start;   /* группа чипов прижата к левому краю */
+    align-items: center;
+  }
+}
+
+/* ===== Tablet/Mobile (≤1024.98px): 2 равные колонки, одинаковые зазоры ===== */
+@media (max-width: 1024.98px){
+  #top .hero-tags{
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--hero-tags-gap-x) !important;
+    row-gap: var(--hero-tags-gap-y) !important;
+  }
+  #top .hero-tags > li{
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 12px;
+    justify-content: center;
+  }
+}
+
+/* Hero: разрешаем <br> в описании на любых ширинах */
+.hero .lead br,
+#hero .lead br { display:inline; }  /* подгони селектор под свой блок */
+
+
+
+
+/* ================= SECTION RHYTHM — h2 → hint → content ================= */
+
+/* Базовые токены (мобайл по умолчанию) */
+:root{
+  --gap-title-note: 12px;   /* h2 → строка описания */
+  --gap-note-block: 24px;   /* описание → контент/сетка */
+}
+/* Десктопные токены */
+@media (min-width: 769px){
+  :root{
+    --gap-title-note: 14px;  /* 12–16: середина */
+    --gap-note-block: 28px;  /* 24–32: середина */
+  }
+}
+
+/* Сбрасываем нижний margin у h2 внутри секций, чтобы не суммировался */
+:where(section, .section, [data-section], #services, #faq, #contact)
+  :is(h2,.section-title){
+  margin-bottom: 0;
+}
+
+/* h2 → строка описания (hint/lead/note) */
+:where(section, .section, [data-section], #services, #faq, #contact)
+  :is(h2,.section-title) + :is(p,.section-hint,.note,.lead){
+  margin-top: var(--gap-title-note);
+  margin-bottom: 0;
+}
+
+/* описание → контент (сетки/списки/карточки/гриды) */
+:where(section, .section, [data-section], #services, #faq, #contact)
+  :is(p,.section-hint,.note,.lead)
+  + :is(.grid,.cards,.svc-grid,.faq-list,.contact-grid,.content,.container,.services-grid,.srv-grid){
+  margin-top: var(--gap-note-block);
+}
+
+/* Повышаем специфичность для секций с .section-head (перебиваем UI Kit, если надо) */
+@media (min-width: 769px){
+  #services .section-head .section-title + .section-hint,
+  #faq      .section-head .section-title + .section-hint,
+  #contact  .section-head .section-title + .section-hint{
+    margin-top: var(--gap-title-note) !important;
+  }
+  #services .section-head + :is(.svc-grid,.grid,.cards),
+  #faq      .section-head + :is(.faq-list,.grid,.cards),
+  #contact  .section-head + :is(.contact-grid,.grid,.cards,.content){
+    margin-top: var(--gap-note-block) !important;
+  }
+}
+
+/* ================= FAQ: локальные токены и мелкий фикс ================== */
+
+#faq{
+  --gap-title-note: 12px;
+  --gap-note-block: 48px;
+}
+/* Мобайл для FAQ */
+@media (max-width: 768px){
+  #faq{
+    --gap-title-note: 16px;
+    --gap-note-block: 40px;
+  }
+}
+
+/* На всякий — явно гасим нижний отступ у h2.faq-title */
+#faq .faq-title{ margin-bottom: 0 !important; }
+
+/* ======================================================================= */
+
+
+
+
+/* === REVIEWS / SLOTS — ритм "заголовок → контент" (с учётом твоих классов) === */
+
+/* Токены (можно подстроить централизованно) */
+:root{
+  --gap-title-chips-d: 36px;   /* h2 → чипы в отзывах, десктоп */
+  --gap-head-content-d: 36px;  /* заголовок/хед → контент, десктоп */
+
+  --gap-title-chips-m: 28px;   /* h2 → чипы в отзывах, мобилка */
+  --gap-head-content-m: 24px;  /* заголовок/хед → контент, мобилка */
+}
+
+/* -------------------- Отзывы родителей -------------------- */
+#reviews.rv-reviews .rv-title{
+  margin-bottom: 0 !important;                 /* не даём суммироваться отступам */
+  flex: 0 0 100%;
+}
+
+/* h2 → список чипов */
+#reviews.rv-reviews .rv-title + .rv-chips{
+  margin-top: var(--gap-title-chips-d) !important;
+}
+
+/* хед (заголовок+чипы) → контент со списком отзывов (на случай разных классов) */
+#reviews.rv-reviews .rv-reviews__head + :is(.rv-list,.rv-grid,.rv-cards,.grid,.cards){
+  margin-top: var(--gap-head-content-d) !important;
+}
+
+/* -------------------- Свободные слоты -------------------- */
+#slots.slots .section-title{
+  margin-bottom: 0 !important;
+}
+
+/* h2 → сетка слотов */
+#slots.slots .section-title + .slots-grid{
+  margin-top: var(--gap-head-content-d) !important;
+}
+
+/* -------------------- Мобилки (≤768px): плотнее) -------------------- */
+@media (max-width: 768px){
+  #reviews.rv-reviews .rv-title + .rv-chips{
+    margin-top: var(--gap-title-chips-m) !important;
+  }
+  #reviews.rv-reviews .rv-reviews__head + :is(.rv-list,.rv-grid,.rv-cards,.grid,.cards){
+    margin-top: var(--gap-head-content-m) !important;
+  }
+  #slots.slots .section-title + .slots-grid{
+    margin-top: var(--gap-head-content-m) !important;
+  }
+}
+
+
+
+
+
+
+/* === Unify "i" badges (Header + Contacts + Calculator) === */
+:root{
+  --info-badge-size: 22px;
+  --info-badge-bg:   #ECEFF3;
+  --info-badge-fg:   #6B7280;
+}
+
+/* Контейнеры подсказок — без жёстких размеров */
+.contact-meta .hint,
+#calc .label-row .hint,
+.site-header .tz-tip.info{
+  display: inline-flex !important;
+  align-items: center !important;
+  position: relative;
+}
+
+/* В шапке нужен небольшой отступ от текста слева */
+.site-header .tz-tip.info{ margin-left: 6px; }
+
+/* Сам кружок "i" — единый квадрат 22×22 */
+.contact-meta .hint > .i,
+#calc .label-row .hint > .i,
+.site-header .tz-tip.info .i{
+  width: var(--info-badge-size) !important;
+  height: var(--info-badge-size) !important;
+  flex: 0 0 var(--info-badge-size) !important; /* не даём сплющиться во flex */
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  border: 0 !important;
+
+  background: var(--info-badge-bg) !important;
+  color: var(--info-badge-fg) !important;
+  font: 600 12px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
+  vertical-align: middle !important;
+
+  /* УБИРАЕМ отступ внутри кружка, чтобы не было двойного зазора */
+  margin-left: 0 !important;
+}
+
+.contact-meta .hint:hover > .i, #calc .label-row .hint:hover > .i, .site-header .tz-tip.info:hover .i { color:#15803D !important; }
+
+/* Центрирование тултипа "tip" по горизонтали относительно иконки "i" */
+.contact-meta .hint .tip,
+#calc .label-row .hint .tip,
+.site-header .tz-tip.info .tip{
+  left: 50% !important;
+  transform: translateX(-50%) !important;  /* ровно по центру */
+  text-align: center;                      /* текст по центру, если нужно */
+  white-space: nowrap;
+  bottom: calc(100% + 10px) !important;
+}
+
+/* Стрелочка тултипа по центру */
+.contact-meta .hint .tip::after,
+#calc .label-row .hint .tip::after,
+.site-header .tz-tip.info .tip::after{
+  left: 50% !important;
+  transform: translateX(-50%) rotate(45deg) !important;
+}
+
+@media (max-width: 640px){
+  .site-header .tz-tip.info{ display: none !important; }
+}
+
+
+
+
+
+
+
+/* WHY: мобильная анимация при появлении в вьюпорте */
+@media (max-width: 767px){
+  #why .why-card .why-icon,
+  #why .why-card .why-title,
+  #why .why-card .why-text{
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .35s ease, transform .35s ease;
+    will-change: opacity, transform;
+  }
+
+  /* лёгкая «ступенька» по времени: иконка -> заголовок -> текст */
+  #why .why-card .why-title{ transition-delay: .06s; }
+  #why .why-card .why-text { transition-delay: .12s; }
+
+  #why .why-card.play .why-icon,
+  #why .why-card.play .why-title,
+  #why .why-card.play .why-text{
+    opacity: 1;
+    transform: none;
+  }
+
+  /* поп-эффект для иконки при первом показе */
+  #why .why-card.play .why-icon{
+    animation: whyPop .55s ease-out;
+  }
+  @keyframes whyPop{
+    0%   { transform: scale(.9); opacity:.85; }
+    60%  { transform: scale(1.06); }
+    100% { transform: scale(1);   opacity:1; }
+  }
+}
+
+/* Уважение к настройке «уменьшить анимацию» */
+@media (prefers-reduced-motion: reduce){
+  #why .why-card .why-icon,
+  #why .why-card .why-title,
+  #why .why-card .why-text{
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  #why .why-card.play .why-icon{ animation: none !important; }
+}
+
+
+
+
+
+
+/* ===== CANON vFinal: Header + Burger + Overlay (desktop/tablet/mobile) ===== */
+:root{
+  --bp-mobile: 640px;
+  --bp-tablet: 980px;
+  --z-header: 1000;     /* шапка поверх оверлея */
+  --z-mnav: 900;        /* оверлей ниже шапки, чтобы шапку было видно */
+}
+
+/* Шапка поверх контента */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+}
+
+/* По умолчанию на desktop: бургер скрыт, десктоп-меню и десктоп-язык видны */
+.burger{ display:none; }
+.header-bar > .lang-switch{ display:flex; }
+.header-nav{ display:flex; }
+
+/* Tablet/Mobile: прячем ТОЛЬКО десктоп-элементы в шапке, бургер показываем */
+@media (max-width:980px){
+  .header-nav{ display:none !important; }
+  .header-bar > .lang-switch{ display:none !important; }   /* критично: только прямой потомок шапки */
+
+  .burger{
+    display:inline-grid !important;
+    place-items:center;
+    width:44px; height:44px;
+    border:1px solid #E5E7EB; border-radius:12px;
+    background:#fff;
+    line-height:0; cursor:pointer;
+    transition: background .15s ease, border-color .15s ease, transform .05s ease;
+  }
+  .burger:active{ transform: translateY(1px); }
+
+  /* Иконки бургера/креста — чистый CSS */
+  .burger .ic-open,
+  .burger .ic-close{
+    width:18px; height:2px; background:#111; position:relative; border-radius:2px;
+  }
+  .burger .ic-open::before,
+  .burger .ic-open::after{
+    content:""; position:absolute; left:0; right:0; height:2px; background:#111; border-radius:2px;
+  }
+  .burger .ic-open::before{ transform: translateY(-6px); }
+  .burger .ic-open::after { transform: translateY( 6px); }
+  .burger .ic-close{ display:none; }
+  .burger.is-open .ic-open{ display:none; }
+  .burger.is-open .ic-close{
+    display:block; transform: rotate(45deg);
+  }
+  .burger.is-open .ic-close::before,
+  .burger.is-open .ic-close::after{
+    content:""; position:absolute; left:0; right:0; height:2px; background:#111; border-radius:2px;
+  }
+  .burger.is-open .ic-close::before{ transform: rotate(90deg); }
+}
+
+
+/* Mobile: в шапке скрываем бренд-блок и «i» — остаются бейдж и бургер */
+@media (max-width: 640px){
+  .site-header .brand-meta{ display:none !important; }
+  .site-header .brand > .logo{ display:none !important; }
+  .site-header .tz-tip{ display:none !important; }
+
+  /* компактнее бейдж слотов */
+  #headerFreeBadge{ white-space:nowrap; }
+  #headerFreeBadge .avail-text{ font-size:15px; line-height:1.15; }
+}
+
+/* ===== Оверлей мобильного меню — снизу, НИЖЕ шапки ===== */
+.mobile-nav{
+  position: fixed;
+  /* ВАЖНО: top задаём динамически из JS как высоту шапки, чтобы меню «из-под шапки» */
+  top: var(--hdr-h, 56px); left: 0; right: 0; bottom: 0;
+  display: grid;
+  grid-template-rows: 1fr;           /* панель прижмём к низу */
+  background: rgba(17,24,39,.72);    /* затемнение контента, но не шапки */
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: var(--z-mnav);
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s ease;
+}
+.mobile-nav__panel{
+  align-self: start;
+  background:#f8f9fb;
+  border-radius: 0 0 16px 16px;
+  padding:16px;
+  height: 58dvh;
+  max-height: calc(100dvh - var(--hdr-h,56px));
+  overflow: auto;  
+  transform: translateY(-16px);
+  will-change: transform;
+  transition: transform .24s ease;
+  border-bottom: 1px solid rgba(17,24,39,.18);
+}
+
+/* Состояние «открыто» */
+.mobile-nav.is-open{ opacity:1; pointer-events:auto; }
+.mobile-nav.is-open .mobile-nav__panel{ transform: translateY(0); }
+
+/* Содержимое панели */
+.mobile-top{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:12px;
+}
+.mobile-brand{ display:flex; align-items:center; gap:10px; }
+.mobile-brand .logo{
+  width:40px; height:40px; display:grid; place-items:center;
+  border-radius:10px; background:#eaf7f0; border:1px solid #b7dbc9;
+}
+.mobile-brand .meta strong{ display:block; font-size:16px; line-height:1.1; color:#111827; }
+.mobile-brand .meta small{ display:block; font-size:13px; color:#6B7280; }
+
+
+/* Переключатель языка iOS-style RU/SR toggle === */
+
+:root{
+  /* подгони под высоту бренда; 40px = как квадратное эмодзи-лого */
+  --ios-h:        40px;   /* высота трека */
+  --ios-w:        72px;   /* ширина трека */
+  --ios-knob:     36px;   /* диаметр круглой ручки (обычно h - 4px) */
+  --ios-on:       #33be4b;
+  --ios-on-soft:  #4cd964;
+  --ios-off:      #e5e7eb;
+  --ios-text-on:  #166534;
+  --ios-text-off: #374151;
+  --ios-font:     13px;
+}
+
+/* выравниваем тумблер вправо в .mobile-top */
+#langIosWrap{
+  margin-left:auto;
+  display:inline-block; position:relative;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  line-height:0;
+}
+
+/* прячем input, но оставляем доступность */
+#langIosWrap input{ position:absolute; inset:0; opacity:0; }
+
+/* трек */
+#langIosWrap input + span{
+  position:relative; display:inline-block;
+  inline-size:var(--ios-w); block-size:var(--ios-h);
+  background:#fff; border-radius:calc(var(--ios-h)/2);
+  box-shadow: inset 0 0 0 2px var(--ios-off);
+  transition: box-shadow .25s cubic-bezier(.17,.67,.43,.98), background .25s;
+}
+
+/* эффект «нажатия» */
+#langIosWrap:active input + span,
+#langIosWrap input + span:active{
+  box-shadow: inset 0 0 0 calc(var(--ios-h)*0.45) var(--ios-off);
+}
+
+/* ручка + текст RU/SR внутри */
+#langIosWrap input + span::after{
+  content:"RU";
+  position:absolute; top:50%; left:2px; transform:translateY(-50%);
+  inline-size:var(--ios-knob); block-size:var(--ios-knob);
+  border-radius:50%; background:#fff; display:grid; place-items:center;
+  font-weight:700; font-size:var(--ios-font); color:var(--ios-text-off);
+  box-shadow:
+    inset 0 0 0 .6px rgba(0,0,0,.10),
+    0 .5px .5px rgba(0,0,0,.06),
+    0 2px 6px rgba(0,0,0,.18);
+  transition: left .25s ease, inline-size .18s ease, color .2s ease, box-shadow .25s ease;
+}
+#langIosWrap:active input + span::after{ inline-size:calc(var(--ios-knob) + 6px); }
+
+/* включено (SR) */
+#langIosWrap input:checked + span{
+  box-shadow: inset 0 0 0 calc(var(--ios-h)*0.45) var(--ios-on-soft);
+}
+#langIosWrap input:checked + span::after{
+  content:"SR";
+  left: calc(100% - var(--ios-knob) - 2px);
+  color: var(--ios-text-on);
+  box-shadow:
+    inset 0 2px 6px rgba(22,101,52,.12),
+    inset 0 -1px 0 rgba(255,255,255,.65),
+    0 1px 0 rgba(0,0,0,.04);
+}
+
+/* фокус */
+#langIosWrap input:focus + span{ box-shadow: inset 0 0 0 2px #d1d5db; }
+#langIosWrap input:focus:checked + span{
+  box-shadow: inset 0 0 0 calc(var(--ios-h)*0.45) var(--ios-on);
+}
+
+/* компактнее на очень узких экранах */
+@media (max-width:360px) and (pointer:coarse){
+  :root{ --ios-h:36px; --ios-w:68px; --ios-knob:32px; --ios-font:12px; }
+}
+
+
+
+
+
+/* Нав-ссылки карточками */
+.mobile-nav .nav-links{ display:grid; gap:10px; }
+.mobile-nav .nav-links a{
+  display:block; padding:12px 14px; border-radius:12px;
+  border:1px solid #E5E7EB; background:#fff; color:#111; font-size:16px;
+  text-decoration:none; transition: background .15s, transform .05s;
+}
+.mobile-nav .nav-links a:hover{ background:#F8FAFC; }
+.mobile-nav .nav-links a:active{ transform: translateY(1px); }
+
+/* Контент панели появляется после начала движения */
+  .mobile-nav__panel > *{
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .mobile-nav.is-open .mobile-nav__panel > *{
+    opacity: 1;
+    transform: none;
+    transition-delay: .12s; /* запаздывание контента относительно панели */
+  }
+
+/* Без анимаций для reduce-motion */
+@media (prefers-reduced-motion: reduce){
+  .mobile-nav{ transition: none; }
+  .mobile-nav__panel{ transition: none; }
+}
+
+
+
+
+
+
+
+/* === Desktop header nav (restore) === */
+@media (min-width: 981px){
+  .header-nav{
+    display:flex;                   /* горизонтальное меню */
+    gap:12px;                       /* расстояние между пунктами */
+  }
+
+  .header-nav a{
+    display:inline-flex;            /* кликабельная «пилюля» */
+    align-items:center;
+    padding:8px 10px;               /* внутренние отступы */
+    border-radius:10px;             /* скругление как было */
+    text-decoration:none;           /* убрать подчёркивание */
+    color:#1d2b38;                  /* тёмный текст */
+    line-height:1;
+    transition:
+      background .15s ease,
+      color .15s ease,
+      box-shadow .15s ease;
+  }
+
+  .header-nav a:hover{
+    background:#f2f6fb;           
+    color:#15803D;
+  }
+
+  .header-nav a:focus-visible{
+    outline:2px solid #78c6a7;     
+    outline-offset:2px;
+    color:#15803D;
+  }
+
+  .header-nav a:active{ transform: translateY(1px); color:#B42318; }
+}
+
+.header-nav a.is-active{ font-weight:500; }
+
+
+
+
+
+
+
+
+
+
+/* Chips: mobile sizing override */
+@media (max-width: 640px){
+  /* Фильтры: Услуги + Отзывы */
+  #services .svc-chip,
+  .rv-chip{
+    font-size: 13px;
+  }
+  #services .svc-chip{ padding: 8px 16px; }
+  .rv-chip{ padding: 8px 16px; }  /* высоту не трогаем, чтобы не прыгала линия */
+}
+
+@media (max-width: 360px){
+  #services .svc-chip,
+  .rv-chip{
+    font-size: 11px;
+  }
+}
+
+
+
+
+
+/* === HERO: планшеты, фикс карусели и однострочного ряда === */
+@media (min-width: 641px) and (max-width: 1024px){
+  /* 1) Строка не переносится */
+  #top .hero-visual .hero-social{
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap !important;      /* перекрываем wrap */
+    min-width: 0;                       /* чтобы правая колонка сжималась */
+  }
+
+  /* 2) Слева (звезда, рейтинг, ссылка, разделитель) — без переносов */
+  #top .hero-visual .hero-social .rating,
+  #top .hero-visual .hero-social .reviews-link,
+  #top .hero-visual .hero-social .sep{
+    white-space: nowrap;
+  }
+
+  /* 3) Справа — контейнер цитаты занимает остаток строки */
+  #top .hero-visual .hero-social .quote-wrap{
+    flex: 1 1 auto;
+    min-width: 0;              /* критично для Safari/iPad */
+    text-align: right;
+    height: 1.4em;             /* высота в одну строку */
+    line-height: 1.4;
+    overflow: hidden;
+  }
+
+  /* 4) Сам ротатор — два слоя поверх друг друга, а не в потоке */
+  #top .hero-visual .hero-social #quoteRotator{
+    position: relative;
+    display: block;
+    height: 1.4em;             /* фиксируем «этаж» */
+    overflow: hidden;
+  }
+  #top .hero-visual .hero-social #quoteRotator > *{
+    position: absolute !important;  /* перекрываем position:static */
+    inset: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;        /* обрезка с троеточием */
+  }
+
+  #top .hero-visual .hero-social #quoteRotator .quote{
+    animation: none !important;           /* на всякий случай */
+    transition: opacity 240ms ease 0s !important;
+  }
+  
+  /* 5) Если под строкой есть дублирующий параграф — спрячем (дать ему класс .hero-usp) */
+  #top .hero-visual .hero-social + .hero-usp{
+    display: none !important;
+  }
+}
+
+
+
+/* === EXPERIENCE: mobile (≤640px) === */
+@media (max-width: 640px){
+  /* компактные токены */
+  #experience{ --xp-pin-sz: 8px; }
+
+  /* список */
+  #experience .xp-grid{
+    position: relative;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* вертикальная рельса на всю высоту и под пинами */
+  #experience .xp-grid::before{
+    top: 0; bottom: 0;
+    left: 12px; right: auto;
+    width: var(--xp-rail-h);
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* строка таймлайна: слева рельса/пин (24px), справа контент */
+  #experience .xp-item{
+    display: grid;
+    grid-template-columns: 24px minmax(0,1fr);
+    column-gap: 10px;
+    align-items: start;
+    padding: 0;
+  }
+
+  /* пин на рельсе */
+  #experience .xp-pin{
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    margin-top: 18px;           /* к базовой линии года */
+    width: var(--xp-pin-sz);
+    height: var(--xp-pin-sz);
+    transform: none;
+    left: auto; top: auto;
+    justify-self: center;
+    z-index: 2;                  /* поверх рельсы */
+  }
+
+  /* год — без капсулы, потоковый элемент над карточкой */
+  #experience .xp-chip{
+    grid-column: 2;
+    position: static;
+    transform: none;
+    margin: 0 0 6px 0;
+
+    display: inline;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    text-shadow: none;
+
+    color: #374151;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .2px;
+  }
+
+  /* карточка — компактнее */
+  #experience .xp-card{
+    grid-column: 2;
+    margin-top: 0;
+    padding: 12px;
+    border-radius: 12px;
+  }
+  #experience .xp-card h3{
+    margin: 0 0 6px;
+    font-size: 15px;
+  }
+  #experience .xp-card p{
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+
+
+
+
