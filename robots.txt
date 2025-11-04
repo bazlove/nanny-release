@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+Allow: /*.svg$
+
+Disallow: /admin/
+Disallow: /api/
+Disallow: /draft/
+Disallow: /tmp/
+Disallow: /cgi-bin/
+
+Host: nanny.bazlove.com
+
+Clean-param: h&k&d&a&b&c&eur /
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /
+Clean-param: gclid&yclid&fbclid&msclkid&gclsrc&igshid&si /
+
+Sitemap: https://nanny.bazlove.com/sitemap.xml
