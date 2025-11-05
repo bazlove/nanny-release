@@ -335,7 +335,7 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
 
 
 
-// Calculator — clean URL + hash sharing
+// Calculator — clean URL + hash sharing (#calc anchor)
 
 (function(){
   const EUR_RATE=117, BASE=900, WEEKEND=1.25, TWO=1.25, INFANT=1.5, OPT=300, OPT_FIT=600, MIN=2, HOURS_MAX=10;
@@ -434,15 +434,14 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
       badges.innerHTML=b.map(t=>`<span class="badge">${t}</span>`).join('');
     }
 
-    // ВНИМАНИЕ: адресную строку НЕ трогаем (никаких ?query),
-    // чтобы URL оставался чистым. Шэрим ссылку отдельной функцией.
+    // Адресную строку не трогаем (никаких ?query).
   }
 
-  // сделать share-ссылку в #hash и скопировать/поделиться
+  // сделать share-ссылку в #hash и скопировать/поделиться (с якорём #calc)
   async function shareCalcState(){
     const url = new URL(location.href);
-    url.search = "";                       // без query
-    url.hash   = collectParams().toString(); // состояние в hash
+    url.search = "";                               // без query
+    url.hash   = 'calc?' + collectParams().toString(); // состояние в hash c якорём
     const link = url.toString();
     try{
       if (navigator.share) { await navigator.share({ url: link }); return; }
@@ -493,17 +492,23 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     window.calcRecompute = () => recalc(true);
   }
 
-  // ---- URL state on load: prefer #hash, fallback to ?query; then clean query ----
+  // ---- URL state on load: prefer #calc?..., fallback to raw #..., then ?query; clean ?query ----
   function initCalcURLState(){
-    const raw = location.hash.startsWith('#')
-      ? location.hash.slice(1)
-      : (location.search.startsWith('?') ? location.search.slice(1) : '');
+    let raw = '';
+    if (location.hash.startsWith('#')) {
+      const h = location.hash.slice(1);        // напр.: "calc?h=3&k=2&..."
+      const qPos = h.indexOf('?');
+      raw = (qPos !== -1) ? h.slice(qPos + 1) : h; // если "calc?...", берём после '?'; иначе весь hash как параметры (обратная совместимость)
+    } else if (location.search.startsWith('?')) {
+      raw = location.search.slice(1);
+    }
+
     const sp = new URLSearchParams(raw);
     if (sp.size > 0) applyParams(sp);
 
-    // убираем ?query из адресной строки (hash оставляем, если был)
+    // убираем ?query из адресной строки (hash/якорь оставляем)
     if (location.search) {
-      try{ history.replaceState(null, "", location.pathname + location.hash); }catch(_){}
+      try { history.replaceState(null, "", location.pathname + location.hash); } catch(_){}
     }
   }
 
@@ -512,6 +517,7 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
+
 
 
 
@@ -1935,6 +1941,7 @@ const I18N = {
     openModal();
   });
 })();    
+
 
 
 
