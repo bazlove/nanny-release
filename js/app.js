@@ -807,12 +807,12 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
       });
       if (!res.ok) throw new Error('bad_status');
 
-      if (note) note.textContent = 'Спасибо! Я отвечу в ближайшее время.';
+      if (note) note.textContent = 'Спасибо! Ваш запрос отправлен. Я отвечу в ближайшее время.';
       form.reset();
       t0 = Date.now();
       window.gtag?.('event','contact_form_submit',{success:true});
     } catch (err) {
-      if (note) note.textContent = 'Не получилось отправить. Напишите мне в Telegram.';
+      if (note) note.textContent = 'Не получилось отправить запрос... Пожалуйста, напишите мне в Telegram.';
       window.gtag?.('event','contact_form_submit',{success:false});
     } finally {
       // 6) вернуть UI в норму
@@ -1951,6 +1951,7 @@ const I18N = {
     openModal();
   });
 })();    
+
 
 
 
