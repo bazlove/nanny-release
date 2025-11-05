@@ -1310,7 +1310,4 @@ html, body { overflow-x: clip; }
   }
 }
 
-
-
-
-
+button[disabled]{cursor:not-allowed; opacity:.8}
