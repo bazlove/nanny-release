@@ -9,12 +9,14 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/uikit.css">
   <style>
-    /* Локальные штрихи под UI Kit (используем токены палитры из uikit.css) */
+    html, body { height: 100%; }
+	body { min-height: 100dvh; display: flex; flex-direction: column; }
+	main { flex: 1; display: grid; place-items: center; }
     .notfound-wrap{
-      min-height: 70vh;
+      min-height: auto;
       display: grid;
       place-items: center;
-      padding: var(--space-12) 0;
+      padding: var(--space-10) var(--space-4);;
     }
     .nf-card{
       max-width: 720px;
