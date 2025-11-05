@@ -738,83 +738,93 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
   if (tel) tel.href = `tel:+${phoneDigits}`;
 
   // ——— форма ———
-  const form = document.getElementById('contactForm');
-  const note = document.getElementById('contactNotice');
-  const name = document.getElementById('cname');
-  const cont = document.getElementById('ccontact');
-  const time = document.getElementById('ctime');
-  const msg  = document.getElementById('cmsg');
-  const eName= document.getElementById('err-name');
-  const eCont= document.getElementById('err-contact');
-  let t0 = Date.now();
-
-  // Подсветка чекбокса
-(function attachAgreeValidation(){
-  const form      = document.getElementById('contactForm');
+  const form   = document.getElementById('contactForm');
   if (!form) return;
 
-  const agree     = form.querySelector('#cagree');     // чекбокс
+  const note   = document.getElementById('contactNotice');
+  const name   = document.getElementById('cname');
+  const cont   = document.getElementById('ccontact');
+  const time   = document.getElementById('ctime');      // уйдёт в FormData
+  const msg    = document.getElementById('cmsg');
+  const agree  = document.getElementById('cagree');
+  const eName  = document.getElementById('err-name');
+  const eCont  = document.getElementById('err-contact');
+  const submitBtn = document.getElementById('contactSubmit');
 
-  // снимаем ошибку при изменении состояния чекбокса
-  agree?.addEventListener('change', () => {
-    agree.classList.remove('is-error');
-    // agreeWrap?.classList.remove('is-error');
-  });
+  let t0 = Date.now();
 
-  form.addEventListener('submit', (e) => {
-    // если чекбокс обязателен:
-    if (!agree?.checked) {
-      e.preventDefault();
-      // подсвечиваем ИМЕННО чекбокс
-      agree.classList.add('is-error');
-      agree.focus();
-      return;
-    }
-  });
-})();
+  // подсветка чекбокса при изменении
+  agree?.addEventListener('change', () => agree.classList.remove('is-error'));
 
-  
   // утилиты
   const setErr = (el, small, on) => {
+    if (!el) return;
     el.classList.toggle('invalid', on);
     el.setAttribute('aria-invalid', on ? 'true' : 'false');
     if (small) small.hidden = !on;
   };
-  [name,cont].forEach(i => i.addEventListener('input', ()=> setErr(i, i===name?eName:eCont, !i.value.trim())));
+  [name, cont].forEach(i => i?.addEventListener('input', ()=> setErr(i, i===name?eName:eCont, !i.value.trim())));
 
-  form?.addEventListener('submit', async (e)=>{
+  form.addEventListener('submit', async (e)=>{
     e.preventDefault();
 
-    // honeypot/time-trap
-    if (form.website?.value) return;
+    // 1) согласие обязательно
+    if (!agree?.checked) {
+      agree?.classList.add('is-error');
+      agree?.focus();
+      return;
+    }
+
+    // 2) honeypot + таймер
+    const hp = form.querySelector('[name="website"]');
+    if (hp && hp.value) return;
     if (Date.now() - t0 < 2500) return;
 
-    const badName = name.value.trim().length < 3;   // ← минимум 3 символа
-    const badCont = !cont.value.trim();             // как было
+    // 3) валидация полей
+    const badName = !name?.value.trim() || name.value.trim().length < 3;
+    const badCont = !cont?.value.trim();
+    setErr(name, eName, badName);
+    setErr(cont, eCont, badCont);
+    if (badName || badCont) {
+      (badName ? name : cont)?.focus();
+      return;
+    }
 
-// setErr оставляем: он ставит aria-invalid и .invalid (подсказки под полем u тебя скрываются модулем inFieldErrors)
-setErr(name, eName, badName);
-setErr(cont, eCont, badCont);
+    // 4) UI: блокируем кнопку и ставим aria-busy
+    const oldLabel = submitBtn?.textContent;
+    if (submitBtn) {
+      submitBtn.setAttribute('disabled', 'true');
+      submitBtn.textContent = 'Отправляю…';
+    }
+    form.setAttribute('aria-busy', 'true');
 
-if (badName || badCont) {
-  (badName ? name : cont).focus();
-  return;
-}
-
-    // можно доб./изменить endpoint Google Apps Script
+    // 5) отправка (Google Apps Script Web App)
     const fd = new FormData(form);
     try{
-      const res = await fetch('https://script.google.com/macros/s/YOUR_DEPLOY_ID/exec', { method:'POST', body:fd });
-      if (!res.ok) throw 0;
-      note.textContent = 'Спасибо! Я отвечу в ближайшее время.';
-      form.reset(); t0 = Date.now();
+      const res = await fetch('https://script.google.com/macros/s/AKfycbyUhl5Vc9r_kDgzYpx96iuvGLXPql9Y4XtKyPrtMtePRw2Tlsrhvp6x_-ktyr1uiE12/exec', {
+        method:'POST',
+        body: fd
+      });
+      if (!res.ok) throw new Error('bad_status');
+
+      if (note) note.textContent = 'Спасибо! Я отвечу в ближайшее время.';
+      form.reset();
+      t0 = Date.now();
       window.gtag?.('event','contact_form_submit',{success:true});
-    }catch{
-      note.textContent = 'Не получилось отправить. Напишите мне в Telegram.';
+    } catch (err) {
+      if (note) note.textContent = 'Не получилось отправить. Напишите мне в Telegram.';
       window.gtag?.('event','contact_form_submit',{success:false});
+    } finally {
+      // 6) вернуть UI в норму
+      form.removeAttribute('aria-busy');
+      if (submitBtn) {
+        submitBtn.removeAttribute('disabled');
+        submitBtn.textContent = oldLabel || 'Отправить запрос';
+      }
     }
   });
 })();
+
 
 // [removed duplicate cookie banner module]
 
@@ -1941,6 +1951,7 @@ const I18N = {
     openModal();
   });
 })();    
+
 
 
 
