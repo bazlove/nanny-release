@@ -335,28 +335,22 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
 
 
 
-// Calculator — clean URL + hash sharing (#calc anchor)
-
+// ===== Calculator — clean URL + #calc anchor + state sharing =====
 (function(){
   const EUR_RATE=117, BASE=900, WEEKEND=1.25, TWO=1.25, INFANT=1.5, OPT=300, OPT_FIT=600, MIN=2, HOURS_MAX=10;
-  const $=id=>document.getElementById(id);
-  const money=v=>{ try{return v.toLocaleString('ru-RS')}catch(_){return String(v)} };
+  const $ = id => document.getElementById(id);
+  const money = v => { try { return v.toLocaleString('ru-RS'); } catch(_) { return String(v); } };
 
-  // ---- helpers ----
+  // ---------- helpers ----------
   function normalizeHours(commit){
     const h=$('hours'), err=$('hoursErr');
-    let v=parseInt(h?.value, 10);
-
+    let v=parseInt(h?.value,10);
     const emptyOrNaN = !Number.isFinite(v) || (h?.value==='');
     if (emptyOrNaN) v = MIN;
-
     v = Math.max(MIN, Math.min(HOURS_MAX, v)); // 2..10
-
-    if (commit && h) { h.value = String(v); }
-
-    if (h)   { h.classList.toggle('error', v < MIN); }
-    if (err) { err.style.display = (v < MIN) ? 'block' : 'none'; }
-
+    if (commit && h) h.value = String(v);
+    if (h)   h.classList.toggle('error', v < MIN);
+    if (err) err.style.display = (v < MIN) ? 'block' : 'none';
     return v;
   }
 
@@ -368,7 +362,6 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     return Math.round(r/10)*10;
   }
 
-  // собрать текущее состояние калькулятора в объект URLSearchParams
   function collectParams(){
     const sp = new URLSearchParams();
     sp.set('h',   $('hours')?.value || '');
@@ -381,7 +374,6 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     return sp;
   }
 
-  // применить параметры к элементам формы
   function applyParams(sp){
     try{
       if (sp.has('h')   && $('hours'))   $('hours').value   = sp.get('h');
@@ -393,28 +385,30 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     }catch(_){}
   }
 
-  // ---- render/animate ----
-  let last=0;
-  const render = (sum) => {
-    const eur = $('eurToggle')?.checked;
-    let s = `Итог: ${money(sum)} дин`;
-    if (eur) {
-      const eurVal = Math.round(sum / EUR_RATE);
-      s += ` <span class="eur">(≈ €${eurVal})</span>`;
-    }
-    const el = $('result');
-    if (el) el.innerHTML = s;
+  const scrollToCalc = (smooth=true)=>{
+    const el = $('calc');
+    if (!el) return;
+    el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
   };
 
-  const animate=(to)=>{
+  // ---------- render/animate ----------
+  let last=0;
+  const render = (sum)=>{
+    const eur = $('eurToggle')?.checked;
+    let s = `Итог: ${money(sum)} дин`;
+    if (eur) s += ` <span class="eur">(≈ €${Math.round(sum/EUR_RATE)})</span>`;
+    const el = $('result'); if (el) el.innerHTML = s;
+  };
+
+  const animate = (to)=>{
     const from=last; if(from===to){ render(to); return; }
     const start=performance.now(), dur=180, diff=to-from;
     const step=(t)=>{ const p=Math.min(1,(t-start)/dur); render(Math.round(from+diff*p)); if(p<1) requestAnimationFrame(step); else last=to; };
     requestAnimationFrame(step);
   };
 
-  // ---- core calc ----
-  function recalc(commit = true){
+  // ---------- core calc ----------
+  function recalc(commit=true){
     const h = normalizeHours(commit);
     const rate=hourlyRate();
     const add=( $('optA')?.checked?OPT:0 )+( $('optB')?.checked?OPT:0 )+( $('optC')?.checked?OPT_FIT:0 );
@@ -425,35 +419,72 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
 
     const badges=$('badges');
     if(badges){
-      const b=[];
-      const kids=$('kids')?.value, day=$('dayType')?.value;
+      const b=[]; const kids=$('kids')?.value, day=$('dayType')?.value;
       if(kids==='2') b.push('+25% двое детей');
       if(kids==='2_infant') b.push('+50% малыш <2 лет');
       if(day==='weekend') b.push('+25% выходной день');
       if($('eurToggle')?.checked) b.push('€');
       badges.innerHTML=b.map(t=>`<span class="badge">${t}</span>`).join('');
     }
-
-    // Адресную строку не трогаем (никаких ?query).
+    // адресную строку не трогаем (никаких ?query)
   }
 
-  // сделать share-ссылку в #hash и скопировать/поделиться (с якорём #calc)
+  // ---------- sharing ----------
   async function shareCalcState(){
     const url = new URL(location.href);
-    url.search = "";                               // без query
-    url.hash   = 'calc?' + collectParams().toString(); // состояние в hash c якорём
+    url.search = "";
+    url.hash   = 'calc?' + collectParams().toString(); // якорь + параметры
     const link = url.toString();
-    try{
-      if (navigator.share) { await navigator.share({ url: link }); return; }
-    }catch(_){}
-    try{
+    try { if (navigator.share){ await navigator.share({ url: link }); return; } } catch(_){}
+    try {
       await navigator.clipboard.writeText(link);
       $('shareLink')?.classList.add('copied');
       setTimeout(()=>$('shareLink')?.classList.remove('copied'),1200);
-    }catch(_){}
+    } catch(_){}
   }
 
-  // ---- bindings ----
+  // ---------- URL state ----------
+  function parseParamsFromLocation(){
+    let raw = '';
+    const h = location.hash || '';
+    if (h.startsWith('#calc')) {
+      const qPos = h.indexOf('?');
+      raw = (qPos !== -1) ? h.slice(qPos + 1) : ''; // #calc?… → взять после '?', #calc → пусто
+    } else if (h.startsWith('#') && h.includes('=')) {
+      raw = h.slice(1); // обратная совместимость: #h=…&k=…
+    } else if (location.search.startsWith('?')) {
+      raw = location.search.slice(1); // запасной вариант
+    }
+    return new URLSearchParams(raw);
+  }
+
+  function initCalcURLState(){
+    const sp = parseParamsFromLocation();
+    const hasHashCalcOnly = (location.hash === '#calc');
+    if (sp.size > 0) {
+      applyParams(sp);
+      requestAnimationFrame(()=> scrollToCalc(true));
+    } else if (hasHashCalcOnly) {
+      requestAnimationFrame(()=> scrollToCalc(true));
+    }
+
+    // чистим ?query, если был
+    if (location.search) {
+      try { history.replaceState(null, "", location.pathname + location.hash); } catch(_){}
+    }
+  }
+
+  window.addEventListener('hashchange', ()=>{
+    const h = location.hash || '';
+    if (h.startsWith('#calc')) {
+      const sp = parseParamsFromLocation();
+      if (sp.size > 0) applyParams(sp);
+      scrollToCalc(true);
+      recalc(true);
+    }
+  });
+
+  // ---------- bindings ----------
   function bind(){
     const hoursEl = $('hours');
     if (hoursEl) {
@@ -474,54 +505,28 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     $('pWeekend')?.addEventListener('click',()=>{ const d=$('dayType'); if(d){ d.value='weekend'; recalc(); }});
     $('pKids2')?.addEventListener('click',()=>{ const k=$('kids'); if(k){ k.value='2'; recalc(); }});
 
-    // делегирование на будущие чипы
+    // делегирование на чипы
     document.addEventListener('click',(ev)=>{
       const chip=ev.target.closest?.('.tag'); if(!chip) return;
       const txt=(chip.textContent||'').toLowerCase();
       if(txt.includes('2 ч')) return setH(2);
       if(txt.includes('3 ч')) return setH(3);
       if(txt.includes('4 ч')) return setH(4);
-      if(txt.includes('выходн')){ const d=$('dayType'); if(d){ d.value='weekend'; recalc(); } return; }
+      if(txt.includes('выходной')){ const d=$('dayType'); if(d){ d.value='weekend'; recalc(); } return; }
       if(txt.includes('два ребёнка')||txt.includes('два ребенка')){ const k=$('kids'); if(k){ k.value='2'; recalc(); } return; }
     }, true);
 
     // share
     $('shareLink')?.addEventListener('click', (e)=>{ e.preventDefault(); shareCalcState(); });
 
-    // экспортируем ручной пересчёт, если нужно дёргать снаружи
     window.calcRecompute = () => recalc(true);
   }
 
-  // ---- URL state on load: prefer #calc?..., fallback to raw #..., then ?query; clean ?query ----
-  function initCalcURLState(){
-    let raw = '';
-    if (location.hash.startsWith('#')) {
-      const h = location.hash.slice(1);        // напр.: "calc?h=3&k=2&..."
-      const qPos = h.indexOf('?');
-      raw = (qPos !== -1) ? h.slice(qPos + 1) : h; // если "calc?...", берём после '?'; иначе весь hash как параметры (обратная совместимость)
-    } else if (location.search.startsWith('?')) {
-      raw = location.search.slice(1);
-    }
-
-    const sp = new URLSearchParams(raw);
-    if (sp.size > 0) applyParams(sp);
-
-    // убираем ?query из адресной строки (hash/якорь оставляем)
-    if (location.search) {
-      try { history.replaceState(null, "", location.pathname + location.hash); } catch(_){}
-    }
-  }
-
-  // ---- boot ----
+  // ---------- boot ----------
   const boot = ()=>{ bind(); initCalcURLState(); recalc(true); };
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
-
-
-
-
-
 
 
 
@@ -1951,6 +1956,7 @@ const I18N = {
     openModal();
   });
 })();    
+
 
 
 
