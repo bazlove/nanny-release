@@ -1209,15 +1209,25 @@ html, body { overflow-x: clip; }
   .site-header .brand-meta{ display:none !important; }
   .site-header .brand > .logo{ display:none !important; }
   .site-header .tz-tip{ display:none !important; }
-  .site-header .avail-badge .dot{ width:8px; height:8px; inline-size: 8px; block-size: 8px; }
-
-  /* бейдж слотов */
-  #headerFreeBadge { white-space:nowrap; }
-  #headerFreeBadge .site-header .avail-badge .avail-text {
+  /* точка статуса */
+  .site-header #headerFreeBadge .dot{
+    width:8px; height:8px;
+  }
+  /* бейдж: не переносить, компактнее на мобиле */
+  .site-header #headerFreeBadge{
+    white-space: nowrap;
+    padding: 6px 12px;
+  }
+  .site-header #headerFreeBadge .avail-text{
     font-size: 15px;
-    line-height: 1.2; 
-    padding: 6px 12px;  }
+    line-height: 1.2;
+  }
 }
 @media (max-width: 360px){
-  .site-header .avail-badge .avail-text { font-size: 12.5px; padding: 4px 8px; }
+  .site-header #headerFreeBadge{
+    padding: 4px 8px;
+  }
+  .site-header #headerFreeBadge .avail-text{
+    font-size: 12.5px;
+  }
 }
