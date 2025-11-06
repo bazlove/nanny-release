@@ -1219,7 +1219,7 @@ html, body { overflow-x: clip; }
     padding: 6px 12px;
   }
   .site-header #headerFreeBadge .avail-text{
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.2;
   }
 }
@@ -1228,6 +1228,6 @@ html, body { overflow-x: clip; }
     padding: 4px 8px;
   }
   .site-header #headerFreeBadge .avail-text{
-    font-size: 12.5px;
+    font-size: 13px;
   }
 }
