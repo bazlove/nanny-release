@@ -925,18 +925,6 @@ html, body { overflow-x: clip; }
   .burger.is-open .ic-close::before{ transform: rotate(90deg); }
 }
 
-
-/* Mobile: в шапке скрываем бренд-блок и «i» — остаются бейдж и бургер */
-@media (max-width: 640px){
-  .site-header .brand-meta{ display:none !important; }
-  .site-header .brand > .logo{ display:none !important; }
-  .site-header .tz-tip{ display:none !important; }
-
-  /* компактнее бейдж слотов */
-  #headerFreeBadge{ white-space:nowrap; }
-  #headerFreeBadge .avail-text{ font-size:15px; line-height:1.15; }
-}
-
 /* ===== Оверлей мобильного меню — снизу, НИЖЕ шапки ===== */
 .mobile-nav{
   position: fixed;
@@ -1312,8 +1300,14 @@ html, body { overflow-x: clip; }
 
 button[disabled]{cursor:not-allowed; opacity:.8}
 
-@media (max-width: 480px){
-  .site-header .avail-badge{ font-size: 8px; padding: 5px 10px; }
-  .site-header .avail-badge .avail-text{ font-size: inherit; }
-  .site-header .avail-badge .dot{ width:6px; height:6px; }
+/* Mobile: в шапке скрываем бренд-блок и «i» — остаются бейдж и бургер */
+@media (max-width: 640px){
+  .site-header .brand-meta{ display:none !important; }
+  .site-header .brand > .logo{ display:none !important; }
+  .site-header .tz-tip{ display:none !important; }
+  .site-header .avail-badge .dot{ width:6px; height:6px;
+
+  /* компактнее бейдж слотов */
+  #headerFreeBadge{ white-space:nowrap; }
+  #headerFreeBadge .avail-text{ font-size:13px; line-height:1.15; }
 }
