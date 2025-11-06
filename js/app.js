@@ -201,101 +201,508 @@ window.updateBadge = function updateBadge(slots) {
 };
 
 
+// i18n DICT (RU/SR)
+(function(){
+  const LOCALES = { ru: 'ru-RU', sr: 'sr-RS' };
 
-/* ===== Slots: fetch + render + header badge (final i18n-aware) ===== */
+  const I18N = {
+    ru: {
+      /* GLOBAL/LINKS */
+      link_back_top: 'Наверх',
+
+      /* NAV + HEADER */
+      nav_services:'Услуги', nav_reviews:'Отзывы', nav_price:'Цена', nav_faq:'FAQ', nav_contact:'Контакты',
+      city:'Нови-Сад',
+      hdr_skip_link:'Пропустить меню и перейти к содержанию',
+      hdr_badge_checking:'Проверяю свободные слоты…',
+      tz_btn_aria:'Время слотов',
+      // в HTML: «зима/лето»
+      tz_tip:'Время слотов по Белграду (UTC+1 зима, UTC+2 лето)',
+
+      /* HERO */
+      hero_title:'Няня в Нови-Саде — забота, безопасность и бережное развитие',
+      hero_sub:'Освободите время для личных дел, спокойно работайте из дома[br] или проведите вечер в тишине - без тревоги, отвлечения и стресса.',
+      hero_tag_age:'31 год', hero_tag_teacher:'Воспитатель', hero_tag_mom:'Мама', hero_tag_coach:'Детский тренер',
+      hero_tag_ontime:'Вовремя', hero_tag_report:'Заметки/фото', hero_tag_slots:'Слоты 2-4ч', hero_tag_no_screens:'Без гаджетов',
+      btn_slots:'Проверить свободные слоты',
+      hero_calc:'Рассчитать цену за 1 минуту',
+      hero_read_reviews:'Читать отзывы родителей',
+
+      /* SERVICES */
+      services_title:'Услуги',
+      services_hint:'Дополнительные услуги учитываются в калькуляторе через чекбокс.',
+      services_filter_all:'Все', services_filter_basic:'Базовые', services_filter_addon:'Дополнительные',
+      svc_badge_extra:'по договорённости',
+      svc_base1_t:'Распорядок дня',      svc_base1_d:'Спокойное бодрствование, присмотр, быт, гигиена, сон.',
+      svc_base2_t:'Занятия и игры',      svc_base2_d:'Рисование, лепка, творчество, активности, моторика, логика.',
+      svc_base3_t:'Прогулки',            svc_base3_d:'Подвижные игры на свежем воздухе в парке/дворе.',
+      svc_base4_t:'Сопровождение',       svc_base4_d:'Отвезти/забрать с кружка, секции, детсада, школы.',
+      svc_extra1_t:'Питание',            svc_extra1_d:'Простой перекус для ребёнка по вашему меню.',
+      svc_extra2_t:'Уборка',             svc_extra2_d:'Небольшая уборка в детской комнате.',
+      svc_extra3_t:'Тренировка',         svc_extra3_d:'Персональное фитнес-занятие/гимнастика на 30 минут.',
+
+      /* WHY */
+      why_title:'Почему я',
+      why1_t:'Безопасность',           why1_d:'Сертификаты CPR/First Aid, учёт аллергий, чек-лист на случай ЧП.',
+      why2_t:'Эмпатия и границы',      why2_d:'Спокойная адаптация и дисциплина, уважение к личности ребёнка.',
+      why3_t:'Игры без экранов',       why3_d:'Занятия по возрасту: моторика, творчество, прогулки - без гаджетов.',
+      why4_t:'Режим семьи',            why4_d:'Поддержание вашего распорядка, правил и ценностей семьи.',
+
+      /* EXPERIENCE */
+      xp_title:'Мой опыт',
+      xp_list_aria:'Лента опыта по годам',
+      // заголовок как в HTML (множественное число прилагательных)
+      xp1_h:'Частные и государственные детсады',
+      xp1_p:'Воспитатель детского сада: поддержание распорядка дня, организация развивающих занятий и досуга, развитие речи, постановка и автоматизация звуков, наблюдение и фиксация прогресса, взаимодействие с родителями.',
+      xp2_h:'ВлГУ им. Столетовых',
+      xp2_p:'Высшее педагогическое образование по направлению дефектология.',
+      xp3_h:'World Class, фитнес-клуб',
+      xp3_p:'Фитнес-инструктор: коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2-16 лет); организация детских праздников и творческих мастер-классов.',
+
+      /* REVIEWS */
+      reviews_title:'Отзывы родителей',
+      reviews_tabs_aria:'Категории отзывов',
+      reviews_filter_all:'Все',
+      // как в чипах HTML:
+      reviews_filter_two:'2 детей',
+      reviews_filter_toddlers:'Малыши',
+      reviews_filter_preschool:'3–7 лет',
+      reviews_region_label:'Карусель отзывов',
+
+      /* SLOTS */
+      slots_title:'Свободные слоты на неделю',
+      slots_badge_next:'Ближайший слот: {date} | {t1}–{t2}',
+      slots_badge_none:'Свободно: по запросу',
+      slots_btn_request:'Запросить',
+
+      /* CALC */
+      calc_title:'Калькулятор стоимости (Нови-Сад)',
+      calc_hours_label:'Часы (кол-во за визит)',
+      calc_hours_hint:'Минимум от 2-х часов',
+      calc_hours_err:'Минимум 2 часа за визит',
+      calc_optA:'Сделать лёгкий перекус для ребёнка', calc_optA_add:'+300',
+      calc_kids_label:'Дети', calc_kids_hint:'2 детей: +25% • если один < 2 лет: +50%',
+      calc_k1:'1 ребёнок', calc_k2:'2 ребёнка', calc_k2inf:'2 ребёнка (если один младше 2-х лет)',
+      calc_optB:'Сделать уборку в детской комнате',   calc_optB_add:'+300',
+      calc_day_label:'День недели', calc_day_hint:'Выходной/праздник: +25%',
+      calc_day_weekday:'Будни', calc_day_weekend:'Выходной/праздник',
+      calc_optC:'Провести фитнес-занятие на 30 мин',  calc_optC_add:'+600', // как в HTML
+      calc_presets_aria:'Быстрый выбор', p2h:'2 ч', p3h:'3 ч', p4h:'4 ч', p5h:'5 ч', pWeekday:'Будни', pWeekend:'Выходной', pKids2:'Два ребёнка',
+      calc_notice:'Минимальный расчёт ведётся от 2 часов.',
+      calc_total:'Итог: {sum} дин',
+      calc_share:'Поделиться',
+      calc_eur_toggle:'Показать результат в евро (курс {rate} дин/€)',
+      calc_cta:'Уточнить стоимость',
+
+      /* FAQ */
+      faq_title:'Ответы на частые вопросы',
+      faq_updated_prefix:'Обновлено: {when}',
+      faq_q_meet:'Как происходит знакомство?',
+      faq_a_meet_1:'Проводим короткий созвон на 10–15 минут.',
+      faq_a_meet_2:'По возможности делаем совместную встречу-знакомство на 30–40 минут.',
+      faq_a_meet_3:'Дополнительно обсуждаем ваш режим, договорённости, особенности ребёнка, цели и нюансы.',
+      faq_q_price:'Сколько стоит услуга?',
+      // как в HTML: от 900 дин/час
+      faq_a_price_1:'Базовая ставка в Нови-Саде: от 900 дин/час днём. Не работаю поздно вечером и ночью.',
+      faq_a_price_2:'Если двое детей: +25–50% к ставке в зависимости от их возраста.',
+      faq_a_price_3:'В выходные/праздники и при срочных вызовах действует повышающий коэффициент - условия обсуждаем индивидуально.',
+      faq_q_docs:'Какие документы вы предоставляете?',
+      faq_a_docs_intro:'По запросу на первой встрече показываю оригиналы:',
+      faq_a_docs_1:'Паспорт/личная карта (ID)',
+      faq_a_docs_2:'Справка об отсутствии судимости',
+      faq_a_docs_3:'Электронные сертификаты или диплом об образовании',
+      faq_a_docs_4:'Разрешение на проживание/работу (если требуется)',
+      faq_a_docs_5:'Медицинская справка о состоянии здоровья (если требуется)',
+      faq_a_docs_6:'Рекомендации (контакты семей по согласованию)',
+      faq_a_docs_7:'По вашему желанию подписываю соглашение о конфиденциальности (NDA)',
+      faq_q_delay:'Что если родитель задерживается?',
+      faq_a_delay_1:'До 15 минут — без доплаты, вхожу в положение родителя.',
+      faq_a_delay_2:'Более 15 минут — прошу оплатить половину часовой ставки.',
+      faq_a_delay_3:'Более 30 минут — прошу оплатить полную ставку за час.',
+      faq_q_pets:'Как вы относитесь к домашним животным?',
+      faq_a_pets:'Хорошо отношусь к домашним животным. Если ваши питомцы не рады гостям - для комфорта всем лучше, чтобы они были в отдельной комнате/зоне.',
+      faq_q_terms:'Какие условия для сотрудничества?',
+      faq_a_terms:'Я не сижу с заболевшим ребёнком (температура, признаки ОРВИ, сыпь, тошнота/рвота). О любых травмах или болезнях прошу сообщать заранее. При отсутствии достоверной информации оставляю за собой право прекратить сотрудничество.',
+      faq_q_taxi:'Какие условия компенсации проезда?',
+      faq_a_taxi:'Если заказ начинается до 9:00 или заканчивается после 21:00, а также если дорога занимает более 30 минут, то прошу компенсировать расходы на такси от/до дома.',
+      faq_q_cancel:'Какие условия отмены?',
+      faq_a_cancel_1:'Отмена менее чем за 3 часа до начала - оплата 1 часа работы.',
+      faq_a_cancel_2:'Отмена менее чем за 1 час - полная стоимость от предполагаемого времени заказа.',
+      faq_a_cancel_3:'Если по инициативе родителей заказ заканчивается раньше - стоимость заказа не уменьшается.',
+      faq_copy_link_title:'Скопировать ссылку на вопрос',
+
+      /* CONTACT */
+      contact_title:'Свяжитесь со мной',
+      // в HTML это две отдельные строки
+      contact_hours:'Режим работы: 09:00 - 21:00',
+      contact_lang:'RU / SRB',
+      contact_tz_tip:'Время по Белграду (UTC+1 зима, UTC+2 лето)',
+      contact_actions:'Контакты', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
+      form_name:'Ваше имя', form_name_err:'Пожалуйста, укажите имя.',
+      form_contact:'Телефон/мессенджер', form_contact_err:'Пожалуйста, укажите телефон или username.',
+      form_time:'Желаемая дата/время', form_time_ph:'напр.: пн, 01.12 · 10:00',
+      form_msg:'Сообщение', form_msg_ph:'Коротко опишите запрос',
+      form_consent:'Даю согласие на обработку данных согласно политике.',
+      form_submit:'Отправить запрос',
+
+      /* FOOTER */
+      foot_open_gmaps:'Открыть в Google Maps',
+      // как в HTML — короткая форма
+      foot_privacy:'Конфиденциальность',
+      // отдельная ссылка в футере
+      foot_cookie:'Настройки cookie',
+
+      /* COOKIES (баннер/настройки) */
+      ck_title:'Файлы cookie',
+      ck_desc:'Мы используем строго необходимые cookie для работы сайта и по вашему согласию - аналитические cookie (Google Analytics 4) для оценки посещаемости. Рекламных cookie нет. Согласие можно отозвать в любой момент в «Настройки cookie». Подробнее — в Политике конфиденциальности.',
+      ck_decline:'Отклонить', ck_accept:'Принять аналитику', ck_manage:'Настройки cookie'
+    },
+
+    sr: {
+      /* GLOBAL/LINKS */
+      link_back_top:'Na vrh',
+
+      /* NAV + HEADER */
+      nav_services:'Usluge', nav_reviews:'Utisci', nav_price:'Cena', nav_faq:'FAQ', nav_contact:'Kontakt',
+      city:'Novi Sad',
+      hdr_skip_link:'Preskoči meni i pređi na sadržaj',
+      hdr_badge_checking:'Proveravam slobodne termine…',
+      tz_btn_aria:'Vreme termina',
+      tz_tip:'Vreme termina po Beogradu (UTC+1 zima, UTC+2 leto)',
+
+      /* HERO */
+      hero_title:'Dadilja u Novi Sad - briga, bezbednost i pažljiv razvoj',
+      hero_sub:'Oslobodite vreme za lične stvari, radite od kuće mirno[br] ili provedite veče u tišini - bez brige, ometanja i stresa.',
+      hero_tag_age:'31 godina', hero_tag_teacher:'Vaspitač', hero_tag_mom:'Mama', hero_tag_coach:'Dečiji trener',
+      hero_tag_ontime:'Tačno na vreme', hero_tag_report:'Beleške/foto', hero_tag_slots:'Termini 2-4h', hero_tag_no_screens:'Bez ekrana',
+      btn_slots:'Proverite slobodne termine',
+      hero_calc:'Izračunajte cenu za 1 minut',
+      hero_read_reviews:'Pročitajte utiske roditelja',
+
+      /* SERVICES */
+      services_title:'Usluge',
+      services_hint:'Dodatne usluge ulaze u kalkulator preko ček-boksa.',
+      services_filter_all:'Sve', services_filter_basic:'Osnovne', services_filter_addon:'Dodatne',
+      svc_badge_extra:'po dogovoru',
+      svc_base1_t:'Raspored dana',     svc_base1_d:'Miran boravak, briga, higijena, san.',
+      svc_base2_t:'Aktivnosti i igre',  svc_base2_d:'Crtanje, plastelin, kreativnost, motorika, logika.',
+      svc_base3_t:'Šetnje',             svc_base3_d:'Igre na otvorenom u parku/dvorištu.',
+      svc_base4_t:'Pratnja',            svc_base4_d:'Odvoz/dovoz na sekcije, vrtić, školu.',
+      svc_extra1_t:'Ishrana',           svc_extra1_d:'Jednostavna užina za dete po vašem meniju.',
+      svc_extra2_t:'Čišćenje',          svc_extra2_d:'Malo čišćenje u dečijoj sobi.',
+      svc_extra3_t:'Trening',           svc_extra3_d:'Personalni fitnes/gimnastika 30 minuta.',
+
+      /* WHY */
+      why_title:'Zašto ja',
+      why1_t:'Bezbednost',           why1_d:'Sertifikati CPR/Prva pomoć, alergije, ček-lista za vanredne situacije.',
+      why2_t:'Empatija i granice',   why2_d:'Meka adaptacija i disciplina, poštovanje ličnosti deteta.',
+      why3_t:'Igre bez ekrana',      why3_d:'Aktivnosti po uzrastu: motorika, kreativnost, šetnje — bez ekrana.',
+      why4_t:'Režim porodice',       why4_d:'Održavanje vaše rutine, pravila i porodičnih vrednosti.',
+
+      /* EXPERIENCE */
+      xp_title:'Moje iskustvo',
+      xp_list_aria:'Traka iskustva po godinama',
+      xp1_h:'Privatni i državni vrtići',
+      xp1_p:'Vaspitač: održavanje dnevne rutine, organizacija razvojnih aktivnosti i odmora, razvoj govora, korekcija izgovora.',
+      xp2_h:'Vladimir državni univerzitet (VlGU)',
+      xp2_p:'Visoko pedagoško obrazovanje - defektologija.',
+      xp3_h:'World Class, fitnes klub',
+      xp3_p:'Fitnes instruktor: korektivni, opšti i snaga; personalni treninzi (2–16 god); organizacija dečijih proslava i kreativnih radionica.',
+
+      /* REVIEWS */
+      reviews_title:'Utisci roditelja',
+      reviews_tabs_aria:'Kategorije utisaka',
+      reviews_filter_all:'Svi',
+      reviews_filter_two:'2 dece',
+      reviews_filter_toddlers:'Mališani',
+      reviews_filter_preschool:'3–7',
+      reviews_region_label:'Karusel utisaka',
+
+      /* SLOTS */
+      slots_title:'Slobodni termini za nedelju',
+      slots_badge_next:'Najbliži termin: {date} | {t1}–{t2}',
+      slots_badge_none:'Slobodno: na upit',
+      slots_btn_request:'Zatraži',
+
+      /* CALC */
+      calc_title:'Kalkulator cene (Novi Sad)',
+      calc_hours_label:'Sati (po poseti)',   calc_hours_hint:'Minimum 2 sata', calc_hours_err:'Minimum 2 sata po poseti',
+      calc_optA:'Pripremiti laganu užinu za dete', calc_optA_add:'+300',
+      calc_kids_label:'Deca', calc_kids_hint:'2 dece: +25% • ako je jedno < 2 god: +50%',
+      calc_k1:'1 dete', calc_k2:'2 deteta', calc_k2inf:'2 deteta (ako je jedno mlađe od 2 god)',
+      calc_optB:'Očistiti dečiju sobu', calc_optB_add:'+300',
+      calc_day_label:'Dan u nedelji', calc_day_hint:'Vikend/praznik: +25%',
+      calc_day_weekday:'Radni dan', calc_day_weekend:'Vikend/praznik',
+      calc_optC:'Održati fitnes-trening 30 min', calc_optC_add:'+600',
+      calc_presets_aria:'Brzi izbor', p2h:'2 č', p3h:'3 č', p4h:'4 č', p5h:'5 č', pWeekday:'Radni dan', pWeekend:'Vikend', pKids2:'Dvoje dece',
+      calc_notice:'Minimalni obračun od 2 sata.',
+      calc_total:'Ukupno: {sum} RSD',
+      calc_share:'Podeli',
+      calc_eur_toggle:'Prikaz u evrima (kurs {rate} RSD/€)',
+      calc_cta:'Precizirati cenu',
+
+      /* FAQ */
+      faq_title:'Odgovori na česta pitanja',
+      faq_updated_prefix:'Ažurirano: {when}',
+      faq_q_meet:'Kako izgleda upoznavanje?',
+      faq_a_meet_1:'Kratak poziv 10–15 minuta.',
+      faq_a_meet_2:'Po mogućnosti zajednički susret-upoznavanje 30-40 minuta.',
+      faq_a_meet_3:'Dodatno prolazimo vašu rutinu, dogovore, osobine deteta, ciljeve i nijanse.',
+      faq_q_price:'Koliko košta usluga?',
+      faq_a_price_1:'Osnovna cena u Novom Sadu: od 900 RSD/sat preko dana. Ne radim kasno uveče i noću.',
+      faq_a_price_2:'Ako su dvoje dece: +25-50% u zavisnosti od uzrasta.',
+      faq_a_price_3:'Vikendom/praznikom i kod hitnih poziva primenjuje se koeficijent - uslove dogovaramo.',
+      faq_q_docs:'Koja dokumenta pružate?',
+      faq_a_docs_intro:'Na zahtev na prvom sastanku pokazujem originale:',
+      faq_a_docs_1:'Pasoš/lična karta (ID)',
+      faq_a_docs_2:'Uverenje o nekažnjavanju',
+      faq_a_docs_3:'Elektronski sertifikati ili diploma',
+      faq_a_docs_4:'Dozvola za boravak/rad (ako je potrebno)',
+      faq_a_docs_5:'Medicinsko uverenje o zdravlju (ako je potrebno)',
+      faq_a_docs_6:'Preporuke (kontakti porodica po dogovoru)',
+      faq_a_docs_7:'Po želji potpisujem NDA (sporazum o poverljivosti)',
+      faq_q_delay:'Šta ako se roditelj zadrži?',
+      faq_a_delay_1:'Do 15 minuta — bez doplate.',
+      faq_a_delay_2:'Više od 15 min — molim 50% jednog sata.',
+      faq_a_delay_3:'Više od 30 min — pun sat.',
+      faq_q_pets:'Kako se odnosite prema kućnim ljubimcima?',
+      faq_a_pets:'Dobro. Ako ljubimci ne vole goste - bolje da budu u zasebnoj prostoriji/zoni radi komfora svima.',
+      faq_q_terms:'Koji su uslovi saradnje?',
+      faq_a_terms:'Ne čuvam bolesno dete (temperatura, znaci prehlade, osip, mučnina/povraćanje). O povredama/bolestima javite unapred. Ako nema verodostojnih informacija, zadržavam pravo da prekinem saradnju.',
+      faq_q_taxi:'Koji su uslovi nadoknade prevoza?',
+      faq_a_taxi:'Ako narudžbina počinje pre 9:00 ili završava posle 21:00, kao i ako put traje duže od 30 minuta - molim za nadoknadu taksija od/do kuće.',
+      faq_q_cancel:'Koji su uslovi otkazivanja?',
+      faq_a_cancel_1:'Otkaz manje od 3 sata ranije — naplata 1 sata rada.',
+      faq_a_cancel_2:'Otkaz manje od 1 sata — puna cena planiranog termina.',
+      faq_a_cancel_3:'Ako po inicijativi roditelja narudžbina se završi ranije - cena se ne umanjuje.',
+      faq_copy_link_title:'Kopirati link na pitanje',
+
+      /* CONTACT */
+      contact_title:'Kontaktirajte me',
+      contact_hours:'Radno vreme: 09:00 - 21:00',
+      contact_lang:'RU / SRB',
+      contact_tz_tip:'Vreme po Beogradu (UTC+1 zima, UTC+2 leto)',
+      contact_actions:'Kontakti', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
+      form_name:'Vaše ime', form_name_err:'Molim unesite ime.',
+      form_contact:'Telefon/mesežer', form_contact_err:'Molim unesite telefon ili username.',
+      form_time:'Željeni datum/vreme', form_time_ph:'npr.: pon, 01.12 · 10:00',
+      form_msg:'Poruka', form_msg_ph:'Ukratko opišite zahtev',
+      form_consent:'Dajem saglasnost za obradu podataka prema politici.',
+      form_submit:'Pošalji zahtev',
+
+      /* FOOTER */
+      foot_open_gmaps:'Otvoriti u Google Maps',
+      foot_privacy:'Privatnost',
+      foot_cookie:'Podešavanja kolačića',
+
+      /* COOKIES */
+      ck_title:'Kolačići',
+      ck_desc:'Koristimo isključivo neophodne kolačiće za rad sajta i, uz vašu saglasnost, analitičke kolačiće (Google Analytics 4) za merenje posećenosti. Reklamnih kolačića nema. Saglasnost možete povući u bilo kom trenutku u „Podešavanja kolačića“. Više u Politici privatnosti.',
+      ck_decline:'Odbij', ck_accept:'Prihvati analitiku', ck_manage:'Podešavanja kolačića'
+    }
+  };
+
+  window.I18N = I18N;
+  window.LOCALES = LOCALES;
+})();
+
+// ---------- RUNTIME (final) ----------
+(function () {
+  const I18N    = window.I18N    || {};
+  const LOCALES = window.LOCALES || { ru: 'ru-RU', sr: 'sr-RS' };
+
+  // "Текст {x}" + {x:'…'}
+  function fmt(str, params){
+    if (!params) return String(str ?? '');
+    return String(str ?? '').replace(/\{(\w+)\}/g, (_, k) => (params[k] ?? ''));
+  }
+
+  // Форматтеры дат/времени по локали
+  function makeFormatters(lang){
+    const loc = LOCALES[lang] || LOCALES.ru || 'ru-RU';
+    return {
+      dayLabel: (ymd)=>{
+        if (!ymd) return '';
+        const [y,m,d] = String(ymd).split('-').map(Number);
+        const dt = new Date(y, m-1, d);
+        return new Intl.DateTimeFormat(loc, { weekday:'short', day:'numeric', month:'long' }).format(dt);
+      },
+      timeHM: (ts)=> new Intl.DateTimeFormat(loc, { hour:'2-digit', minute:'2-digit' }).format(new Date(ts))
+    };
+  }
+
+  function applyLang(lang){
+    const dict = I18N[lang] || I18N.ru || {};
+    const loc  = LOCALES[lang] || LOCALES.ru || 'ru-RU';
+
+    document.documentElement.setAttribute('lang', lang === 'sr' ? 'sr' : 'ru');
+
+    // Текстовые ноды: .i18n[data-key]
+    document.querySelectorAll('.i18n').forEach(el => {
+      const k = el.getAttribute('data-key');
+      if (!k) return;
+      const v = dict[k];
+      if (v == null) return;
+
+      // Разрешаем HTML и [br] => <br>
+      if (el.hasAttribute('data-i18n-html')) {
+        el.innerHTML = String(v).replace(/\[br\]/g, '<br>');
+      } else {
+        el.textContent = v;
+      }
+    });
+
+    // Атрибуты: .i18n-attr или [data-i18n-attr]
+    document.querySelectorAll('.i18n-attr,[data-i18n-attr]').forEach(el => {
+      const k = el.getAttribute('data-key');
+      if (!k) return;
+      const attr = el.getAttribute('data-attr') || el.getAttribute('data-i18n-attr') || 'placeholder';
+      const v = dict[k];
+      if (v != null) el.setAttribute(attr, v);
+    });
+
+    // Кнопки RU/SR
+    document.querySelectorAll('.lang-btn').forEach(b=>{
+      const on = b.getAttribute('data-lang') === lang;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    // Экспорт хелперов
+    const f = makeFormatters(lang);
+    window.i18n = {
+      lang, dict, locale: loc,
+      t: (key, params)=> fmt(dict[key] ?? key, params),
+      fmtDay:  f.dayLabel,
+      fmtTime: f.timeHM
+    };
+    window.i18nSetLang = applyLang; // удобный алиас
+
+    try { localStorage.setItem('lang', lang); } catch(_){}
+
+    // ВАЖНО: событие смены языка — внутри applyLang
+    window.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
+  }
+
+  function init(){
+    // Определяем язык: ?lang=…, localStorage, системный
+    const q = new URLSearchParams(location.search);
+    const qp = (q.get('lang') || '').toLowerCase();
+    let stored; try { stored = localStorage.getItem('lang'); } catch(_){}
+    const sys = (navigator.language || 'ru').toLowerCase().startsWith('sr') ? 'sr' : 'ru';
+    const lang = (qp === 'sr' || qp === 'ru') ? qp : (stored || sys);
+
+    applyLang(lang);
+
+    // Сообщаем модулям, что i18n готов (однократно после первого applyLang)
+    window.dispatchEvent(new Event('i18nready'));
+
+    // Переключение по клику на .lang-btn
+    document.addEventListener('click', e=>{
+      const btn = e.target.closest?.('.lang-btn');
+      if (!btn) return;
+      e.preventDefault();
+      applyLang(btn.getAttribute('data-lang'));
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ===== Slots: fetch + render + header badge (i18n-ready) ===== */
 (function initSlots(){
   const API_SLOTS_URL =
     'https://script.google.com/macros/s/AKfycbx-IkXY39sBerBkSAjTtv-SRbzX7tkg4spCk_QB2eGzSFpz2999WuFtXt0QKWZy9x8C/exec';
 
-  // ---------- i18n helpers ----------
-  function i18nCtx(){
-    const i = window.i18n || {};
-    const t = (k, p) => (typeof i.t === 'function' ? i.t(k, p) : (
-      // минимальные RU фолбэки для ключей, которые используем
-      (k === 'hdr_badge_checking' && 'Проверяю свободные слоты…') ||
-      (k === 'slots_badge_none'   && 'Свободно: по запросу') ||
-      k
-    ));
-    const fmtDay  = typeof i.fmtDay  === 'function' ? i.fmtDay  : (ymd => {
+  // ---- i18n helpers with robust fallback ----
+  function i18nCtx(params){
+    const i  = window.i18n;
+    const RU = (window.I18N && window.I18N.ru) || {};
+    const fmtKV = (s,p)=> String(s).replace(/\{(\w+)\}/g, (_,k)=> (p && p[k] != null ? p[k] : ''));
+    const t = (key, p) => {
+      // 1) если i18n готов и вернул НЕ ключ — берём
+      if (i && typeof i.t === 'function') {
+        const out = i.t(key, p);
+        if (out && out !== key) return out;
+      }
+      if (RU[key] != null) return fmtKV(RU[key], p);
+      if (key === 'slots_btn_request') return 'Запросить';
+      if (key === 'slots_badge_none')  return 'Свободно: по запросу';
+      if (key === 'hdr_badge_checking')return 'Проверяю свободные слоты…';
+      if (key === 'slots_badge_next')  return fmtKV('Ближайший слот: {date} | {t1}–{t2}', p||{});
+      return key;
+    };
+    const fmtDay  = i && i.fmtDay  ? i.fmtDay  : (ymd=>{
       if (!ymd) return '';
-      const [y,m,d] = String(ymd).split('-').map(Number);
-      return new Intl.DateTimeFormat('ru-RU',{weekday:'short', day:'numeric', month:'long'})
+      const [y,m,d]=String(ymd).split('-').map(Number);
+      return new Intl.DateTimeFormat('ru-RU',{weekday:'short',day:'numeric',month:'long'})
              .format(new Date(y, m-1, d));
     });
-    const fmtTime = typeof i.fmtTime === 'function' ? i.fmtTime : (ts =>
-      new Intl.DateTimeFormat('ru-RU', { hour:'2-digit', minute:'2-digit' }).format(new Date(ts))
+    const fmtTime = i && i.fmtTime ? i.fmtTime : (ts=>
+      new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit'}).format(new Date(ts))
     );
     return { t, fmtDay, fmtTime };
   }
 
-  // ---------- DOM ----------
-  const wrap   = document.querySelector('#slotsList');
-  const hasList = !!wrap;
-  if (hasList) wrap.classList.add('slots-grid');
+  // ---- DOM ----
+  const listEl  = document.getElementById('slotsList');
+  if (listEl) listEl.classList.add('slots-grid');
 
-  const badge      = document.getElementById('headerFreeBadge');
-  const elChk      = badge?.querySelector('#badgeChecking') || badge?.querySelector('.avail-text') || null;
-  const elReady    = badge?.querySelector('#badgeReady') || null;
+  const badge   = document.getElementById('headerFreeBadge');
+  const elChk   = badge?.querySelector('#badgeChecking') || badge?.querySelector('.avail-text') || null;
+  const elReady = badge?.querySelector('#badgeReady') || null;
 
-  // ---------- badge API ----------
+  // ---- badge helpers ----
   function setBadgeChecking(){
     if (!badge) return;
     const { t } = i18nCtx();
     if (elChk)  { elChk.textContent = t('hdr_badge_checking'); elChk.hidden = false; }
     if (elReady){ elReady.hidden = true; elReady.textContent = ''; }
-    badge.setAttribute('aria-busy', 'true');
+    badge.setAttribute('aria-busy','true');
   }
-  function setBadgeReadyText(text){
+  function setBadgeReady(text){
     if (!badge) return;
-    if (elReady) { elReady.textContent = text; elReady.hidden = false; }
-    if (elChk)   elChk.hidden = true;
+    if (elReady){ elReady.textContent = text; elReady.hidden = false; }
+    if (elChk) elChk.hidden = true;
     badge.removeAttribute('aria-busy');
   }
-  function setBadgeNone(){
-    const { t } = i18nCtx();
-    setBadgeReadyText(t('slots_badge_none'));
-  }
-  function setBadgeNext(ymd, ts1, ts2){
-    const { t, fmtDay, fmtTime } = i18nCtx();
-    const text = t('slots_badge_next', { date: fmtDay(ymd), t1: fmtTime(ts1), t2: fmtTime(ts2) });
-    setBadgeReadyText(text);
-  }
+
+  // стартовый статус
   if (badge) setBadgeChecking();
 
-  // ---------- helpers ----------
+  // ---- utils ----
   const pad2 = n => String(n).padStart(2,'0');
-  const ymdLocal = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-
-  const getStartTs = s => s.startTs ?? (s.startISO ? Date.parse(s.startISO) : NaN);
-  const getEndTs   = s => s.endTs   ?? (s.endISO   ? Date.parse(s.endISO)   : NaN);
-
-  const safeTimeLabel = (rawLabel, ts, fmtTimeFn) => rawLabel || (Number.isFinite(ts) ? fmtTimeFn(ts) : '');
+  const ymd  = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  const tsStart = s => s.startTs ?? (s.startISO ? Date.parse(s.startISO) : NaN);
+  const tsEnd   = s => s.endTs   ?? (s.endISO   ? Date.parse(s.endISO)   : NaN);
+  const safeLbl = (lbl,ts,fmt) => lbl || (Number.isFinite(ts) ? fmt(ts) : '');
 
   function groupByDate(slots){
     const m = new Map();
     for (const s of slots){
       let key = s.date;
       if (!key){
-        const ts = getStartTs(s);
-        if (Number.isFinite(ts)) key = ymdLocal(new Date(ts));
+        const t = tsStart(s);
+        if (Number.isFinite(t)) key = ymd(new Date(t));
       }
       if (!key) continue;
-      if (!m.has(key)) m.set(key, []);
-      m.get(key).push(s);
+      (m.get(key) ?? m.set(key,[]).get(key)).push(s);
     }
-    // сортировка внутри дня и самих дней
-    for (const arr of m.values()) arr.sort((a,b)=> getStartTs(a) - getStartTs(b));
-    return [...m.entries()]
-      .map(([date, items]) => ({ date, items }))
-      .sort((a,b)=> a.date.localeCompare(b.date));
+    for (const arr of m.values()) arr.sort((a,b)=> tsStart(a) - tsStart(b));
+    return [...m.entries()].map(([date,items])=>({date,items}))
+                           .sort((a,b)=> a.date.localeCompare(b.date));
   }
 
   function cardHTML(dateYMD, items){
-    const { fmtDay, fmtTime, t } = i18nCtx();
-    const times = items.map(s => {
-      const ts1 = getStartTs(s), ts2 = getEndTs(s);
-      const a = safeTimeLabel(s.startLabel, ts1, fmtTime);
-      const b = safeTimeLabel(s.endLabel,   ts2, fmtTime);
+    const { t, fmtDay, fmtTime } = i18nCtx();
+    const times = items.map(s=>{
+      const a = safeLbl(s.startLabel, tsStart(s), fmtTime);
+      const b = safeLbl(s.endLabel,   tsEnd(s),   fmtTime);
       return `${a}–${b}`;
     }).join(', ');
     return `
@@ -307,54 +714,55 @@ window.updateBadge = function updateBadge(slots) {
     `;
   }
 
-  // ---------- renderers ----------
-  let cache = null; // {raw: Slot[]}
-  function renderAll(){
+  // ---- state + render ----
+  let cache = null; // { raw: Slot[] }
+
+  function render(){
     if (!cache) return;
 
-    // бейдж
-    const all = cache.raw.slice().filter(Boolean);
+    const { t, fmtDay, fmtTime } = i18nCtx();
+    const all = (cache.raw || []).filter(Boolean);
+
+    // badge
     if (!all.length){
-      setBadgeNone();
+      setBadgeReady(t('slots_badge_none'));
     } else {
-      const sorted = all.slice().sort((a,b)=> getStartTs(a) - getStartTs(b));
-      const first  = sorted[0];
-      const ts1 = getStartTs(first), ts2 = getEndTs(first);
-      let ymd = first.date;
-      if (!ymd && Number.isFinite(ts1)) ymd = ymdLocal(new Date(ts1));
-      setBadgeNext(ymd, ts1, ts2);
+      const first = all.slice().sort((a,b)=> tsStart(a)-tsStart(b))[0];
+      const s1 = tsStart(first), s2 = tsEnd(first);
+      let day = first.date; if (!day && Number.isFinite(s1)) day = ymd(new Date(s1));
+      const text = t('slots_badge_next', { date: fmtDay(day), t1: fmtTime(s1), t2: fmtTime(s2) });
+      setBadgeReady(text);
     }
 
-    // карточки
-    if (hasList){
+    // list
+    if (listEl){
       if (!all.length){
-        wrap.innerHTML = '<p class="muted">Свободных слотов не найдено.</p>';
+        listEl.innerHTML = '<p class="muted">Свободных слотов не найдено.</p>';
       } else {
         const groups = groupByDate(all);
-        wrap.innerHTML = groups.map(g => cardHTML(g.date, g.items)).join('');
+        listEl.innerHTML = groups.map(g => cardHTML(g.date, g.items)).join('');
       }
     }
   }
 
-  // ---------- fetch ----------
+  // ---- fetch ----
   fetch(API_SLOTS_URL + '?t=' + Date.now(), { cache:'no-store', mode:'cors' })
     .then(r => r.json())
     .then(data => {
       const raw = Array.isArray(data?.slots) ? data.slots
                : Array.isArray(data) ? data : [];
       cache = { raw };
-      renderAll();
+      render();
     })
     .catch(err => {
       console.warn('Slots API error:', err);
-      if (hasList) wrap.innerHTML = '<p class="error">Слоты временно недоступны. Напишите мне.</p>';
-      setBadgeNone();
+      if (listEl) listEl.innerHTML = '<p class="error">Слоты временно недоступны. Напишите мне.</p>';
+      setBadgeReady(i18nCtx().t('slots_badge_none'));
     });
 
-  // ---------- re-render on language change ----------
-  window.addEventListener('langchange', renderAll);
-
-  setTimeout(()=>{ if (cache) renderAll(); }, 0);
+  // ---- re-render on i18n events ----
+  window.addEventListener('i18nready', render);
+  window.addEventListener('langchange', render);
 })();
 
 
@@ -1171,414 +1579,6 @@ window.updateBadge = function updateBadge(slots) {
 })();
 
 
-// i18n DICT (RU/SR)
-(function(){
-  const LOCALES = { ru: 'ru-RU', sr: 'sr-RS' };
-
-  const I18N = {
-    ru: {
-      /* GLOBAL/LINKS */
-      link_back_top: 'Наверх',
-
-      /* NAV + HEADER */
-      nav_services:'Услуги', nav_reviews:'Отзывы', nav_price:'Цена', nav_faq:'FAQ', nav_contact:'Контакты',
-      city:'Нови-Сад',
-      hdr_skip_link:'Пропустить меню и перейти к содержанию',
-      hdr_badge_checking:'Проверяю свободные слоты…',
-      tz_btn_aria:'Время слотов',
-      // в HTML: «зима/лето»
-      tz_tip:'Время слотов по Белграду (UTC+1 зима, UTC+2 лето)',
-
-      /* HERO */
-      hero_title:'Няня в Нови-Саде — забота, безопасность и бережное развитие',
-      hero_sub:'Освободите время для личных дел, спокойно работайте из дома[br] или проведите вечер в тишине - без тревоги, отвлечения и стресса.',
-      hero_tag_age:'31 год', hero_tag_teacher:'Воспитатель', hero_tag_mom:'Мама', hero_tag_coach:'Детский тренер',
-      hero_tag_ontime:'Вовремя', hero_tag_report:'Заметки/фото', hero_tag_slots:'Слоты 2-4ч', hero_tag_no_screens:'Без гаджетов',
-      btn_slots:'Проверить свободные слоты',
-      hero_calc:'Рассчитать цену за 1 минуту',
-      hero_read_reviews:'Читать отзывы родителей',
-
-      /* SERVICES */
-      services_title:'Услуги',
-      services_hint:'Дополнительные услуги учитываются в калькуляторе через чекбокс.',
-      services_filter_all:'Все', services_filter_basic:'Базовые', services_filter_addon:'Дополнительные',
-      svc_badge_extra:'по договорённости',
-      svc_base1_t:'Распорядок дня',      svc_base1_d:'Спокойное бодрствование, присмотр, быт, гигиена, сон.',
-      svc_base2_t:'Занятия и игры',      svc_base2_d:'Рисование, лепка, творчество, активности, моторика, логика.',
-      svc_base3_t:'Прогулки',            svc_base3_d:'Подвижные игры на свежем воздухе в парке/дворе.',
-      svc_base4_t:'Сопровождение',       svc_base4_d:'Отвезти/забрать с кружка, секции, детсада, школы.',
-      svc_extra1_t:'Питание',            svc_extra1_d:'Простой перекус для ребёнка по вашему меню.',
-      svc_extra2_t:'Уборка',             svc_extra2_d:'Небольшая уборка в детской комнате.',
-      svc_extra3_t:'Тренировка',         svc_extra3_d:'Персональное фитнес-занятие/гимнастика на 30 минут.',
-
-      /* WHY */
-      why_title:'Почему я',
-      why1_t:'Безопасность',           why1_d:'Сертификаты CPR/First Aid, учёт аллергий, чек-лист на случай ЧП.',
-      why2_t:'Эмпатия и границы',      why2_d:'Спокойная адаптация и дисциплина, уважение к личности ребёнка.',
-      why3_t:'Игры без экранов',       why3_d:'Занятия по возрасту: моторика, творчество, прогулки - без гаджетов.',
-      why4_t:'Режим семьи',            why4_d:'Поддержание вашего распорядка, правил и ценностей семьи.',
-
-      /* EXPERIENCE */
-      xp_title:'Мой опыт',
-      xp_list_aria:'Лента опыта по годам',
-      // заголовок как в HTML (множественное число прилагательных)
-      xp1_h:'Частные и государственные детсады',
-      xp1_p:'Воспитатель детского сада: поддержание распорядка дня, организация развивающих занятий и досуга, развитие речи, постановка и автоматизация звуков, наблюдение и фиксация прогресса, взаимодействие с родителями.',
-      xp2_h:'ВлГУ им. Столетовых',
-      xp2_p:'Высшее педагогическое образование по направлению дефектология.',
-      xp3_h:'World Class, фитнес-клуб',
-      xp3_p:'Фитнес-инструктор: коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2-16 лет); организация детских праздников и творческих мастер-классов.',
-
-      /* REVIEWS */
-      reviews_title:'Отзывы родителей',
-      reviews_tabs_aria:'Категории отзывов',
-      reviews_filter_all:'Все',
-      // как в чипах HTML:
-      reviews_filter_two:'2 детей',
-      reviews_filter_toddlers:'Малыши',
-      reviews_filter_preschool:'3–7 лет',
-      reviews_region_label:'Карусель отзывов',
-
-      /* SLOTS */
-      slots_title:'Свободные слоты на неделю',
-      slots_badge_next:'Ближайший слот: {date} | {t1}–{t2}',
-      slots_badge_none:'Свободно: по запросу',
-      slots_btn_request:'Запросить',
-
-      /* CALC */
-      calc_title:'Калькулятор стоимости (Нови-Сад)',
-      calc_hours_label:'Часы (кол-во за визит)',
-      calc_hours_hint:'Минимум от 2-х часов',
-      calc_hours_err:'Минимум 2 часа за визит',
-      calc_optA:'Сделать лёгкий перекус для ребёнка', calc_optA_add:'+300',
-      calc_kids_label:'Дети', calc_kids_hint:'2 детей: +25% • если один < 2 лет: +50%',
-      calc_k1:'1 ребёнок', calc_k2:'2 ребёнка', calc_k2inf:'2 ребёнка (если один младше 2-х лет)',
-      calc_optB:'Сделать уборку в детской комнате',   calc_optB_add:'+300',
-      calc_day_label:'День недели', calc_day_hint:'Выходной/праздник: +25%',
-      calc_day_weekday:'Будни', calc_day_weekend:'Выходной/праздник',
-      calc_optC:'Провести фитнес-занятие на 30 мин',  calc_optC_add:'+600', // как в HTML
-      calc_presets_aria:'Быстрый выбор', p2h:'2 ч', p3h:'3 ч', p4h:'4 ч', p5h:'5 ч', pWeekday:'Будни', pWeekend:'Выходной', pKids2:'Два ребёнка',
-      calc_notice:'Минимальный расчёт ведётся от 2 часов.',
-      calc_total:'Итог: {sum} дин',
-      calc_share:'Поделиться',
-      calc_eur_toggle:'Показать результат в евро (курс {rate} дин/€)',
-      calc_cta:'Уточнить стоимость',
-
-      /* FAQ */
-      faq_title:'Ответы на частые вопросы',
-      faq_updated_prefix:'Обновлено: {when}',
-      faq_q_meet:'Как происходит знакомство?',
-      faq_a_meet_1:'Проводим короткий созвон на 10–15 минут.',
-      faq_a_meet_2:'По возможности делаем совместную встречу-знакомство на 30–40 минут.',
-      faq_a_meet_3:'Дополнительно обсуждаем ваш режим, договорённости, особенности ребёнка, цели и нюансы.',
-      faq_q_price:'Сколько стоит услуга?',
-      // как в HTML: от 900 дин/час
-      faq_a_price_1:'Базовая ставка в Нови-Саде: от 900 дин/час днём. Не работаю поздно вечером и ночью.',
-      faq_a_price_2:'Если двое детей: +25–50% к ставке в зависимости от их возраста.',
-      faq_a_price_3:'В выходные/праздники и при срочных вызовах действует повышающий коэффициент - условия обсуждаем индивидуально.',
-      faq_q_docs:'Какие документы вы предоставляете?',
-      faq_a_docs_intro:'По запросу на первой встрече показываю оригиналы:',
-      faq_a_docs_1:'Паспорт/личная карта (ID)',
-      faq_a_docs_2:'Справка об отсутствии судимости',
-      faq_a_docs_3:'Электронные сертификаты или диплом об образовании',
-      faq_a_docs_4:'Разрешение на проживание/работу (если требуется)',
-      faq_a_docs_5:'Медицинская справка о состоянии здоровья (если требуется)',
-      faq_a_docs_6:'Рекомендации (контакты семей по согласованию)',
-      faq_a_docs_7:'По вашему желанию подписываю соглашение о конфиденциальности (NDA)',
-      faq_q_delay:'Что если родитель задерживается?',
-      faq_a_delay_1:'До 15 минут — без доплаты, вхожу в положение родителя.',
-      faq_a_delay_2:'Более 15 минут — прошу оплатить половину часовой ставки.',
-      faq_a_delay_3:'Более 30 минут — прошу оплатить полную ставку за час.',
-      faq_q_pets:'Как вы относитесь к домашним животным?',
-      faq_a_pets:'Хорошо отношусь к домашним животным. Если ваши питомцы не рады гостям - для комфорта всем лучше, чтобы они были в отдельной комнате/зоне.',
-      faq_q_terms:'Какие условия для сотрудничества?',
-      faq_a_terms:'Я не сижу с заболевшим ребёнком (температура, признаки ОРВИ, сыпь, тошнота/рвота). О любых травмах или болезнях прошу сообщать заранее. При отсутствии достоверной информации оставляю за собой право прекратить сотрудничество.',
-      faq_q_taxi:'Какие условия компенсации проезда?',
-      faq_a_taxi:'Если заказ начинается до 9:00 или заканчивается после 21:00, а также если дорога занимает более 30 минут, то прошу компенсировать расходы на такси от/до дома.',
-      faq_q_cancel:'Какие условия отмены?',
-      faq_a_cancel_1:'Отмена менее чем за 3 часа до начала - оплата 1 часа работы.',
-      faq_a_cancel_2:'Отмена менее чем за 1 час - полная стоимость от предполагаемого времени заказа.',
-      faq_a_cancel_3:'Если по инициативе родителей заказ заканчивается раньше - стоимость заказа не уменьшается.',
-      faq_copy_link_title:'Скопировать ссылку на вопрос',
-
-      /* CONTACT */
-      contact_title:'Свяжитесь со мной',
-      // в HTML это две отдельные строки
-      contact_hours:'Режим работы: 09:00 - 21:00',
-      contact_lang:'RU / SRB',
-      contact_tz_tip:'Время по Белграду (UTC+1 зима, UTC+2 лето)',
-      contact_actions:'Контакты', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
-      form_name:'Ваше имя', form_name_err:'Пожалуйста, укажите имя.',
-      form_contact:'Телефон/мессенджер', form_contact_err:'Пожалуйста, укажите телефон или username.',
-      form_time:'Желаемая дата/время', form_time_ph:'напр.: пн, 01.12 · 10:00',
-      form_msg:'Сообщение', form_msg_ph:'Коротко опишите запрос',
-      form_consent:'Даю согласие на обработку данных согласно политике.',
-      form_submit:'Отправить запрос',
-
-      /* FOOTER */
-      foot_open_gmaps:'Открыть в Google Maps',
-      // как в HTML — короткая форма
-      foot_privacy:'Конфиденциальность',
-      // отдельная ссылка в футере
-      foot_cookie:'Настройки cookie',
-
-      /* COOKIES (баннер/настройки) */
-      ck_title:'Файлы cookie',
-      ck_desc:'Мы используем строго необходимые cookie для работы сайта и по вашему согласию - аналитические cookie (Google Analytics 4) для оценки посещаемости. Рекламных cookie нет. Согласие можно отозвать в любой момент в «Настройки cookie». Подробнее — в Политике конфиденциальности.',
-      ck_decline:'Отклонить', ck_accept:'Принять аналитику', ck_manage:'Настройки cookie'
-    },
-
-    sr: {
-      /* GLOBAL/LINKS */
-      link_back_top:'Na vrh',
-
-      /* NAV + HEADER */
-      nav_services:'Usluge', nav_reviews:'Utisci', nav_price:'Cena', nav_faq:'FAQ', nav_contact:'Kontakt',
-      city:'Novi Sad',
-      hdr_skip_link:'Preskoči meni i pređi na sadržaj',
-      hdr_badge_checking:'Proveravam slobodne termine…',
-      tz_btn_aria:'Vreme termina',
-      tz_tip:'Vreme termina po Beogradu (UTC+1 zima, UTC+2 leto)',
-
-      /* HERO */
-      hero_title:'Dadilja u Novi Sad - briga, bezbednost i pažljiv razvoj',
-      hero_sub:'Oslobodite vreme za lične stvari, radite od kuće mirno[br] ili provedite veče u tišini - bez brige, ometanja i stresa.',
-      hero_tag_age:'31 godina', hero_tag_teacher:'Vaspitač', hero_tag_mom:'Mama', hero_tag_coach:'Dečiji trener',
-      hero_tag_ontime:'Tačno na vreme', hero_tag_report:'Beleške/foto', hero_tag_slots:'Termini 2-4h', hero_tag_no_screens:'Bez ekrana',
-      btn_slots:'Proverite slobodne termine',
-      hero_calc:'Izračunajte cenu za 1 minut',
-      hero_read_reviews:'Pročitajte utiske roditelja',
-
-      /* SERVICES */
-      services_title:'Usluge',
-      services_hint:'Dodatne usluge ulaze u kalkulator preko ček-boksa.',
-      services_filter_all:'Sve', services_filter_basic:'Osnovne', services_filter_addon:'Dodatne',
-      svc_badge_extra:'po dogovoru',
-      svc_base1_t:'Raspored dana',     svc_base1_d:'Miran boravak, briga, higijena, san.',
-      svc_base2_t:'Aktivnosti i igre',  svc_base2_d:'Crtanje, plastelin, kreativnost, motorika, logika.',
-      svc_base3_t:'Šetnje',             svc_base3_d:'Igre na otvorenom u parku/dvorištu.',
-      svc_base4_t:'Pratnja',            svc_base4_d:'Odvoz/dovoz na sekcije, vrtić, školu.',
-      svc_extra1_t:'Ishrana',           svc_extra1_d:'Jednostavna užina za dete po vašem meniju.',
-      svc_extra2_t:'Čišćenje',          svc_extra2_d:'Malo čišćenje u dečijoj sobi.',
-      svc_extra3_t:'Trening',           svc_extra3_d:'Personalni fitnes/gimnastika 30 minuta.',
-
-      /* WHY */
-      why_title:'Zašto ja',
-      why1_t:'Bezbednost',           why1_d:'Sertifikati CPR/Prva pomoć, alergije, ček-lista za vanredne situacije.',
-      why2_t:'Empatija i granice',   why2_d:'Meka adaptacija i disciplina, poštovanje ličnosti deteta.',
-      why3_t:'Igre bez ekrana',      why3_d:'Aktivnosti po uzrastu: motorika, kreativnost, šetnje — bez ekrana.',
-      why4_t:'Režim porodice',       why4_d:'Održavanje vaše rutine, pravila i porodičnih vrednosti.',
-
-      /* EXPERIENCE */
-      xp_title:'Moje iskustvo',
-      xp_list_aria:'Traka iskustva po godinama',
-      xp1_h:'Privatni i državni vrtići',
-      xp1_p:'Vaspitač: održavanje dnevne rutine, organizacija razvojnih aktivnosti i odmora, razvoj govora, korekcija izgovora.',
-      xp2_h:'Vladimir državni univerzitet (VlGU)',
-      xp2_p:'Visoko pedagoško obrazovanje - defektologija.',
-      xp3_h:'World Class, fitnes klub',
-      xp3_p:'Fitnes instruktor: korektivni, opšti i snaga; personalni treninzi (2–16 god); organizacija dečijih proslava i kreativnih radionica.',
-
-      /* REVIEWS */
-      reviews_title:'Utisci roditelja',
-      reviews_tabs_aria:'Kategorije utisaka',
-      reviews_filter_all:'Svi',
-      reviews_filter_two:'2 dece',
-      reviews_filter_toddlers:'Mališani',
-      reviews_filter_preschool:'3–7',
-      reviews_region_label:'Karusel utisaka',
-
-      /* SLOTS */
-      slots_title:'Slobodni termini za nedelju',
-      slots_badge_next:'Najbliži termin: {date} | {t1}–{t2}',
-      slots_badge_none:'Slobodno: na upit',
-      slots_btn_request:'Zatraži',
-
-      /* CALC */
-      calc_title:'Kalkulator cene (Novi Sad)',
-      calc_hours_label:'Sati (po poseti)',   calc_hours_hint:'Minimum 2 sata', calc_hours_err:'Minimum 2 sata po poseti',
-      calc_optA:'Pripremiti laganu užinu za dete', calc_optA_add:'+300',
-      calc_kids_label:'Deca', calc_kids_hint:'2 dece: +25% • ako je jedno < 2 god: +50%',
-      calc_k1:'1 dete', calc_k2:'2 deteta', calc_k2inf:'2 deteta (ako je jedno mlađe od 2 god)',
-      calc_optB:'Očistiti dečiju sobu', calc_optB_add:'+300',
-      calc_day_label:'Dan u nedelji', calc_day_hint:'Vikend/praznik: +25%',
-      calc_day_weekday:'Radni dan', calc_day_weekend:'Vikend/praznik',
-      calc_optC:'Održati fitnes-trening 30 min', calc_optC_add:'+600',
-      calc_presets_aria:'Brzi izbor', p2h:'2 č', p3h:'3 č', p4h:'4 č', p5h:'5 č', pWeekday:'Radni dan', pWeekend:'Vikend', pKids2:'Dvoje dece',
-      calc_notice:'Minimalni obračun od 2 sata.',
-      calc_total:'Ukupno: {sum} RSD',
-      calc_share:'Podeli',
-      calc_eur_toggle:'Prikaz u evrima (kurs {rate} RSD/€)',
-      calc_cta:'Precizirati cenu',
-
-      /* FAQ */
-      faq_title:'Odgovori na česta pitanja',
-      faq_updated_prefix:'Ažurirano: {when}',
-      faq_q_meet:'Kako izgleda upoznavanje?',
-      faq_a_meet_1:'Kratak poziv 10–15 minuta.',
-      faq_a_meet_2:'Po mogućnosti zajednički susret-upoznavanje 30-40 minuta.',
-      faq_a_meet_3:'Dodatno prolazimo vašu rutinu, dogovore, osobine deteta, ciljeve i nijanse.',
-      faq_q_price:'Koliko košta usluga?',
-      faq_a_price_1:'Osnovna cena u Novom Sadu: od 900 RSD/sat preko dana. Ne radim kasno uveče i noću.',
-      faq_a_price_2:'Ako su dvoje dece: +25-50% u zavisnosti od uzrasta.',
-      faq_a_price_3:'Vikendom/praznikom i kod hitnih poziva primenjuje se koeficijent - uslove dogovaramo.',
-      faq_q_docs:'Koja dokumenta pružate?',
-      faq_a_docs_intro:'Na zahtev na prvom sastanku pokazujem originale:',
-      faq_a_docs_1:'Pasoš/lična karta (ID)',
-      faq_a_docs_2:'Uverenje o nekažnjavanju',
-      faq_a_docs_3:'Elektronski sertifikati ili diploma',
-      faq_a_docs_4:'Dozvola za boravak/rad (ako je potrebno)',
-      faq_a_docs_5:'Medicinsko uverenje o zdravlju (ako je potrebno)',
-      faq_a_docs_6:'Preporuke (kontakti porodica po dogovoru)',
-      faq_a_docs_7:'Po želji potpisujem NDA (sporazum o poverljivosti)',
-      faq_q_delay:'Šta ako se roditelj zadrži?',
-      faq_a_delay_1:'Do 15 minuta — bez doplate.',
-      faq_a_delay_2:'Više od 15 min — molim 50% jednog sata.',
-      faq_a_delay_3:'Više od 30 min — pun sat.',
-      faq_q_pets:'Kako se odnosite prema kućnim ljubimcima?',
-      faq_a_pets:'Dobro. Ako ljubimci ne vole goste - bolje da budu u zasebnoj prostoriji/zoni radi komfora svima.',
-      faq_q_terms:'Koji su uslovi saradnje?',
-      faq_a_terms:'Ne čuvam bolesno dete (temperatura, znaci prehlade, osip, mučnina/povraćanje). O povredama/bolestima javite unapred. Ako nema verodostojnih informacija, zadržavam pravo da prekinem saradnju.',
-      faq_q_taxi:'Koji su uslovi nadoknade prevoza?',
-      faq_a_taxi:'Ako narudžbina počinje pre 9:00 ili završava posle 21:00, kao i ako put traje duže od 30 minuta - molim za nadoknadu taksija od/do kuće.',
-      faq_q_cancel:'Koji su uslovi otkazivanja?',
-      faq_a_cancel_1:'Otkaz manje od 3 sata ranije — naplata 1 sata rada.',
-      faq_a_cancel_2:'Otkaz manje od 1 sata — puna cena planiranog termina.',
-      faq_a_cancel_3:'Ako po inicijativi roditelja narudžbina se završi ranije - cena se ne umanjuje.',
-      faq_copy_link_title:'Kopirati link na pitanje',
-
-      /* CONTACT */
-      contact_title:'Kontaktirajte me',
-      contact_hours:'Radno vreme: 09:00 - 21:00',
-      contact_lang:'RU / SRB',
-      contact_tz_tip:'Vreme po Beogradu (UTC+1 zima, UTC+2 leto)',
-      contact_actions:'Kontakti', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
-      form_name:'Vaše ime', form_name_err:'Molim unesite ime.',
-      form_contact:'Telefon/mesežer', form_contact_err:'Molim unesite telefon ili username.',
-      form_time:'Željeni datum/vreme', form_time_ph:'npr.: pon, 01.12 · 10:00',
-      form_msg:'Poruka', form_msg_ph:'Ukratko opišite zahtev',
-      form_consent:'Dajem saglasnost za obradu podataka prema politici.',
-      form_submit:'Pošalji zahtev',
-
-      /* FOOTER */
-      foot_open_gmaps:'Otvoriti u Google Maps',
-      foot_privacy:'Privatnost',
-      foot_cookie:'Podešavanja kolačića',
-
-      /* COOKIES */
-      ck_title:'Kolačići',
-      ck_desc:'Koristimo isključivo neophodne kolačiće za rad sajta i, uz vašu saglasnost, analitičke kolačiće (Google Analytics 4) za merenje posećenosti. Reklamnih kolačića nema. Saglasnost možete povući u bilo kom trenutku u „Podešavanja kolačića“. Više u Politici privatnosti.',
-      ck_decline:'Odbij', ck_accept:'Prihvati analitiku', ck_manage:'Podešavanja kolačića'
-    }
-  };
-
-  window.I18N = I18N;
-  window.LOCALES = LOCALES;
-})();
-
-// ---------- RUNTIME ----------
-
-(function () {
-  const I18N    = window.I18N    || {};
-  const LOCALES = window.LOCALES || { ru: 'ru-RU', sr: 'sr-RS' };
-
-  // простая интерполяция: "Текст {x}" + {x:'…'}
-  function fmt(str, params){
-    if (!params) return str;
-    return String(str).replace(/\{(\w+)\}/g, (_, k) => (params[k] ?? ''));
-  }
-
-  // форматтеры дат/времени в текущей локали
-  function makeFormatters(lang){
-    const loc = LOCALES[lang] || LOCALES.ru;
-    return {
-      dayLabel: (ymd)=>{
-        if (!ymd) return '';
-        const [y,m,d] = ymd.split('-').map(Number);
-        const dt = new Date(y, m-1, d);
-        return new Intl.DateTimeFormat(loc, { weekday:'short', day:'numeric', month:'long' }).format(dt);
-      },
-      timeHM: (ts)=> new Intl.DateTimeFormat(loc, { hour:'2-digit', minute:'2-digit' }).format(new Date(ts))
-    };
-  }
-
-  function applyLang(lang){
-    const dict = I18N[lang] || I18N.ru || {};
-    const loc  = LOCALES[lang] || LOCALES.ru || 'ru-RU';
-
-    document.documentElement.setAttribute('lang', lang === 'sr' ? 'sr' : 'ru');
-
-    document.querySelectorAll('.i18n').forEach(el => {
-      const k = el.getAttribute('data-key');
-      if (!k) return;
-      let v = dict[k];
-      if (v == null) return;
-
-      // разрешаем HTML и [br] => <br>
-      if (el.hasAttribute('data-i18n-html')) {
-        el.innerHTML = String(v).replace(/\[br\]/g, '<br>');
-      } else {
-        el.textContent = v;
-      }
-    });
-
-    // Атрибуты:
-    document.querySelectorAll('.i18n-attr,[data-i18n-attr]').forEach(el => {
-      const k = el.getAttribute('data-key');
-      if (!k) return;
-      const attr = el.getAttribute('data-attr') || el.getAttribute('data-i18n-attr') || 'placeholder';
-      const v = dict[k];
-      if (v != null) el.setAttribute(attr, v);
-    });
-
-    // Кнопки RU/SR
-    document.querySelectorAll('.lang-btn').forEach(b=>{
-      const on = b.getAttribute('data-lang') === lang;
-      b.classList.toggle('active', on);
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
-    });
-
-    // экспорт хелперов
-    const f = makeFormatters(lang);
-    window.i18n = {
-      lang, dict, locale: loc,
-      t: (key, params)=> fmt(dict[key] ?? key, params),
-      fmtDay:  f.dayLabel,
-      fmtTime: f.timeHM
-    };
-
-    try { localStorage.setItem('lang', lang); } catch(_){}
-  }
-  window.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
-
-  function init(){
-    const q = new URLSearchParams(location.search);
-    const qp = (q.get('lang') || '').toLowerCase();
-    let stored; try { stored = localStorage.getItem('lang'); } catch(_){}
-    const sys = (navigator.language || 'ru').toLowerCase().startsWith('sr') ? 'sr' : 'ru';
-    const lang = (qp === 'sr' || qp === 'ru') ? qp : (stored || sys);
-    applyLang(lang);
-
-    // переключение по клику на .lang-btn
-    document.addEventListener('click', e=>{
-      const btn = e.target.closest?.('.lang-btn');
-      if (!btn) return;
-      e.preventDefault();
-      applyLang(btn.getAttribute('data-lang'));
-    });
-
-    // удобный алиас
-    window.i18nSetLang = applyLang;
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-
-
 // === WHY: анимация карточек при скролле (смартфоны) ===
 (function whyAnimateMobile(){
   const ready = (fn) =>
@@ -2003,6 +2003,7 @@ window.updateBadge = function updateBadge(slots) {
     openModal();
   });
 })();    
+
 
 
 
