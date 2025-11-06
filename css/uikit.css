@@ -1309,5 +1309,5 @@ button[disabled]{cursor:not-allowed; opacity:.8}
 
   /* компактнее бейдж слотов */
   #headerFreeBadge{ white-space:nowrap; }
-  #headerFreeBadge .avail-text{ font-size:14.5px; line-height:1.1; }
+  #headerFreeBadge .avail-text{ font-size: 18px; line-height:1.2; }
 }
