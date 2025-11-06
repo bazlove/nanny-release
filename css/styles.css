@@ -1467,9 +1467,9 @@ select:focus{
 @media (prefers-reduced-motion: reduce){
   .avail-badge.is-live .dot::after{ content:none !important; animation:none !important; }
 }
-@media (max-width: 420px){
+@media (max-width: 640px){
   .avail-badge{
-    font-size: .85rem;
+    font-size: .8rem;
     padding: 5px 10px;       /* по желанию: чуть компактнее плашка */
   }
   .avail-badge .dot{ width:7px; height:7px; } /* поджать точку */
@@ -3005,6 +3005,7 @@ img {
   -khtml-user-drag: none;
   user-drag: none;
 }
+
 
 
 
