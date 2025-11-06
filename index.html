@@ -163,10 +163,12 @@
 
       <!-- Бейдж слотов -->
       <span id="headerFreeBadge" class="avail-badge" role="status" aria-live="polite">
-        <span class="dot" aria-hidden="true"></span>
-        <span class="avail-text i18n" data-key="hdr_badge_checking">Проверяю свободные слоты…</span>
-      </span>
-
+  		<span class="dot" aria-hidden="true"></span>
+  		<span id="badgeChecking" class="avail-text i18n" data-key="hdr_badge_checking">
+    	Проверяю свободные слоты…
+  	</span>
+  <span id="badgeReady" class="avail-text" hidden></span>
+</span>
       <!-- Часовой пояс -->
       <span class="tz-tip info" aria-describedby="tz-tt">
         <button type="button"
@@ -988,5 +990,6 @@
 
 	</body>
 </html>
+
 
 
