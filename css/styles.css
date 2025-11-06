@@ -1115,26 +1115,6 @@ section{padding:64px 0}
   .ck-slider, .ck-slider::after { transition:none; }
 }
 
-
-
-
-
-
-
-/* Responsive
-@media (max-width:960px){
-  .header-nav{display:none}
-  .burger{display:inline-block}
-  .site-header.open #mnav{display:flex}
-  .calc-grid{grid-template-columns:1fr}
-  .extras{grid-template-columns:1fr}
-  .calc-foot{grid-template-columns:1fr}
-  .actions{justify-content:stretch}
-  .cta-quote{width:100%}
-}
-
-.label-row { position: relative; }
-
 /* Базовый контейнер подсказки — больше не фиксируем размер тут */
 .hint{
   position: relative;
@@ -1466,13 +1446,6 @@ select:focus{
 }
 @media (prefers-reduced-motion: reduce){
   .avail-badge.is-live .dot::after{ content:none !important; animation:none !important; }
-}
-@media (max-width: 640px){
-  .avail-badge{
-    font-size: .8rem;
-    padding: 5px 10px;       /* по желанию: чуть компактнее плашка */
-  }
-  .avail-badge .dot{ width:7px; height:7px; } /* поджать точку */
 }
 
 /* === Slots Cards Свободные слоты ======================= */
@@ -3005,6 +2978,7 @@ img {
   -khtml-user-drag: none;
   user-drag: none;
 }
+
 
 
 
