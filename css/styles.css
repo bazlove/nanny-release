@@ -1467,6 +1467,13 @@ select:focus{
 @media (prefers-reduced-motion: reduce){
   .avail-badge.is-live .dot::after{ content:none !important; animation:none !important; }
 }
+@media (max-width: 420px){
+  .avail-badge{
+    font-size: .85rem;
+    padding: 5px 10px;       /* по желанию: чуть компактнее плашка */
+  }
+  .avail-badge .dot{ width:7px; height:7px; } /* поджать точку */
+}
 
 /* === Slots Cards Свободные слоты ======================= */
 .slots{ margin:40px 0 24px; }
@@ -2998,6 +3005,7 @@ img {
   -khtml-user-drag: none;
   user-drag: none;
 }
+
 
 
 
