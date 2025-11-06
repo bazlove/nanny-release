@@ -328,37 +328,6 @@ input[type="checkbox"], input[type="radio"]{
 .btn-outline:active{ transform: translateY(0); }
 
 
-
-
-
-
-
-
-/* ============= MOBILE FIX v3 — header, lang, hero chips, quote ============= */
-/* Глобально выключаем горизонтальный скролл от полноширинных блоков */
-html, body { overflow-x: clip; }
-
-
-/* ——— Header badge ——— */
-@media (max-width: 480px){
-  .site-header .avail-badge{
-    font-size: clamp(11px, 3.3vw, 13px); /* меньше кегль */
-    padding: 6px 10px;                   /* компактнее внутренние отступы */
-    border-radius: 999px;                /* капсула даже в 2 строки */
-    white-space: nowrap;                 /* не переносить на 2 строки */
-  }
-  .site-header .avail-badge .dot{
-    inline-size: 8px; block-size: 8px;  /* стабильный круг */
-  }
-}
-@media (max-width: 360px){
-  .site-header .avail-badge{ font-size: 11px; padding: 6px 8px; }
-}
-
-
-
-
-
 /* CONTACT: поле "Сообщение" растягивается по вертикали вручную */
 
 #contact .fld-message textarea{
@@ -378,22 +347,8 @@ html, body { overflow-x: clip; }
   }
 }
 
-/* ============================================================================ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ================ HERO — мобильный фикс (≤768px) ================== */
+
 @media (max-width: 768px){
 
   /* 1) Сетка: одна колонка, фото строго после левой колонки/CTA */
@@ -424,7 +379,6 @@ html, body { overflow-x: clip; }
     font-size: 18px;
     overflow-wrap: anywhere;
   }
-
 
   /* 4) CTA-кнопки — на всю ширину, одна под другой */
   #top .cta{
@@ -472,13 +426,8 @@ html, body { overflow-x: clip; }
   .hero-social .quote-wrap{ display:none; }
 }
 
-/* ================================================================== */
-
-
-
-
-
 /* === SERVICES: отступы ================================ */
+
 #services{
   
   --srv-title-hint: 12px;   
@@ -500,9 +449,6 @@ html, body { overflow-x: clip; }
 #services .svc-grid{
   margin-top: var(--srv-hint-cards) !important;
 }
-/* ============================================================= */
-
-
 
 /* ================== HERO TUNE: 14–16" ноутбуки и десктопы ================== */
 
@@ -537,13 +483,6 @@ html, body { overflow-x: clip; }
     min-height: 520px; /* подгони 480–560px по вкусу под свой контент */
   }
 }
-
-
-
-
-
-
-
 
 
 /* === HERO chips — стабильные отступы и раскладка ======= */
@@ -612,8 +551,6 @@ html, body { overflow-x: clip; }
 #hero .lead br { display:inline; }  /* подгони селектор под свой блок */
 
 
-
-
 /* ================= SECTION RHYTHM — h2 → hint → content ================= */
 
 /* Базовые токены (мобайл по умолчанию) */
@@ -677,12 +614,7 @@ html, body { overflow-x: clip; }
   }
 }
 
-/* На всякий — явно гасим нижний отступ у h2.faq-title */
 #faq .faq-title{ margin-bottom: 0 !important; }
-
-/* ======================================================================= */
-
-
 
 
 /* === REVIEWS / SLOTS — ритм "заголовок → контент" (с учётом твоих классов) === */
@@ -811,11 +743,6 @@ html, body { overflow-x: clip; }
 }
 
 
-
-
-
-
-
 /* WHY: мобильная анимация при появлении в вьюпорте */
 @media (max-width: 767px){
   #why .why-card .why-icon,
@@ -862,11 +789,7 @@ html, body { overflow-x: clip; }
 }
 
 
-
-
-
-
-/* ===== CANON vFinal: Header + Burger + Overlay (desktop/tablet/mobile) ===== */
+/* ===== CANON Final: Header + Burger + Overlay (desktop/tablet/mobile) ===== */
 :root{
   --bp-mobile: 640px;
   --bp-tablet: 980px;
@@ -1053,9 +976,6 @@ html, body { overflow-x: clip; }
 }
 
 
-
-
-
 /* Нав-ссылки карточками */
 .mobile-nav .nav-links{ display:grid; gap:10px; }
 .mobile-nav .nav-links a{
@@ -1083,10 +1003,6 @@ html, body { overflow-x: clip; }
   .mobile-nav{ transition: none; }
   .mobile-nav__panel{ transition: none; }
 }
-
-
-
-
 
 
 
@@ -1128,14 +1044,6 @@ html, body { overflow-x: clip; }
 .header-nav a.is-active{ font-weight:500; }
 
 
-
-
-
-
-
-
-
-
 /* Chips: mobile sizing override */
 @media (max-width: 640px){
   /* Фильтры: Услуги + Отзывы */
@@ -1153,9 +1061,6 @@ html, body { overflow-x: clip; }
     font-size: 11px;
   }
 }
-
-
-
 
 
 /* === HERO: планшеты, фикс карусели и однострочного ряда === */
@@ -1211,8 +1116,6 @@ html, body { overflow-x: clip; }
     display: none !important;
   }
 }
-
-
 
 /* === EXPERIENCE: mobile (≤640px) === */
 @media (max-width: 640px){
@@ -1299,15 +1202,22 @@ html, body { overflow-x: clip; }
 }
 
 button[disabled]{cursor:not-allowed; opacity:.8}
+html, body { overflow-x: clip; }
 
 /* Mobile: в шапке скрываем бренд-блок и «i» — остаются бейдж и бургер */
 @media (max-width: 640px){
   .site-header .brand-meta{ display:none !important; }
   .site-header .brand > .logo{ display:none !important; }
   .site-header .tz-tip{ display:none !important; }
-  .site-header .avail-badge .dot{ width:8px; height:8px;
+  .site-header .avail-badge .dot{ width:8px; height:8px; inline-size: 8px; block-size: 8px; }
 
-  /* компактнее бейдж слотов */
-  #headerFreeBadge{ white-space:nowrap; }
-  #headerFreeBadge .avail-text{ font-size: 18px; line-height:1.2; }
+  /* бейдж слотов */
+  #headerFreeBadge { white-space:nowrap; }
+  #headerFreeBadge .site-header .avail-badge .avail-text {
+    font-size: clamp(11px, 3.3vw, 14px);
+    line-height: 1.2; 
+    padding: 6px 10px;  }
+}
+@media (max-width: 360px){
+  .site-header .avail-badge .avail-text { font-size: 11px; padding: 6px 8px; }
 }
