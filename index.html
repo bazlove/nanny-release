@@ -150,25 +150,31 @@
   
 	<a class="skip-link" href="#main">Пропустить меню и перейти к содержанию</a>
 	
-	<header class="site-header">
+<header class="site-header">
+  <a class="skip-link i18n" data-key="hdr_skip_link" href="#main">Пропустить меню и перейти к содержанию</a>
+
   <div class="container header-bar">
     <div class="brand">
       <a href="#top" class="logo" aria-label="На главную">👶</a>
       <div class="brand-meta">
-        <strong class="i18n" data-key="brand_name">Екатерина</strong>
+        <strong>Екатерина</strong>
         <small class="i18n" data-key="city">Нови-Сад</small>
       </div>
 
       <!-- Бейдж слотов -->
       <span id="headerFreeBadge" class="avail-badge" role="status" aria-live="polite">
         <span class="dot" aria-hidden="true"></span>
-        <span class="avail-text">Проверяю свободные слоты…</span>
+        <span class="avail-text i18n" data-key="hdr_badge_checking">Проверяю свободные слоты…</span>
       </span>
 
-      <!-- инфо по часовому поясу (кнопка «i» уже унифицирована) -->
+      <!-- Часовой пояс -->
       <span class="tz-tip info" aria-describedby="tz-tt">
-        <button type="button" class="i" aria-label="Время слотов">i</button>
-        <span id="tz-tt" class="tt">Время слотов по Белграду (UTC+1 зима, UTC+2 лето)</span>
+        <button type="button"
+                class="i"
+                aria-label="Время слотов"
+                data-i18n-attr="aria-label"
+                data-key="tz_btn_aria">i</button>
+        <span id="tz-tt" class="tt i18n" data-key="tz_tip">Время слотов по Белграду (UTC+1 зима, UTC+2 лето)</span>
       </span>
     </div>
 
@@ -178,14 +184,15 @@
       <a href="#reviews"  class="i18n" data-key="nav_reviews">Отзывы</a>
       <a href="#calc"     class="i18n" data-key="nav_price">Цена</a>
       <a href="#faq"      class="i18n" data-key="nav_faq">FAQ</a>
-      <a href="#contact" class="i18n" data-key="nav_contact">Контакты</a>
+      <a href="#contact"  class="i18n" data-key="nav_contact">Контакты</a>
     </nav>
 
-<div class="lang-switch" role="group" aria-label="Выбор языка">
-  <button class="lang-btn active" data-lang="ru" aria-pressed="true">RU</button>
-  <span class="sep">/</span>
-  <button class="lang-btn" data-lang="sr" aria-pressed="false">SR</button>
-</div>
+    <!-- Переключатель языка -->
+    <div class="lang-switch" role="group" aria-label="Выбор языка">
+      <button class="lang-btn active" data-lang="ru" aria-pressed="true">RU</button>
+      <span class="sep">/</span>
+      <button class="lang-btn" data-lang="sr" aria-pressed="false">SR</button>
+    </div>
 
     <!-- Бургер (планшет/мобайл) -->
     <button
@@ -207,21 +214,22 @@
         <div class="mobile-brand">
           <span class="logo" aria-hidden="true">👶</span>
           <div class="meta">
-            <strong class="i18n" data-key="brand_name">Екатерина</strong>
+            <strong>Екатерина</strong>
             <small class="i18n" data-key="city">Нови-Сад</small>
           </div>
         </div>
         <label class="ios7-switch" id="langIosWrap" aria-label="Переключить язык (RU/SR)">
-  <input id="langIos" type="checkbox" role="switch" aria-checked="false">
-  <span aria-hidden="true"></span>
-			</label>
-		   </div>
+          <input id="langIos" type="checkbox" role="switch" aria-checked="false">
+          <span aria-hidden="true"></span>
+        </label>
+      </div>
+
       <nav class="nav-links" aria-label="Навигация (моб)">
         <a href="#services" class="i18n" data-key="nav_services">Услуги</a>
         <a href="#reviews"  class="i18n" data-key="nav_reviews">Отзывы</a>
         <a href="#calc"     class="i18n" data-key="nav_price">Цена</a>
         <a href="#faq"      class="i18n" data-key="nav_faq">FAQ</a>
-        <a href="#contact" class="i18n" data-key="nav_contact">Контакты</a>
+        <a href="#contact"  class="i18n" data-key="nav_contact">Контакты</a>
       </nav>
     </div>
   </div>
@@ -229,8 +237,7 @@
 
 <main id="main">
 	  
-    <!-- HERO -->
-	
+<!-- HERO -->
 <section id="top" class="hero">
   <div class="container hero-grid">
 
@@ -238,25 +245,25 @@
     <div class="hero-copy">
       <h1 class="i18n" data-key="hero_title">Няня в Нови-Саде — забота, безопасность и бережное развитие</h1>
 
-		<p class="sub i18n" data-key="hero_sub" data-i18n-html="1">
-  Освободите время для личных дел, спокойно работайте из дома<br>
-  или проведите вечер в тишине - без тревоги, отвлечения и стресса.
-</p>
+      <p class="sub i18n" data-key="hero_sub" data-i18n-html="1">
+        Освободите время для личных дел, спокойно работайте из дома<br>
+        или проведите вечер в тишине - без тревоги, отвлечения и стресса.
+      </p>
 
       <ul class="hero-tags">
-        <li data-emoji="📅">31 год</li>
-        <li data-emoji="🧑‍🏫">Воспитатель</li>
-		<li data-emoji="👩‍👦">Мама</li>
-        <li data-emoji="🤸">Детский тренер</li>
-		<li data-emoji="✅">Вовремя</li>
-		<li data-emoji="✨">Заметки/фото</li>
-        <li data-emoji="🕒">Слоты 2-4ч</li>
-        <li data-emoji="📵">Без гаджетов</li>
+        <li data-emoji="📅"><span class="i18n" data-key="hero_tag_age">31 год</span></li>
+        <li data-emoji="🧑‍🏫"><span class="i18n" data-key="hero_tag_teacher">Воспитатель</span></li>
+        <li data-emoji="👩‍👦"><span class="i18n" data-key="hero_tag_mom">Мама</span></li>
+        <li data-emoji="🤸"><span class="i18n" data-key="hero_tag_coach">Детский тренер</span></li>
+        <li data-emoji="✅"><span class="i18n" data-key="hero_tag_ontime">Вовремя</span></li>
+        <li data-emoji="✨"><span class="i18n" data-key="hero_tag_report">Заметки/фото</span></li>
+        <li data-emoji="🕒"><span class="i18n" data-key="hero_tag_slots">Слоты 2-4ч</span></li>
+        <li data-emoji="📵"><span class="i18n" data-key="hero_tag_no_screens">Без гаджетов</span></li>
       </ul>
 
       <div class="cta">
         <a class="btn btn-primary i18n" href="#slots" data-key="btn_slots">Проверить свободные слоты</a>
-        <a class="btn btn-outline cta-quote" href="#calc">Рассчитать цену за 1 минуту</a>
+        <a class="btn btn-outline cta-quote i18n" href="#calc" data-key="hero_calc">Рассчитать цену за 1 минуту</a>
       </div>
     </div>
 
@@ -267,7 +274,7 @@
           src="img/hero.jpg"
           width="720" height="540"
           loading="eager" decoding="async"
-		  fetchpriority="high"
+          fetchpriority="high"
           alt="Няня с ребёнком на прогулке"
         >
       </figure>
@@ -278,28 +285,26 @@
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.86L18.18 22 12 18.8 5.82 22 7 14.13 2 9.27l6.91-1.01L12 2z"/>
           </svg>
           <strong class="rating-score">4.8</strong>
-        </span> ·
-        <a href="#reviews" class="link-dashed link-dashed--inverse">
-          Читать отзывы родителей</a>
-		  
-		  <span class="sep" aria-hidden="true">·</span>
+        </span>
+        <span class="sep" aria-hidden="true">·</span>
+        <a href="#reviews" class="link-dashed link-dashed--inverse i18n" data-key="hero_read_reviews">
+          Читать отзывы родителей
+        </a>
+        <span class="sep" aria-hidden="true">·</span>
 
-        <!-- фиксированная по высоте обёртка, чтобы не прыгало -->
         <span class="quote-wrap">
           <span id="quoteRotator" class="quote">«всегда вовремя, ребёнок спокоен»</span>
         </span>
       </div>
     </div>
-
   </div>
 </section>
-
 
    <!-- SERVICES -->
 <section id="services" class="services section">
   <div class="container">
 
-    <!-- Заголовок + подсказка (как «Обновлено» в FAQ) -->
+    <!-- Заголовок + подсказка -->
     <div class="section-head">
       <h2 class="section-title">Услуги</h2>
       <p class="section-hint">
@@ -983,4 +988,5 @@
 
 	</body>
 </html>
+
 
