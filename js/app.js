@@ -202,137 +202,160 @@ window.updateBadge = function updateBadge(slots) {
 
 
 
-/* ===== Slots: fetch + render + header badge (final) ===== */
+/* ===== Slots: fetch + render + header badge (final i18n-aware) ===== */
 (function initSlots(){
   const API_SLOTS_URL =
     'https://script.google.com/macros/s/AKfycbx-IkXY39sBerBkSAjTtv-SRbzX7tkg4spCk_QB2eGzSFpz2999WuFtXt0QKWZy9x8C/exec';
 
-  // DOM
+  // ---------- i18n helpers ----------
+  function i18nCtx(){
+    const i = window.i18n || {};
+    const t = (k, p) => (typeof i.t === 'function' ? i.t(k, p) : (
+      // минимальные RU фолбэки для ключей, которые используем
+      (k === 'hdr_badge_checking' && 'Проверяю свободные слоты…') ||
+      (k === 'slots_badge_none'   && 'Свободно: по запросу') ||
+      k
+    ));
+    const fmtDay  = typeof i.fmtDay  === 'function' ? i.fmtDay  : (ymd => {
+      if (!ymd) return '';
+      const [y,m,d] = String(ymd).split('-').map(Number);
+      return new Intl.DateTimeFormat('ru-RU',{weekday:'short', day:'numeric', month:'long'})
+             .format(new Date(y, m-1, d));
+    });
+    const fmtTime = typeof i.fmtTime === 'function' ? i.fmtTime : (ts =>
+      new Intl.DateTimeFormat('ru-RU', { hour:'2-digit', minute:'2-digit' }).format(new Date(ts))
+    );
+    return { t, fmtDay, fmtTime };
+  }
+
+  // ---------- DOM ----------
   const wrap   = document.querySelector('#slotsList');
   const hasList = !!wrap;
-  if (hasList) wrap.classList.add('slots-grid'); // грид под карточки
+  if (hasList) wrap.classList.add('slots-grid');
 
-  const badge     = document.querySelector('#headerFreeBadge');
-  const badgeText = badge ? badge.querySelector('.avail-text') : null;
+  const badge      = document.getElementById('headerFreeBadge');
+  const elChk      = badge?.querySelector('#badgeChecking') || badge?.querySelector('.avail-text') || null;
+  const elReady    = badge?.querySelector('#badgeReady') || null;
 
-  // Статус загрузки
-  if (badge) {
-    window.__SLOTS_BADGE__ = 'slots';
-    setBadge('Проверяю свободные слоты…', ['is-live']);
+  // ---------- badge API ----------
+  function setBadgeChecking(){
+    if (!badge) return;
+    const { t } = i18nCtx();
+    if (elChk)  { elChk.textContent = t('hdr_badge_checking'); elChk.hidden = false; }
+    if (elReady){ elReady.hidden = true; elReady.textContent = ''; }
+    badge.setAttribute('aria-busy', 'true');
   }
+  function setBadgeReadyText(text){
+    if (!badge) return;
+    if (elReady) { elReady.textContent = text; elReady.hidden = false; }
+    if (elChk)   elChk.hidden = true;
+    badge.removeAttribute('aria-busy');
+  }
+  function setBadgeNone(){
+    const { t } = i18nCtx();
+    setBadgeReadyText(t('slots_badge_none'));
+  }
+  function setBadgeNext(ymd, ts1, ts2){
+    const { t, fmtDay, fmtTime } = i18nCtx();
+    const text = t('slots_badge_next', { date: fmtDay(ymd), t1: fmtTime(ts1), t2: fmtTime(ts2) });
+    setBadgeReadyText(text);
+  }
+  if (badge) setBadgeChecking();
 
-  // ===== helpers для карточек =====
+  // ---------- helpers ----------
   const pad2 = n => String(n).padStart(2,'0');
-  const timeFromISO = iso => {
-    if (!iso) return '';
-    const d = new Date(iso);
-    return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-  };
-  const safeStart  = s => s.startLabel || timeFromISO(s.startISO);
-  const safeEnd    = s => s.endLabel   || timeFromISO(s.endISO);
-  const getStartTs = s => s.startTs ?? Date.parse(s.startISO || 0);
-  const ymdLocal = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const LOCALE = 'ru-RU';
+  const ymdLocal = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
 
-// "YYYY-MM-DD"
-const fmtDayLabel = (ymd) => {
-  if (!ymd) return '';
-  const [y, m, d] = ymd.split('-').map(Number);
-  const dt = new Date(y, m - 1, d);
-  return new Intl.DateTimeFormat(LOCALE, {
-    weekday: 'short', day: 'numeric', month: 'long'
-  }).format(dt);
-};
+  const getStartTs = s => s.startTs ?? (s.startISO ? Date.parse(s.startISO) : NaN);
+  const getEndTs   = s => s.endTs   ?? (s.endISO   ? Date.parse(s.endISO)   : NaN);
 
-// Время из таймстампа → "14:00"
-const fmtTime = (ts) =>
-  new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit' })
-    .format(new Date(ts));
-  
-  const groupByDate = (slots) => {
-  const m = new Map();
-  for (const s of slots) {
-    let key = s.date;
-    if (!key) {
-      if (s.startTs)   key = ymdLocal(new Date(s.startTs));
-      else if (s.startISO) key = ymdLocal(new Date(s.startISO));
+  const safeTimeLabel = (rawLabel, ts, fmtTimeFn) => rawLabel || (Number.isFinite(ts) ? fmtTimeFn(ts) : '');
+
+  function groupByDate(slots){
+    const m = new Map();
+    for (const s of slots){
+      let key = s.date;
+      if (!key){
+        const ts = getStartTs(s);
+        if (Number.isFinite(ts)) key = ymdLocal(new Date(ts));
+      }
+      if (!key) continue;
+      if (!m.has(key)) m.set(key, []);
+      m.get(key).push(s);
     }
-    if (!key) continue;
-    if (!m.has(key)) m.set(key, []);
-    m.get(key).push(s);
+    // сортировка внутри дня и самих дней
+    for (const arr of m.values()) arr.sort((a,b)=> getStartTs(a) - getStartTs(b));
+    return [...m.entries()]
+      .map(([date, items]) => ({ date, items }))
+      .sort((a,b)=> a.date.localeCompare(b.date));
   }
-  for (const arr of m.values()) arr.sort((a,b) => getStartTs(a) - getStartTs(b));
-  return [...m.entries()]
-    .map(([date, items]) => ({ date, items }))
-    .sort((a,b) => a.date.localeCompare(b.date));
-};
 
-const SHOW_WEEKDAY = true;
-const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
-  if (!ymd) return '';
-  const [y, m, d] = ymd.split('-').map(Number);
-  const dt = new Date(Date.UTC(y, m - 1, d));
-
-  const opts = withWeekday
-    ? { weekday: 'short', day: 'numeric', month: 'long' } // "чт, 30 октября"
-    : { day: 'numeric', month: 'long' };                  // "30 октября"
-
-  // В ru-RU месяцы приходят в родительном и строчными — как раз то, что нужно.
-  return dt.toLocaleDateString('ru-RU', opts);
-};
-
-  const makeTimesLine = (items) => items.map(s => `${safeStart(s)}–${safeEnd(s)}`).join(', ');
-  const cardHTML = (date, items) => {
-    const dayLabel = fmtDateRU(date);
-    const times    = makeTimesLine(items);
+  function cardHTML(dateYMD, items){
+    const { fmtDay, fmtTime, t } = i18nCtx();
+    const times = items.map(s => {
+      const ts1 = getStartTs(s), ts2 = getEndTs(s);
+      const a = safeTimeLabel(s.startLabel, ts1, fmtTime);
+      const b = safeTimeLabel(s.endLabel,   ts2, fmtTime);
+      return `${a}–${b}`;
+    }).join(', ');
     return `
       <article class="slot-card">
-        <div class="slot-date">${dayLabel}</div>
+        <div class="slot-date">${fmtDay(dateYMD)}</div>
         <div class="slot-time">${times}</div>
-        <a class="btn btn-outline btn-lg slot-cta" href="#contact">Запросить</a>
+        <a class="btn btn-outline btn-lg slot-cta" href="#contact">${t('slots_btn_request')}</a>
       </article>
     `;
-  };
+  }
 
-  
-  // ===== fetch + render =====
+  // ---------- renderers ----------
+  let cache = null; // {raw: Slot[]}
+  function renderAll(){
+    if (!cache) return;
+
+    // бейдж
+    const all = cache.raw.slice().filter(Boolean);
+    if (!all.length){
+      setBadgeNone();
+    } else {
+      const sorted = all.slice().sort((a,b)=> getStartTs(a) - getStartTs(b));
+      const first  = sorted[0];
+      const ts1 = getStartTs(first), ts2 = getEndTs(first);
+      let ymd = first.date;
+      if (!ymd && Number.isFinite(ts1)) ymd = ymdLocal(new Date(ts1));
+      setBadgeNext(ymd, ts1, ts2);
+    }
+
+    // карточки
+    if (hasList){
+      if (!all.length){
+        wrap.innerHTML = '<p class="muted">Свободных слотов не найдено.</p>';
+      } else {
+        const groups = groupByDate(all);
+        wrap.innerHTML = groups.map(g => cardHTML(g.date, g.items)).join('');
+      }
+    }
+  }
+
+  // ---------- fetch ----------
   fetch(API_SLOTS_URL + '?t=' + Date.now(), { cache:'no-store', mode:'cors' })
     .then(r => r.json())
     .then(data => {
       const raw = Array.isArray(data?.slots) ? data.slots
-                : Array.isArray(data) ? data : [];
-      window.__freeSlots = raw;
-
-      // Бейдж
-      if (typeof window.updateBadge === 'function') {
-        window.updateBadge(raw);
-      } else {
-        if (raw.length) {
-          const first = raw[0];
-          setBadge(`Ближайший слот ${safeStart(first)}–${safeEnd(first)}`, ['is-next']);
-        } else {
-          setBadge('Свободно: по запросу', ['is-none']);
-        }
-      }
-
-      // Карточки
-      if (!hasList) return;
-      if (!raw.length) {
-        wrap.innerHTML = '<p class="muted">Свободных слотов не найдено.</p>';
-        return;
-      }
-      const groups = groupByDate(raw);
-      wrap.innerHTML = groups.map(g => cardHTML(g.date, g.items)).join('');
+               : Array.isArray(data) ? data : [];
+      cache = { raw };
+      renderAll();
     })
     .catch(err => {
       console.warn('Slots API error:', err);
-      if (hasList) {
-        wrap.innerHTML = '<p class="error">Слоты временно недоступны. Напишите мне.</p>';
-      }
-      setBadge('Свободно: по запросу', ['is-none']);
+      if (hasList) wrap.innerHTML = '<p class="error">Слоты временно недоступны. Напишите мне.</p>';
+      setBadgeNone();
     });
-})();
 
+  // ---------- re-render on language change ----------
+  window.addEventListener('langchange', renderAll);
+
+  setTimeout(()=>{ if (cache) renderAll(); }, 0);
+})();
 
 
 // ===== Calculator — clean URL + #calc anchor + state sharing =====
@@ -1526,6 +1549,7 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
 
     try { localStorage.setItem('lang', lang); } catch(_){}
   }
+  window.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
 
   function init(){
     const q = new URLSearchParams(location.search);
@@ -1979,6 +2003,7 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     openModal();
   });
 })();    
+
 
 
 
