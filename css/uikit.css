@@ -1305,9 +1305,9 @@ button[disabled]{cursor:not-allowed; opacity:.8}
   .site-header .brand-meta{ display:none !important; }
   .site-header .brand > .logo{ display:none !important; }
   .site-header .tz-tip{ display:none !important; }
-  .site-header .avail-badge .dot{ width:6px; height:6px;
+  .site-header .avail-badge .dot{ width:8px; height:8px;
 
   /* компактнее бейдж слотов */
   #headerFreeBadge{ white-space:nowrap; }
-  #headerFreeBadge .avail-text{ font-size:13px; line-height:1.15; }
+  #headerFreeBadge .avail-text{ font-size:14.5px; line-height:1.1; }
 }
