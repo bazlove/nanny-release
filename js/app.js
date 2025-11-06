@@ -1453,13 +1453,16 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
   window.LOCALES = LOCALES;
 })();
 
+// ---------- RUNTIME ----------
 
-/* ---------- runtime ---------- */
+(function () {
+  const I18N    = window.I18N    || {};
+  const LOCALES = window.LOCALES || { ru: 'ru-RU', sr: 'sr-RS' };
 
-  // простая интерполяция: "Текст {x}" + {x: '…'}
+  // простая интерполяция: "Текст {x}" + {x:'…'}
   function fmt(str, params){
     if (!params) return str;
-    return str.replace(/\{(\w+)\}/g, (_,k)=> (params[k]??''));
+    return String(str).replace(/\{(\w+)\}/g, (_, k) => (params[k] ?? ''));
   }
 
   // форматтеры дат/времени в текущей локали
@@ -1467,7 +1470,7 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     const loc = LOCALES[lang] || LOCALES.ru;
     return {
       dayLabel: (ymd)=>{
-        if(!ymd) return '';
+        if (!ymd) return '';
         const [y,m,d] = ymd.split('-').map(Number);
         const dt = new Date(y, m-1, d);
         return new Intl.DateTimeFormat(loc, { weekday:'short', day:'numeric', month:'long' }).format(dt);
@@ -1477,76 +1480,79 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
   }
 
   function applyLang(lang){
-    const dict = I18N[lang] || I18N.ru;
-    const loc  = LOCALES[lang] || LOCALES.ru;
+    const dict = I18N[lang] || I18N.ru || {};
+    const loc  = LOCALES[lang] || LOCALES.ru || 'ru-RU';
 
-    document.documentElement.setAttribute('lang', lang==='sr'?'sr':'ru');
+    document.documentElement.setAttribute('lang', lang === 'sr' ? 'sr' : 'ru');
 
-    // Текстовые ноды: <span class="i18n" data-key="...">
-  document.querySelectorAll('.i18n').forEach(el => {
-    const k = el.getAttribute('data-key');
-    if (!k) return;
-    let v = dict[k];
-    if (v == null) return;
-
-  // Если узел разрешает HTML, поддерживаем маркер [br] => <br>
-  if (el.hasAttribute('data-i18n-html')) {
-    el.innerHTML = String(v).replace(/\[br\]/g, '<br>');
-  } else {
-    el.textContent = v;
-  }
-});
-
-
-    // Атрибуты: <input class="i18n-attr" data-key="form_name_ph" data-attr="placeholder">
-    document.querySelectorAll('.i18n-attr').forEach(el=>{
+    document.querySelectorAll('.i18n').forEach(el => {
       const k = el.getAttribute('data-key');
-      const a = el.getAttribute('data-attr') || 'placeholder';
+      if (!k) return;
+      let v = dict[k];
+      if (v == null) return;
+
+      // разрешаем HTML и [br] => <br>
+      if (el.hasAttribute('data-i18n-html')) {
+        el.innerHTML = String(v).replace(/\[br\]/g, '<br>');
+      } else {
+        el.textContent = v;
+      }
+    });
+
+    // Атрибуты:
+    document.querySelectorAll('.i18n-attr,[data-i18n-attr]').forEach(el => {
+      const k = el.getAttribute('data-key');
+      if (!k) return;
+      const attr = el.getAttribute('data-attr') || el.getAttribute('data-i18n-attr') || 'placeholder';
       const v = dict[k];
-      if(v!=null) el.setAttribute(a, v);
+      if (v != null) el.setAttribute(attr, v);
     });
 
-    // Кнопки выбора языка
+    // Кнопки RU/SR
     document.querySelectorAll('.lang-btn').forEach(b=>{
-      const on = b.getAttribute('data-lang')===lang;
+      const on = b.getAttribute('data-lang') === lang;
       b.classList.toggle('active', on);
-      b.setAttribute('aria-pressed', on?'true':'false');
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
 
-    // экспорт текущих хелперов
+    // экспорт хелперов
+    const f = makeFormatters(lang);
     window.i18n = {
       lang, dict, locale: loc,
       t: (key, params)=> fmt(dict[key] ?? key, params),
-      fmtDay: makeFormatters(lang).dayLabel,
-      fmtTime: makeFormatters(lang).timeHM
+      fmtDay:  f.dayLabel,
+      fmtTime: f.timeHM
     };
 
-    try{ localStorage.setItem('lang', lang); }catch(e){}
+    try { localStorage.setItem('lang', lang); } catch(_){}
   }
 
   function init(){
     const q = new URLSearchParams(location.search);
-    const qp = (q.get('lang')||'').toLowerCase();
-    let stored; try{ stored = localStorage.getItem('lang'); }catch(e){}
-    const sys = (navigator.language||'ru').toLowerCase().startsWith('sr') ? 'sr' : 'ru';
-    const lang = (qp==='sr'||qp==='ru') ? qp : (stored||sys);
+    const qp = (q.get('lang') || '').toLowerCase();
+    let stored; try { stored = localStorage.getItem('lang'); } catch(_){}
+    const sys = (navigator.language || 'ru').toLowerCase().startsWith('sr') ? 'sr' : 'ru';
+    const lang = (qp === 'sr' || qp === 'ru') ? qp : (stored || sys);
     applyLang(lang);
 
+    // переключение по клику на .lang-btn
     document.addEventListener('click', e=>{
-      const btn = e.target.closest && e.target.closest('.lang-btn');
-      if(!btn) return;
+      const btn = e.target.closest?.('.lang-btn');
+      if (!btn) return;
       e.preventDefault();
       applyLang(btn.getAttribute('data-lang'));
     });
 
-    // удобные алиасы
+    // удобный алиас
     window.i18nSetLang = applyLang;
   }
 
-  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
-
-
 
 
 // === WHY: анимация карточек при скролле (смартфоны) ===
@@ -1973,6 +1979,7 @@ const fmtDateRU = (ymd, withWeekday = SHOW_WEEKDAY) => {
     openModal();
   });
 })();    
+
 
 
 
