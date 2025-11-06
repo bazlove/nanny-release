@@ -1313,7 +1313,7 @@ html, body { overflow-x: clip; }
 button[disabled]{cursor:not-allowed; opacity:.8}
 
 @media (max-width: 480px){
-  .site-header .avail-badge{ font-size: 12.5px; padding: 5px 10px; }
+  .site-header .avail-badge{ font-size: 8px; padding: 5px 10px; }
   .site-header .avail-badge .avail-text{ font-size: inherit; }
   .site-header .avail-badge .dot{ width:6px; height:6px; }
 }
