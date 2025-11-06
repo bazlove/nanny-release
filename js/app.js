@@ -14,8 +14,6 @@ window.addEventListener('DOMContentLoaded', () => {
   safe(window.initAvailabilityBadge);
 });
 
-
-
 function isWhitelistTarget(target) {
   return !!target.closest('input, textarea, [contenteditable="true"], .allow-select, .allow-copy');
 }
@@ -40,7 +38,7 @@ document.addEventListener('keydown', function (e) {
 }, { capture: true });
 
 document.addEventListener('copy', function (e) {
-  if (isWhitelistTarget(e.target)) return; // в полях ввода копирование работает как обычно
+  if (isWhitelistTarget(e.target)) return;
   e.preventDefault();
   const text = '© ' + location.hostname + ' — копирование запрещено.';
   if (e.clipboardData) {
@@ -50,21 +48,10 @@ document.addEventListener('copy', function (e) {
   }
 }, { capture: true });
 
-
 // Console banner
 (function(){try{console.log('%cLanding (split files)','background:#16324a;color:#fff;padding:2px 8px;border-radius:6px')}catch(e){}})();
-
-
-
-
-
-
-
-
-
   
-/* --- mobile animation --- */
-
+// Mobile animation
 (function advOnScrollMobileOnly(){
   const mq = window.matchMedia('(max-width: 640px) and (pointer: coarse)');
   if (!mq.matches) return; // только смартфоны
@@ -76,130 +63,13 @@ document.addEventListener('copy', function (e) {
     for (const e of entries) {
       if (e.isIntersecting) {
         e.target.classList.add('play');
-        obs.unobserve(e.target); // анимируем один раз
+        obs.unobserve(e.target);
       }
     }
   }, { threshold: 0.25 });
 
   targets.forEach(t => io.observe(t));
 })();
-
-
-// === Вспомогалки для форматов времени ===
-function safeStart(s) {
-  if (s.startLabel) return s.startLabel;
-  const d = s.startISO ? new Date(s.startISO) : new Date(s.startTs || 0);
-  return isFinite(d) ? d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '';
-}
-function safeEnd(s) {
-  if (s.endLabel) return s.endLabel;
-  const d = s.endISO ? new Date(s.endISO) : new Date(s.endTs || 0);
-  return isFinite(d) ? d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '';
-}
-function getStartTs(s) { return s.startTs ?? Date.parse(s.startISO || 0); }
-function timeLabel(s)  { return `${safeStart(s)}–${safeEnd(s)}`; }
-
-
-// === Header badge: укорочение подписи на смартфонах ===
-const BADGE_SHORT_BP = '(max-width: 420px)'; // покрывает 390–412px ширины смартфонов
-
-function normalizeBadgeText(fullText) {
-  // Только на смартфонах меняем длинную подпись на короткую
-  if (!window.matchMedia(BADGE_SHORT_BP).matches) return fullText;
-
-  return String(fullText)
-    .replace(/^Ближайший слот:/, 'Слот:')
-    .replace(/^Najbliži termin:/, 'Termin:');
-}
-
-// ЕДИНАЯ функция отрисовки бейджа (используй её везде)
-window.setBadge = function setBadge(text, classes = []) {
-  const badge = document.querySelector('#headerFreeBadge');
-  const badgeText = badge?.querySelector('.avail-text');
-  if (!badge || !badgeText) return;
-
-  // сброс управляемых классов + установка новых
-  ['is-today','is-tomorrow','is-next','is-none','is-live']
-    .forEach(c => badge.classList.remove(c));
-  classes.forEach(c => badge.classList.add(c));
-
-  // сохраняем исходный текст и рендерим нормализованный
-  badgeText.dataset.full = text;
-  badgeText.textContent  = normalizeBadgeText(text);
-
-  badge.style.display = 'inline-flex';
-};
-
-// На ресайзе/смене ориентации перерисовываем укороченную версию
-window.addEventListener('resize', () => {
-  const t = document.querySelector('#headerFreeBadge .avail-text');
-  if (t?.dataset.full) t.textContent = normalizeBadgeText(t.dataset.full);
-});
-
-// (опционально) безопасная заглушка, если где-то остаётся вызов hardenBadge
-if (!window.hardenBadge) {
-  window.hardenBadge = s => s;
-}
-
-
-
-// === НОВАЯ ВЕРСИЯ updateBadge c сохранением .dot для пульса ===
-window.updateBadge = function updateBadge(slots) {
-  // 0) нормализуем вход
-  const list = Array.isArray(slots) ? slots : [];
-  if (!list.length) {
-    setBadge('Свободно: по запросу', ['is-none']); // пульс отключаем
-    return;
-  }
-
-  const now         = Date.now();
-  const todayYMD    = new Date().toISOString().slice(0,10);
-  const tomorrowYMD = new Date(now + 86400000).toISOString().slice(0,10);
-
-  // 1) Сегодня
-  const todaySlot = list
-    .filter(s => (s.date || (s.startISO||'').slice(0,10)) === todayYMD)
-    .sort((a,b) => getStartTs(a) - getStartTs(b))[0];
-
-  if (todaySlot){
-    setBadge(`Свободно сегодня ${timeLabel(todaySlot)}`, ['is-today','is-live']);
-    return;
-  }
-
-  // 2) Завтра
-  const tomorrowSlot = list
-    .filter(s => (s.date || (s.startISO||'').slice(0,10)) === tomorrowYMD)
-    .sort((a,b) => getStartTs(a) - getStartTs(b))[0];
-
-  if (tomorrowSlot){
-    setBadge(`Свободно завтра ${timeLabel(tomorrowSlot)}`, ['is-tomorrow','is-live']);
-    return;
-  }
-
-  // 3) Ближайший далее
-  const next = list
-    .filter(s => getStartTs(s) > now)
-    .sort((a,b) => getStartTs(a) - getStartTs(b))[0];
-
-  if (next){
-    const d   = new Date(next.startISO || getStartTs(next));
-    const day = d.toLocaleDateString('ru-RU', { weekday:'short', day:'2-digit', month:'2-digit' });
-    setBadge(`Ближайший слот: ${day} | ${timeLabel(next)}`, ['is-next','is-live']);
-    return;
-  }
-
-(function shortenBadgeLabel(){
-  const el = document.querySelector('.avail-badge .avail-text');
-  if (!el) return;
-  if (window.matchMedia('(max-width: 360px)').matches){
-    el.textContent = el.textContent.replace(/^Ближайший слот:/, 'Слот:');
-  }
-})();
-  
-  // 4) Иначе — по запросу
-  setBadge('Свободно: по запросу', ['is-none']);
-};
-
 
 // i18n DICT (RU/SR)
 (function(){
@@ -506,7 +376,7 @@ window.updateBadge = function updateBadge(slots) {
   window.LOCALES = LOCALES;
 })();
 
-// ---------- RUNTIME (final) ----------
+// RUNTIME (final)
 (function () {
   const I18N    = window.I18N    || {};
   const LOCALES = window.LOCALES || { ru: 'ru-RU', sr: 'sr-RS' };
@@ -613,158 +483,182 @@ window.updateBadge = function updateBadge(slots) {
   }
 })();
 
-
-/* ===== Slots: fetch + render + header badge (i18n-ready) ===== */
-(function initSlots(){
+// ===== Slots + Badge (i18n, final)
+(function(){
   const API_SLOTS_URL =
     'https://script.google.com/macros/s/AKfycbx-IkXY39sBerBkSAjTtv-SRbzX7tkg4spCk_QB2eGzSFpz2999WuFtXt0QKWZy9x8C/exec';
 
-  // ---- i18n helpers with robust fallback ----
-  function i18nCtx(params){
-    const i  = window.i18n;
-    const RU = (window.I18N && window.I18N.ru) || {};
-    const fmtKV = (s,p)=> String(s).replace(/\{(\w+)\}/g, (_,k)=> (p && p[k] != null ? p[k] : ''));
-    const t = (key, p) => {
-      // 1) если i18n готов и вернул НЕ ключ — берём
-      if (i && typeof i.t === 'function') {
-        const out = i.t(key, p);
-        if (out && out !== key) return out;
-      }
-      if (RU[key] != null) return fmtKV(RU[key], p);
-      if (key === 'slots_btn_request') return 'Запросить';
-      if (key === 'slots_badge_none')  return 'Свободно: по запросу';
-      if (key === 'hdr_badge_checking')return 'Проверяю свободные слоты…';
-      if (key === 'slots_badge_next')  return fmtKV('Ближайший слот: {date} | {t1}–{t2}', p||{});
-      return key;
-    };
-    const fmtDay  = i && i.fmtDay  ? i.fmtDay  : (ymd=>{
-      if (!ymd) return '';
-      const [y,m,d]=String(ymd).split('-').map(Number);
-      return new Intl.DateTimeFormat('ru-RU',{weekday:'short',day:'numeric',month:'long'})
-             .format(new Date(y, m-1, d));
-    });
-    const fmtTime = i && i.fmtTime ? i.fmtTime : (ts=>
-      new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit'}).format(new Date(ts))
-    );
-    return { t, fmtDay, fmtTime };
+  /* ---------- i18n utils ---------- */
+  const t = (key, params)=>{
+    const dict = (window.i18n && window.i18n.dict) || (window.I18N && window.I18N.ru) || {};
+    const s = dict[key] ?? key;
+    return String(s).replace(/\{(\w+)\}/g, (_,k)=> (params && params[k] != null ? params[k] : ''));
+  };
+  const getLocale = ()=> (window.i18n && window.i18n.locale) || 'ru-RU';
+  const fmtDay = (ymd)=>{
+    if (window.i18n && window.i18n.fmtDay) return window.i18n.fmtDay(ymd);
+    if (!ymd) return '';
+    const [y,m,d] = ymd.split('-').map(Number);
+    return new Intl.DateTimeFormat(getLocale(), { weekday:'short', day:'numeric', month:'long' })
+      .format(new Date(y, m-1, d));
+  };
+
+  /* ---------- time helpers ---------- */
+  const hhmm = d => new Intl.DateTimeFormat(getLocale(), {hour:'2-digit', minute:'2-digit'}).format(d);
+  function safeStart(s){
+    if (s.startLabel) return s.startLabel;
+    const d = s.startISO ? new Date(s.startISO) : new Date(s.startTs || 0);
+    return Number.isFinite(d.getTime()) ? hhmm(d) : '';
   }
-
-  // ---- DOM ----
-  const listEl  = document.getElementById('slotsList');
-  if (listEl) listEl.classList.add('slots-grid');
-
-  const badge   = document.getElementById('headerFreeBadge');
-  const elChk   = badge?.querySelector('#badgeChecking') || badge?.querySelector('.avail-text') || null;
-  const elReady = badge?.querySelector('#badgeReady') || null;
-
-  // ---- badge helpers ----
-  function setBadgeChecking(){
-    if (!badge) return;
-    const { t } = i18nCtx();
-    if (elChk)  { elChk.textContent = t('hdr_badge_checking'); elChk.hidden = false; }
-    if (elReady){ elReady.hidden = true; elReady.textContent = ''; }
-    badge.setAttribute('aria-busy','true');
+  function safeEnd(s){
+    if (s.endLabel) return s.endLabel;
+    const d = s.endISO ? new Date(s.endISO) : new Date(s.endTs || 0);
+    return Number.isFinite(d.getTime()) ? hhmm(d) : '';
   }
-  function setBadgeReady(text){
-    if (!badge) return;
-    if (elReady){ elReady.textContent = text; elReady.hidden = false; }
-    if (elChk) elChk.hidden = true;
-    badge.removeAttribute('aria-busy');
-  }
-
-  // стартовый статус
-  if (badge) setBadgeChecking();
-
-  // ---- utils ----
+  const getStartTs = s => s.startTs ?? Date.parse(s.startISO || 0);
+  const timeLabel  = s => `${safeStart(s)}–${safeEnd(s)}`;
   const pad2 = n => String(n).padStart(2,'0');
-  const ymd  = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-  const tsStart = s => s.startTs ?? (s.startISO ? Date.parse(s.startISO) : NaN);
-  const tsEnd   = s => s.endTs   ?? (s.endISO   ? Date.parse(s.endISO)   : NaN);
-  const safeLbl = (lbl,ts,fmt) => lbl || (Number.isFinite(ts) ? fmt(ts) : '');
+  const ymdLocal = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+
+  /* ---------- badge helpers ---------- */
+  const BADGE_SHORT_BP = '(max-width: 420px)';
+  function normalizeBadgeText(fullText){
+    if (!window.matchMedia(BADGE_SHORT_BP).matches) return fullText;
+    return String(fullText)
+      .replace(/^Ближайший слот:/, 'Слот:')
+      .replace(/^Najbliži termin:/, 'Termin:');
+  }
+  function rerenderBadgeShort(){
+    const t = document.querySelector('#headerFreeBadge .avail-text');
+    if (t?.dataset.full) t.textContent = normalizeBadgeText(t.dataset.full);
+  }
+  function setBadge(text, classes = []){
+    const badge = document.querySelector('#headerFreeBadge');
+    const badgeText = badge?.querySelector('.avail-text');
+    if (!badge || !badgeText) return;
+    ['is-today','is-tomorrow','is-next','is-none','is-live'].forEach(c=> badge.classList.remove(c));
+    classes.forEach(c => badge.classList.add(c));
+    badgeText.dataset.full = text;
+    badgeText.textContent  = normalizeBadgeText(text);
+    badge.style.display = 'inline-flex';
+  }
+  // Экспорт для совместимости со старым кодом
+  window.setBadge = setBadge;
+
+  /* ---------- slots render ---------- */
+  const wrap = document.querySelector('#slotsList');
+  if (wrap) wrap.classList.add('slots-grid');
 
   function groupByDate(slots){
     const m = new Map();
-    for (const s of slots){
+    for (const s of slots) {
       let key = s.date;
-      if (!key){
-        const t = tsStart(s);
-        if (Number.isFinite(t)) key = ymd(new Date(t));
+      if (!key) {
+        const dt = s.startTs ? new Date(s.startTs) : (s.startISO ? new Date(s.startISO) : null);
+        if (dt) key = ymdLocal(dt);
       }
       if (!key) continue;
-      (m.get(key) ?? m.set(key,[]).get(key)).push(s);
+      if (!m.has(key)) m.set(key, []);
+      m.get(key).push(s);
     }
-    for (const arr of m.values()) arr.sort((a,b)=> tsStart(a) - tsStart(b));
-    return [...m.entries()].map(([date,items])=>({date,items}))
+    for (const arr of m.values()) arr.sort((a,b)=> getStartTs(a)-getStartTs(b));
+    return [...m.entries()].map(([date, items])=>({date, items}))
                            .sort((a,b)=> a.date.localeCompare(b.date));
   }
 
-  function cardHTML(dateYMD, items){
-    const { t, fmtDay, fmtTime } = i18nCtx();
-    const times = items.map(s=>{
-      const a = safeLbl(s.startLabel, tsStart(s), fmtTime);
-      const b = safeLbl(s.endLabel,   tsEnd(s),   fmtTime);
-      return `${a}–${b}`;
-    }).join(', ');
-    return `
-      <article class="slot-card">
-        <div class="slot-date">${fmtDay(dateYMD)}</div>
-        <div class="slot-time">${times}</div>
-        <a class="btn btn-outline btn-lg slot-cta" href="#contact">${t('slots_btn_request')}</a>
-      </article>
-    `;
+  const makeTimesLine = items => items.map(s => `${safeStart(s)}–${safeEnd(s)}`).join(', ');
+  const cardHTML = (date, items)=> `
+    <article class="slot-card">
+      <div class="slot-date">${fmtDay(date)}</div>
+      <div class="slot-time">${makeTimesLine(items)}</div>
+      <a class="btn btn-outline btn-lg slot-cta" href="#contact">${t('slots_btn_request')}</a>
+    </article>
+  `;
+
+  function renderGrid(list){
+    if (!wrap) return;
+    if (!list.length){
+      wrap.innerHTML = `<p class="muted">${t('slots_badge_none')}</p>`;
+      return;
+    }
+    const groups = groupByDate(list);
+    wrap.innerHTML = groups.map(g => cardHTML(g.date, g.items)).join('');
   }
 
-  // ---- state + render ----
-  let cache = null; // { raw: Slot[] }
+  function renderBadge(list){
+    const badge = document.querySelector('#headerFreeBadge');
+    if (!badge) return;
 
-  function render(){
-    if (!cache) return;
+    const now = Date.now();
+    const todayYMD    = new Date().toISOString().slice(0,10);
+    const tomorrowYMD = new Date(now + 86400000).toISOString().slice(0,10);
 
-    const { t, fmtDay, fmtTime } = i18nCtx();
-    const all = (cache.raw || []).filter(Boolean);
+    const byStart = arr => arr.slice().sort((a,b)=> getStartTs(a)-getStartTs(b));
 
-    // badge
-    if (!all.length){
-      setBadgeReady(t('slots_badge_none'));
-    } else {
-      const first = all.slice().sort((a,b)=> tsStart(a)-tsStart(b))[0];
-      const s1 = tsStart(first), s2 = tsEnd(first);
-      let day = first.date; if (!day && Number.isFinite(s1)) day = ymd(new Date(s1));
-      const text = t('slots_badge_next', { date: fmtDay(day), t1: fmtTime(s1), t2: fmtTime(s2) });
-      setBadgeReady(text);
+    const today = byStart(list.filter(s => (s.date || (s.startISO||'').slice(0,10)) === todayYMD))[0];
+    if (today){
+      setBadge(t('slots_badge_next', { date: fmtDay(today.date || todayYMD), t1: safeStart(today), t2: safeEnd(today) }),
+               ['is-today','is-live']);
+      return;
     }
-
-    // list
-    if (listEl){
-      if (!all.length){
-        listEl.innerHTML = '<p class="muted">Свободных слотов не найдено.</p>';
-      } else {
-        const groups = groupByDate(all);
-        listEl.innerHTML = groups.map(g => cardHTML(g.date, g.items)).join('');
-      }
+    const tomorrow = byStart(list.filter(s => (s.date || (s.startISO||'').slice(0,10)) === tomorrowYMD))[0];
+    if (tomorrow){
+      setBadge(t('slots_badge_next', { date: fmtDay(tomorrow.date || tomorrowYMD), t1: safeStart(tomorrow), t2: safeEnd(tomorrow) }),
+               ['is-tomorrow','is-live']);
+      return;
     }
+    const next = byStart(list.filter(s => getStartTs(s) > now))[0] || byStart(list)[0];
+    if (next){
+      const ymd = next.date || (next.startISO ? next.startISO.slice(0,10) : '');
+      setBadge(t('slots_badge_next', { date: fmtDay(ymd), t1: safeStart(next), t2: safeEnd(next) }),
+               ['is-next','is-live']);
+      return;
+    }
+    setBadge(t('slots_badge_none'), ['is-none']);
   }
 
-  // ---- fetch ----
-  fetch(API_SLOTS_URL + '?t=' + Date.now(), { cache:'no-store', mode:'cors' })
-    .then(r => r.json())
-    .then(data => {
-      const raw = Array.isArray(data?.slots) ? data.slots
-               : Array.isArray(data) ? data : [];
-      cache = { raw };
-      render();
-    })
-    .catch(err => {
-      console.warn('Slots API error:', err);
-      if (listEl) listEl.innerHTML = '<p class="error">Слоты временно недоступны. Напишите мне.</p>';
-      setBadgeReady(i18nCtx().t('slots_badge_none'));
-    });
+  // Для обратной совместимости — старые вызовы window.updateBadge(raw)
+  window.updateBadge = renderBadge;
 
-  // ---- re-render on i18n events ----
-  window.addEventListener('i18nready', render);
-  window.addEventListener('langchange', render);
+  /* ---------- fetch ---------- */
+  function fetchAndRender(){
+    const badge = document.querySelector('#headerFreeBadge');
+    const badgeText = badge?.querySelector('.avail-text');
+    if (badge && badgeText) setBadge(t('hdr_badge_checking'), ['is-live']);
+
+    fetch(API_SLOTS_URL + '?t=' + Date.now(), { cache:'no-store', mode:'cors' })
+      .then(r => r.json())
+      .then(data => {
+        const list = Array.isArray(data?.slots) ? data.slots :
+                     Array.isArray(data) ? data : [];
+        window.__freeSlots = list;
+        renderBadge(list);
+        renderGrid(list);
+      })
+      .catch(err => {
+        console.warn('Slots API error:', err);
+        if (wrap) wrap.innerHTML = `<p class="error">Слоты временно недоступны. Напишите мне.</p>`;
+        setBadge(t('slots_badge_none'), ['is-none']);
+      });
+  }
+
+  /* ---------- react to i18n and resize ---------- */
+  window.addEventListener('i18nready', ()=>{
+    rerenderBadgeShort();
+    if (window.__freeSlots){ renderBadge(window.__freeSlots); renderGrid(window.__freeSlots); }
+  });
+  window.addEventListener('langchange', ()=>{
+    rerenderBadgeShort();
+    if (window.__freeSlots){ renderBadge(window.__freeSlots); renderGrid(window.__freeSlots); }
+  });
+  window.addEventListener('resize', rerenderBadgeShort);
+
+  /* ---------- boot ---------- */
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', fetchAndRender);
+  else
+    fetchAndRender();
 })();
-
 
 // ===== Calculator — clean URL + #calc anchor + state sharing =====
 (function(){
@@ -2003,75 +1897,3 @@ window.updateBadge = function updateBadge(slots) {
     openModal();
   });
 })();    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
