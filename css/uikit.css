@@ -1214,10 +1214,10 @@ html, body { overflow-x: clip; }
   /* бейдж слотов */
   #headerFreeBadge { white-space:nowrap; }
   #headerFreeBadge .site-header .avail-badge .avail-text {
-    font-size: clamp(11px, 3.3vw, 14px);
+    font-size: clamp(12px, 3.3vw, 14px);
     line-height: 1.2; 
-    padding: 6px 10px;  }
+    padding: 6px 12px;  }
 }
 @media (max-width: 360px){
-  .site-header .avail-badge .avail-text { font-size: 11px; padding: 6px 8px; }
+  .site-header .avail-badge .avail-text { font-size: 11px; padding: 4px 8px; }
 }
