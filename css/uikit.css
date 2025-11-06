@@ -1311,3 +1311,11 @@ html, body { overflow-x: clip; }
 }
 
 button[disabled]{cursor:not-allowed; opacity:.8}
+
+@media (max-width: 640px){
+  .avail-badge{
+    font-size: .8rem;
+    padding: 5px 10px;       /* по желанию: чуть компактнее плашка */
+  }
+  .avail-badge .dot{ width:7px; height:7px; } /* поджать точку */
+}
