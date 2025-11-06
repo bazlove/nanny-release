@@ -92,7 +92,7 @@ document.addEventListener('copy', function (e) {
       /* HERO */
       hero_title:'Няня в Нови-Саде — забота, безопасность и бережное развитие',
       hero_sub:'Освободите время для личных дел, спокойно работайте из дома[br] или проведите вечер в тишине - без тревоги, отвлечения и стресса.',
-      hero_tag_age:'31 год', hero_tag_teacher:'Воспитатель', hero_tag_mom:'Мама', hero_tag_coach:'Детский тренер',
+      hero_tag_age:'Опыт 10 лет', hero_tag_teacher:'Воспитатель', hero_tag_mom:'Мама', hero_tag_coach:'Детский тренер',
       hero_tag_ontime:'Вовремя', hero_tag_report:'Заметки/фото', hero_tag_slots:'Слоты 2-4ч', hero_tag_no_screens:'Без гаджетов',
       btn_slots:'Проверить свободные слоты',
       hero_calc:'Рассчитать цену за 1 минуту',
@@ -243,7 +243,7 @@ document.addEventListener('copy', function (e) {
       /* HERO */
       hero_title:'Dadilja u Novi Sad - briga, bezbednost i pažljiv razvoj',
       hero_sub:'Oslobodite vreme za lične stvari, radite od kuće mirno[br] ili provedite veče u tišini - bez brige, ometanja i stresa.',
-      hero_tag_age:'31 godina', hero_tag_teacher:'Vaspitač', hero_tag_mom:'Mama', hero_tag_coach:'Dečiji trener',
+      hero_tag_age:'10 godina iskustva', hero_tag_teacher:'Vaspitač', hero_tag_mom:'Mama', hero_tag_coach:'Dečiji trener',
       hero_tag_ontime:'Tačno na vreme', hero_tag_report:'Beleške/foto', hero_tag_slots:'Termini 2-4h', hero_tag_no_screens:'Bez ekrana',
       btn_slots:'Proverite slobodne termine',
       hero_calc:'Izračunajte cenu za 1 minut',
@@ -1897,3 +1897,4 @@ document.addEventListener('copy', function (e) {
     openModal();
   });
 })();    
+
