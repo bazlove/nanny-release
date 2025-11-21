@@ -668,16 +668,25 @@ document.addEventListener('copy', function (e) {
 
   // ---------- helpers ----------
   function normalizeHours(commit){
-    const h=$('hours'), err=$('hoursErr');
-    let v=parseInt(h?.value,10);
-    const emptyOrNaN = !Number.isFinite(v) || (h?.value==='');
-    if (emptyOrNaN) v = MIN;
-    v = Math.max(MIN, Math.min(HOURS_MAX, v)); // 2..10
-    if (commit && h) h.value = String(v);
-    if (h)   h.classList.toggle('error', v < MIN);
-    if (err) err.style.display = (v < MIN) ? 'block' : 'none';
-    return v;
+  const h   = $('hours');
+  const err = $('hoursErr');
+  const raw = h?.value ?? '';
+  let v = parseFloat(String(raw).replace(',', '.'));
+
+  const emptyOrNaN = !Number.isFinite(v) || raw === '';
+  if (emptyOrNaN) v = MIN;
+
+  v = Math.max(MIN, Math.min(HOURS_MAX, v));
+
+  // округляем к ближайшему шагу 0.5
+  v = Math.round(v * 2) / 2; // 2.3 → 2.5, 3.7 → 3.5 и т.п.
+  if (commit && h) {
+    h.value = String(v);
   }
+  if (h)   h.classList.toggle('error', v < MIN);
+  if (err) err.style.display = (v < MIN) ? 'block' : 'none';
+  return v;
+}
 
   function hourlyRate(){
     let r=BASE;
@@ -1897,4 +1906,5 @@ document.addEventListener('copy', function (e) {
     openModal();
   });
 })();    
+
 
