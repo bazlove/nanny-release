@@ -486,7 +486,7 @@ document.addEventListener('copy', function (e) {
 // ===== Slots + Badge (i18n, final)
 (function(){
   const API_SLOTS_URL =
-    'https://script.google.com/macros/s/AKfycbx-IkXY39sBerBkSAjTtv-SRbzX7tkg4spCk_QB2eGzSFpz2999WuFtXt0QKWZy9x8C/exec';
+    'https://script.google.com/macros/s/AKfycbxlIB4LoVKNbAtj2_KWAcLzJS-28WgW8G_9WyiIWd6YuzIBMPzlwxUxHaqkPihVpKyi/exec';
 
   /* ---------- i18n utils ---------- */
   const t = (key, params)=>{
@@ -1906,5 +1906,6 @@ document.addEventListener('copy', function (e) {
     openModal();
   });
 })();    
+
 
 
