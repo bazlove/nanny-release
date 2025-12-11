@@ -469,7 +469,7 @@
   </div>
 </section>
 
-    <!-- TESTIMONIALS -->
+<!-- TESTIMONIALS -->
 <section id="reviews" class="rv-reviews">
   <div class="container">
     <div class="rv-reviews__head">
@@ -477,32 +477,41 @@
 
       <!-- Чипы статичные -->
       <ul class="rv-chips" role="tablist" aria-label="Категории отзывов">
-  <li><button type="button" class="rv-chip is-active" data-filter="all" role="tab" aria-selected="true">Все</button></li>
-  <li><button type="button" class="rv-chip" data-filter="toddlers"   role="tab" aria-selected="false">Малыши</button></li>
-  <li><button type="button" class="rv-chip" data-filter="preschool"  role="tab" aria-selected="false">3-7 лет</button></li>
-  <li><button type="button" class="rv-chip" data-filter="two"        role="tab" aria-selected="false">2 детей</button></li>
-</ul>
-		
+        <li><button type="button" class="rv-chip is-active" data-filter="all" role="tab" aria-selected="true">Все</button></li>
+        <li><button type="button" class="rv-chip" data-filter="toddlers" role="tab" aria-selected="false">Малыши</button></li>
+        <li><button type="button" class="rv-chip" data-filter="preschool" role="tab" aria-selected="false">3-7 лет</button></li>
+        <li><button type="button" class="rv-chip" data-filter="two" role="tab" aria-selected="false">2 детей</button></li>
+      </ul>
     </div>
 
     <!-- Карусель-маркиза (плавный бесконечный скролл) -->
     <div class="rv-marquee" role="region" aria-label="Карусель отзывов" aria-live="polite">
-      <div class="rv-track">
-        <figure class="rv-item" data-cat="preschool">
+      <div class="rv-track" id="rvTrack">
+        
+		  <!-- оригинальные элементы -->
+        <figure class="rv-item" data-cat="preschool" tabindex="0">
           <img src="img/reviews/rev1.jpg" loading="lazy" alt="Екатерина, мама девочки (5 лет)">
+          <figcaption>«Всегда вовремя, ребёнок спокоен» - Екатерина, мама (5 лет)</figcaption>
         </figure>
-        <figure class="rv-item" data-cat="preschool">
+        <figure class="rv-item" data-cat="preschool" tabindex="0">
           <img src="img/reviews/rev2.jpg" loading="lazy" alt="Виктория, мама девочки (3 года)">
+          <figcaption>«Очень внимательная и доброжелательная» - Виктория, мама (3 года)</figcaption>
         </figure>
-        <figure class="rv-item" data-cat="toddlers">
-          <img src="img/reviews/rev3.jpg" loading="lazy" alt="Юлия, мама мальчика (1.9 года)">
+        <figure class="rv-item" data-cat="toddlers" tabindex="0">
+          <img src="img/reviews/rev3.jpg" loading="lazy" alt="Юлия, мама мальчика (1,9 года)">
+          <figcaption>«Отличный опыт, регулярные отчёты с фото» - Юлия</figcaption>
         </figure>
-       <!--  <figure class="rv-item" data-cat="preschool">
-          <img src="img/reviews/rev4.jpg" loading="lazy" alt="Отзыв родителя №4">
+
+        <!-- Дубликаты для бесшовной анимации (динамически можно клонировать) -->
+        <figure class="rv-item" data-cat="preschool" aria-hidden="true" tabindex="-1">
+          <img src="img/reviews/rev1.jpg" loading="lazy" alt="">
         </figure>
-        <figure class="rv-item" data-cat="two toddlers">
-          <img src="img/reviews/rev5.jpg" loading="lazy" alt="Отзыв родителя №5">
-        </figure>-->
+        <figure class="rv-item" data-cat="preschool" aria-hidden="true" tabindex="-1">
+          <img src="img/reviews/rev2.jpg" loading="lazy" alt="">
+        </figure>
+        <figure class="rv-item" data-cat="toddlers" aria-hidden="true" tabindex="-1">
+          <img src="img/reviews/rev3.jpg" loading="lazy" alt="">
+        </figure>
       </div>
     </div>
   </div>
@@ -986,10 +995,19 @@
 
 <button id="ck-manage" class="ck-manage" hidden>Настройки cookie</button>
 
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" hidden>
+  <div class="lb-backdrop" data-close="1" tabindex="-1"></div>
+  <figure class="lb-content" role="dialog" aria-modal="true" aria-label="Просмотр отзыва">
+    <img id="lbImg" src="" alt="">
+  </figure>
+</div>
+	
   <script src="js/app.js" defer></script>
 
 	</body>
 </html>
+
 
 
 
