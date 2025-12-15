@@ -1720,10 +1720,10 @@ section[id], #services, #calc, #faq, #contact, #main {
 
 /* Адаптив: размеры карточек */
 @media (max-width: 1024px){
-  .rv-item{ flex-basis:220px; width:220px; aspect-ratio: 4 / 3; }
+  .rv-item{ flex-basis:220px; width:220px; aspect-ratio: 3 / 4; }
 }
 @media (max-width: 640px){
-  .rv-item{ flex-basis:75vw; width:75vw; aspect-ratio: 16 / 9; max-height:320px; }
+  .rv-item{ flex-basis:75vw; width:75vw; aspect-ratio: 9 / 16; max-height:320px; }
 }
 
 /* Бесконечный скролл: сдвигаем на 50% ширины (второй половиной служит дубликат) */
@@ -3044,6 +3044,7 @@ img {
   -khtml-user-drag: none;
   user-drag: none;
 }
+
 
 
 
