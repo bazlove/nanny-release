@@ -1643,7 +1643,7 @@ section[id], #services, #calc, #faq, #contact, #main {
 
 /* ===== Reviews: бесконечная маркиза (одна строка, бесшовная) ========== */
 .rv-marquee{
-  --rv-speed: 45s;                    /* больше — медленнее */
+  --rv-speed: 60s;                    /* больше — медленнее */
   --rv-gap: 16px;
   position: relative;
   overflow: hidden;
@@ -1668,7 +1668,7 @@ section[id], #services, #calc, #faq, #contact, #main {
 .rv-item{
   flex: 0 0 260px;
   width: 260px;
-  aspect-ratio: 4 / 3;               /* современный способ */
+  aspect-ratio: 3 / 4;               /* современный способ */
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,.08);
@@ -3044,6 +3044,7 @@ img {
   -khtml-user-drag: none;
   user-drag: none;
 }
+
 
 
 
