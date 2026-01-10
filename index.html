@@ -1005,8 +1005,146 @@
 	
   <script src="js/app.js" defer></script>
 
+<script>
+(() => {
+	
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  const isSmallScreen = Math.min(window.innerWidth, window.innerHeight) < 520;
+  if (isSmallScreen) return;
+
+  const cfg = {
+    flakesPerMegapixel: 55,  
+    maxFlakes: 180,          
+    minFlakes: 40,           
+    wind: 0.25,              
+    gravity: 0.9,            
+    wobble: 0.9,             
+    blur: 0,                 
+    opacity: 0.85,
+  };
+
+  const canvas = document.createElement('canvas');
+  canvas.setAttribute('aria-hidden', 'true');
+  Object.assign(canvas.style, {
+    position: 'fixed',
+    inset: '0',
+    width: '100%',
+    height: '100%',
+    pointerEvents: 'none',
+    zIndex: '9999',
+    mixBlendMode: 'normal', 
+  });
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+
+  let dpr = Math.min(window.devicePixelRatio || 1, 2); 
+  let W = 0, H = 0;
+  let flakes = [];
+  let rafId = 0;
+  let lastT = performance.now();
+  let running = true;
+
+  function rand(min, max) { return min + Math.random() * (max - min); }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.floor(window.innerWidth);
+    H = Math.floor(window.innerHeight);
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const mp = (W * H) / 1_000_000;
+    const target = Math.max(cfg.minFlakes, Math.min(cfg.maxFlakes, Math.round(mp * cfg.flakesPerMegapixel)));
+
+    if (flakes.length > target) flakes.length = target;
+    while (flakes.length < target) flakes.push(makeFlake(true));
+  }
+
+  function makeFlake(spawnTop = false) {
+    const r = rand(1.2, 3.8);
+    const y = spawnTop ? rand(-H, 0) : rand(0, H);
+    return {
+      x: rand(0, W),
+      y,
+      r,
+      vy: rand(18, 55) * 0.02,         
+      vx: rand(-10, 10) * 0.02,        
+      phase: rand(0, Math.PI * 2),
+      wob: rand(0.6, 1.6),
+      o: rand(0.35, 1) * cfg.opacity,
+    };
+  }
+
+  function step(t) {
+    if (!running) return;
+    const dt = Math.min(0.033, (t - lastT) / 1000); 
+    lastT = t;
+
+    ctx.clearRect(0, 0, W, H);
+    if (cfg.blur > 0) ctx.filter = `blur(${cfg.blur}px)`;
+    else ctx.filter = 'none';
+
+    for (let i = 0; i < flakes.length; i++) {
+      const f = flakes[i];
+      f.phase += dt * cfg.wobble * f.wob;
+
+      const wx = Math.sin(f.phase) * 0.6 * cfg.wobble;
+      f.x += (f.vx + wx + cfg.wind * 0.02) * (60 * dt);
+      f.y += (f.vy * cfg.gravity) * (60 * dt);
+
+      if (f.y > H + 10) {
+        f.y = rand(-60, -10);
+        f.x = rand(0, W);
+      }
+      if (f.x < -10) f.x = W + 10;
+      if (f.x > W + 10) f.x = -10;
+
+      ctx.globalAlpha = f.o;
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    rafId = requestAnimationFrame(step);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      running = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+    } else {
+      if (!running) {
+        running = true;
+        lastT = performance.now();
+        rafId = requestAnimationFrame(step);
+      }
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', resize, { passive: true });
+
+  resize();
+  rafId = requestAnimationFrame(step);
+
+  window.__snow = {
+    stop() { running = false; if (rafId) cancelAnimationFrame(rafId); rafId = 0; canvas.remove(); },
+    start() { if (document.body.contains(canvas)) return; document.body.appendChild(canvas); running = true; resize(); lastT = performance.now(); rafId = requestAnimationFrame(step); }
+  };
+})();
+</script>
+	
 	</body>
 </html>
+
 
 
 
