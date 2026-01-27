@@ -1011,13 +1011,13 @@
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) return;
 
-  const isSmallScreen = Math.min(window.innerWidth, window.innerHeight) < 520;
+  const isSmallScreen = Math.min(window.innerWidth, window.innerHeight) < 360;
   if (isSmallScreen) return;
 
   const cfg = {
-    flakesPerMegapixel: 60,  
-    maxFlakes: 200,          
-    minFlakes: 60,           
+    flakesPerMegapixel: 90,  
+    maxFlakes: 320,          
+    minFlakes: 80,           
     wind: 0.25,              
     gravity: 0.9,            
     wobble: 0.9,             
@@ -1144,6 +1144,7 @@
 	
 	</body>
 </html>
+
 
 
 
