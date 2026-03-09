@@ -662,7 +662,7 @@ document.addEventListener('copy', function (e) {
 
 // ===== Calculator — clean URL + #calc anchor + state sharing =====
 (function(){
-  const EUR_RATE=117, BASE=900, WEEKEND=1.25, TWO=1.25, INFANT=1.5, OPT=300, OPT_FIT=600, MIN=2, HOURS_MAX=10;
+  const EUR_RATE=117, BASE=900, WEEKEND=1.25, TWO=1.25, THREE=1.75, INFANT=1.5, OPT=300, OPT_FIT=600, MIN=2, HOURS_MAX=10;
   const $ = id => document.getElementById(id);
   const money = v => { try { return v.toLocaleString('ru-RS'); } catch(_) { return String(v); } };
 
@@ -679,7 +679,7 @@ document.addEventListener('copy', function (e) {
   v = Math.max(MIN, Math.min(HOURS_MAX, v));
 
   // округляем к ближайшему шагу 0.5
-  v = Math.round(v * 2) / 2; // 2.3 → 2.5, 3.7 → 3.5 и т.п.
+  v = Math.round(v * 2) / 2; // 2.3 → 2.5, 3.7 → 3.5
   if (commit && h) {
     h.value = String(v);
   }
@@ -693,6 +693,7 @@ document.addEventListener('copy', function (e) {
     const day=$('dayType')?.value, kids=$('kids')?.value;
     if(day==='weekend') r*=WEEKEND;
     if(kids==='2_infant') r*=INFANT; else if(kids==='2') r*=TWO;
+    if (kids==='3') r*=THREE;
     return Math.round(r/10)*10;
   }
 
@@ -756,6 +757,7 @@ document.addEventListener('copy', function (e) {
       const b=[]; const kids=$('kids')?.value, day=$('dayType')?.value;
       if(kids==='2') b.push('+25% двое детей');
       if(kids==='2_infant') b.push('+50% малыш <2 лет');
+      if(kids==='3') b.push('+75% трое детей');
       if(day==='weekend') b.push('+25% выходной день');
       if($('eurToggle')?.checked) b.push('€');
       badges.innerHTML=b.map(t=>`<span class="badge">${t}</span>`).join('');
@@ -1906,6 +1908,7 @@ document.addEventListener('copy', function (e) {
     openModal();
   });
 })();    
+
 
 
 
