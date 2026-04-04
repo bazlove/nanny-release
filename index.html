@@ -302,30 +302,24 @@
   </div>
 </section>
 
-<!-- SERVICES -->
+   <!-- SERVICES -->
 <section id="services" class="services section">
   <div class="container">
 
     <!-- Заголовок + подсказка -->
     <div class="section-head">
-      <h2 class="section-title i18n" data-key="services_title">Услуги</h2>
-      <p class="section-hint i18n" data-key="services_hint">
+      <h2 class="section-title">Услуги</h2>
+      <p class="section-hint">
         <span class="dot" aria-hidden="true"></span>
         Дополнительные услуги учитываются в калькуляторе через чекбокс.
       </p>
     </div>
 
     <!-- Чипы-фильтры -->
-    <div
-      class="svc-filters i18n"
-      role="tablist"
-      aria-label="Фильтр услуг"
-      data-key="services_filter_aria"
-      data-i18n-attr="aria-label"
-    >
-      <button class="svc-chip is-active i18n" data-filter="all" role="tab" aria-selected="true" data-key="services_filter_all">Все</button>
-      <button class="svc-chip i18n" data-filter="base" role="tab" aria-selected="false" data-key="services_filter_base">Базовые</button>
-      <button class="svc-chip i18n" data-filter="extra" role="tab" aria-selected="false" data-key="services_filter_extra">Дополнительные</button>
+    <div class="svc-filters" role="tablist" aria-label="Фильтр услуг">
+      <button class="svc-chip is-active" data-filter="all"   role="tab" aria-selected="true">Все</button>
+      <button class="svc-chip"         data-filter="base"  role="tab" aria-selected="false">Базовые</button>
+      <button class="svc-chip"         data-filter="extra" role="tab" aria-selected="false">Дополнительные</button>
     </div>
 
     <!-- Сетка карточек -->
@@ -335,117 +329,101 @@
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">📋</span>
-          <h3 class="svc-title i18n" data-key="svc_schedule_t">Распорядок дня</h3>
+          <h3 class="svc-title">Распорядок дня</h3>
         </div>
-        <p class="svc-desc i18n" data-key="svc_schedule_d">Спокойное бодрствование, присмотр, быт, гигиена, сон.</p>
+        <p class="svc-desc">Спокойное бодрствование, присмотр, быт, гигиена, сон.</p>
       </article>
 
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🎨</span>
-          <h3 class="svc-title i18n" data-key="svc_games_t">Занятия и игры</h3>
+          <h3 class="svc-title">Занятия и игры</h3>
         </div>
-        <p class="svc-desc i18n" data-key="svc_games_d">Рисование, лепка, творчество, активности, моторика, логика.</p>
+        <p class="svc-desc">Рисование, лепка, творчество, активности, моторика, логика.</p>
       </article>
 
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🌳</span>
-          <h3 class="svc-title i18n" data-key="svc_walk_t">Прогулки</h3>
+          <h3 class="svc-title">Прогулки</h3>
         </div>
-        <p class="svc-desc i18n" data-key="svc_walk_d">Подвижные игры на свежем воздухе в парке/дворе.</p>
+        <p class="svc-desc">Подвижные игры на свежем воздухе в парке/дворе.</p>
       </article>
 
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🏫</span>
-          <h3 class="svc-title i18n" data-key="svc_pickup_t">Сопровождение</h3>
+          <h3 class="svc-title">Сопровождение</h3>
         </div>
-        <p class="svc-desc i18n" data-key="svc_pickup_d">Отвести/забрать с кружка, секции, детсада, школы.</p>
+        <p class="svc-desc">Отвести/забрать с кружка, секции, детсада, школы.</p>
       </article>
 
       <!-- ДОПОЛНИТЕЛЬНЫЕ -->
       <article class="svc-card svc-card--extra" data-tier="extra">
-        <span
-          class="svc-badge i18n"
-          aria-label="по договорённости"
-          data-key="svc_badge_extra"
-          data-i18n-attr="aria-label"
-        >по договорённости</span>
+        <span class="svc-badge" aria-label="по договорённости">по договорённости</span>
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🍲</span>
-          <h3 class="svc-title i18n" data-key="svc_meal_t">Питание</h3>
+          <h3 class="svc-title">Питание</h3>
         </div>
-        <p class="svc-desc i18n" data-key="svc_meal_d">Простой перекус для ребёнка по вашему меню.</p>
+        <p class="svc-desc">Простой перекус для ребёнка по вашему меню.</p>
       </article>
 
       <article class="svc-card svc-card--extra" data-tier="extra">
-        <span
-          class="svc-badge i18n"
-          aria-label="по договорённости"
-          data-key="svc_badge_extra"
-          data-i18n-attr="aria-label"
-        >по договорённости</span>
+        <span class="svc-badge" aria-label="по договорённости">по договорённости</span>
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🗑</span>
-          <h3 class="svc-title i18n" data-key="svc_clean_t">Уборка</h3>
+          <h3 class="svc-title">Уборка</h3>
         </div>
-        <p class="svc-desc i18n" data-key="svc_clean_d">Небольшая уборка в детской комнате.</p>
+        <p class="svc-desc">Небольшая уборка в детской комнате.</p>
       </article>
 
       <article class="svc-card svc-card--extra" data-tier="extra">
-        <span
-          class="svc-badge i18n"
-          aria-label="по договорённости"
-          data-key="svc_badge_extra"
-          data-i18n-attr="aria-label"
-        >по договорённости</span>
+        <span class="svc-badge" aria-label="по договорённости">по договорённости</span>
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🏃</span>
-          <h3 class="svc-title i18n" data-key="svc_fitness_t">Тренировка</h3>
+          <h3 class="svc-title">Тренировка</h3>
         </div>
-        <p class="svc-desc i18n" data-key="svc_fitness_d">Персональное фитнес-занятие/гимнастика на 30 минут.</p>
+        <p class="svc-desc">Персональное фитнес-занятие/гимнастика на 30 минут.</p>
       </article>
-    </div>
-  </div>
+    </div><!-- /.svc-grid -->
+  </div><!-- /.container -->
 </section>
 
-<!-- WHY -->
+   <!-- WHY -->
 <section id="why" class="why section panel--list">
   <div class="container">
-    <h2 class="section-title i18n" data-key="why_title">Почему я</h2>
-
+    <h2 class="section-title">Почему я</h2>
     <div class="why-grid" role="list">
       <article class="why-card" data-anim="adv" role="listitem">
         <div class="why-headline">
           <span class="why-icon ico-security" aria-hidden="true"></span>
-          <h3 class="why-title i18n" data-key="why1_t">Безопасность</h3>
+          <h3 class="why-title">Безопасность</h3>
         </div>
-        <p class="why-text i18n" data-key="why1_d">Сертификаты CPR/First Aid, учёт аллергий, чек-лист на случай ЧП.</p>
+        <p class="why-text">Сертификаты CPR/First Aid, учёт аллергий, чек-лист на случай ЧП.</p>
       </article>
 
       <article class="why-card" data-anim="adv" role="listitem">
         <div class="why-headline">
           <span class="why-icon ico-empathy" aria-hidden="true"></span>
-          <h3 class="why-title i18n" data-key="why2_t">Эмпатия и границы</h3>
+          <h3 class="why-title">Эмпатия и границы</h3>
         </div>
-        <p class="why-text i18n" data-key="why2_d">Спокойная адаптация и дисциплина, уважение к личности ребёнка.</p>
+        <p class="why-text">Спокойная адаптация и дисциплина, уважение к личности ребёнка.</p>
       </article>
 
       <article class="why-card" data-anim="adv" role="listitem">
         <div class="why-headline">
           <span class="why-icon ico-dev" aria-hidden="true"></span>
-          <h3 class="why-title i18n" data-key="why3_t">Игры без экранов</h3>
+          <h3 class="why-title">Игры без экранов</h3>
         </div>
-        <p class="why-text i18n" data-key="why3_d">Занятия по возрасту: моторика, творчество, прогулки — без гаджетов.</p>
+        <p class="why-text">Занятия по возрасту: моторика, творчество, прогулки — без гаджетов.</p>
       </article>
 
       <article class="why-card" data-anim="adv" role="listitem">
         <div class="why-headline">
           <span class="why-icon ico-home" aria-hidden="true"></span>
-          <h3 class="why-title i18n" data-key="why4_t">Режим семьи</h3>
+          <h3 class="why-title">Режим семьи</h3>
         </div>
-        <p class="why-text i18n" data-key="why4_d">Поддержание вашего распорядка, правил и ценностей семьи.</p>
+        <p class="why-text">Поддержание вашего распорядка, правил и ценностей семьи.</p>
       </article>
     </div>
   </div>
@@ -454,22 +432,17 @@
 <!-- EXPERIENCE / Мой опыт -->
 <section id="experience" class="section">
   <div class="container">
-    <h2 class="section-title i18n" data-key="xp_title">Мой опыт</h2>
+    <h2 class="section-title">Мой опыт</h2>
 
     <!-- Рельса + карточки -->
-    <ol
-      class="xp-grid i18n"
-      aria-label="Лента опыта по годам"
-      data-key="xp_list_aria"
-      data-i18n-attr="aria-label"
-    >
+    <ol class="xp-grid" aria-label="Лента опыта по годам">
       <!-- 1 -->
       <li class="xp-item" data-anim="adv">
-        <span class="xp-chip" aria-label="2013–2014">2013-2014</span>
+        <span class="xp-chip" aria-label="2013–2014">2013–2014</span>
         <span class="xp-pin" aria-hidden="true"></span>
         <article class="xp-card" tabindex="-1">
-          <h3 class="i18n" data-key="xp1_t">Частные и государственные детсады</h3>
-          <p class="i18n" data-key="xp1_d"><strong>Воспитатель детского сада:</strong> поддержание распорядка дня и планирование активностей; организация развивающих занятий и досуга по возрасту; работа с речевыми задачами, постановка и автоматизация звуков; наблюдение и фиксация прогресса, взаимодействие с родителями.</p>
+          <h3>Частные и государственные детсады</h3>
+          <p><strong>Воспитатель детского сада:</strong> поддержание распорядка дня и планирование активностей; организация развивающих занятий и досуга по возрасту; работа с речевыми задачами, постановка и автоматизация звуков; наблюдение и фиксация прогресса, взаимодействие с родителями.</p>
         </article>
       </li>
 
@@ -478,8 +451,8 @@
         <span class="xp-chip" aria-label="2015">2015</span>
         <span class="xp-pin" aria-hidden="true"></span>
         <article class="xp-card" tabindex="-1">
-          <h3 class="i18n" data-key="xp2_t">Высшее образование</h3>
-          <p class="i18n" data-key="xp2_d"><strong>Выпускная квалификационная работа на тему:</strong> «Развитие мышления у детей старшего дошкольного возраста с нарушением речи посредстом дидактических игр». Защита государственной итоговой аттестации и получение диплома о высшем педагогическом образовании по направлению дефектология.</p>
+          <h3>Высшее образование</h3>
+          <p><strong>Выпускная квалификационная работа на тему:</strong> «Развитие мышления у детей старшего дошкольного возраста с нарушением речи посредстом дидактических игр». Защита государственной итоговой аттестации и получение диплома о высшем педагогическом образовании по направлению дефектология.</p>
         </article>
       </li>
 
@@ -488,8 +461,8 @@
         <span class="xp-chip" aria-label="2015–2017">2015–2017</span>
         <span class="xp-pin" aria-hidden="true"></span>
         <article class="xp-card" tabindex="-1">
-          <h3 class="i18n" data-key="xp3_t">World Class, фитнес-клуб</h3>
-          <p class="i18n" data-key="xp3_d"><strong>Фитнес-инструктор:</strong> коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2-16 лет); организация детских праздников и творческих мастер-классов.</p>
+          <h3>World Class, фитнес-клуб</h3>
+          <p><strong>Фитнес-инструктор:</strong> коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2–16 лет); организация детских праздников и творческих мастер-классов.</p>
         </article>
       </li>
     </ol>
@@ -1174,20 +1147,3 @@
 	
 	</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
