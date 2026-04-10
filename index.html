@@ -302,24 +302,33 @@
   </div>
 </section>
 
-   <!-- SERVICES -->
+  
+<!-- SERVICES -->
 <section id="services" class="services section">
   <div class="container">
 
     <!-- Заголовок + подсказка -->
     <div class="section-head">
-      <h2 class="section-title">Услуги</h2>
+      <h2 class="section-title i18n" data-key="services_title">Услуги</h2>
       <p class="section-hint">
         <span class="dot" aria-hidden="true"></span>
-        Дополнительные услуги учитываются в калькуляторе через чекбокс.
+        <span class="i18n" data-key="services_hint">
+          Дополнительные услуги учитываются в калькуляторе через чекбокс.
+        </span>
       </p>
     </div>
 
     <!-- Чипы-фильтры -->
     <div class="svc-filters" role="tablist" aria-label="Фильтр услуг">
-      <button class="svc-chip is-active" data-filter="all"   role="tab" aria-selected="true">Все</button>
-      <button class="svc-chip"         data-filter="base"  role="tab" aria-selected="false">Базовые</button>
-      <button class="svc-chip"         data-filter="extra" role="tab" aria-selected="false">Дополнительные</button>
+      <button class="svc-chip is-active" data-filter="all" role="tab" aria-selected="true">
+        <span class="i18n" data-key="services_filter_all">Все</span>
+      </button>
+      <button class="svc-chip" data-filter="base" role="tab" aria-selected="false">
+        <span class="i18n" data-key="services_filter_basic">Базовые</span>
+      </button>
+      <button class="svc-chip" data-filter="extra" role="tab" aria-selected="false">
+        <span class="i18n" data-key="services_filter_addon">Дополнительные</span>
+      </button>
     </div>
 
     <!-- Сетка карточек -->
@@ -329,65 +338,87 @@
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">📋</span>
-          <h3 class="svc-title">Распорядок дня</h3>
+          <h3 class="svc-title i18n" data-key="svc_base1_t">Распорядок дня</h3>
         </div>
-        <p class="svc-desc">Спокойное бодрствование, присмотр, быт, гигиена, сон.</p>
+        <p class="svc-desc i18n" data-key="svc_base1_d">
+          Спокойное бодрствование, присмотр, быт, гигиена, сон.
+        </p>
       </article>
 
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🎨</span>
-          <h3 class="svc-title">Занятия и игры</h3>
+          <h3 class="svc-title i18n" data-key="svc_base2_t">Занятия и игры</h3>
         </div>
-        <p class="svc-desc">Рисование, лепка, творчество, активности, моторика, логика.</p>
+        <p class="svc-desc i18n" data-key="svc_base2_d">
+          Рисование, лепка, творчество, активности, моторика, логика.
+        </p>
       </article>
 
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🌳</span>
-          <h3 class="svc-title">Прогулки</h3>
+          <h3 class="svc-title i18n" data-key="svc_base3_t">Прогулки</h3>
         </div>
-        <p class="svc-desc">Подвижные игры на свежем воздухе в парке/дворе.</p>
+        <p class="svc-desc i18n" data-key="svc_base3_d">
+          Подвижные игры на свежем воздухе в парке/дворе.
+        </p>
       </article>
 
       <article class="svc-card" data-tier="base">
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🏫</span>
-          <h3 class="svc-title">Сопровождение</h3>
+          <h3 class="svc-title i18n" data-key="svc_base4_t">Сопровождение</h3>
         </div>
-        <p class="svc-desc">Отвести/забрать с кружка, секции, детсада, школы.</p>
+        <p class="svc-desc i18n" data-key="svc_base4_d">
+          Отвести/забрать с кружка, секции, детсада, школы.
+        </p>
       </article>
 
       <!-- ДОПОЛНИТЕЛЬНЫЕ -->
       <article class="svc-card svc-card--extra" data-tier="extra">
-        <span class="svc-badge" aria-label="по договорённости">по договорённости</span>
+        <span class="svc-badge">
+          <span class="i18n" data-key="svc_badge_extra">по договорённости</span>
+        </span>
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🍲</span>
-          <h3 class="svc-title">Питание</h3>
+          <h3 class="svc-title i18n" data-key="svc_extra1_t">Питание</h3>
         </div>
-        <p class="svc-desc">Простой перекус для ребёнка по вашему меню.</p>
+        <p class="svc-desc i18n" data-key="svc_extra1_d">
+          Простой перекус для ребёнка по вашему меню.
+        </p>
       </article>
 
       <article class="svc-card svc-card--extra" data-tier="extra">
-        <span class="svc-badge" aria-label="по договорённости">по договорённости</span>
+        <span class="svc-badge">
+          <span class="i18n" data-key="svc_badge_extra">по договорённости</span>
+        </span>
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🗑</span>
-          <h3 class="svc-title">Уборка</h3>
+          <h3 class="svc-title i18n" data-key="svc_extra2_t">Уборка</h3>
         </div>
-        <p class="svc-desc">Небольшая уборка в детской комнате.</p>
+        <p class="svc-desc i18n" data-key="svc_extra2_d">
+          Небольшая уборка в детской комнате.
+        </p>
       </article>
 
       <article class="svc-card svc-card--extra" data-tier="extra">
-        <span class="svc-badge" aria-label="по договорённости">по договорённости</span>
+        <span class="svc-badge">
+          <span class="i18n" data-key="svc_badge_extra">по договорённости</span>
+        </span>
         <div class="svc-head">
           <span class="svc-emoji" aria-hidden="true">🏃</span>
-          <h3 class="svc-title">Тренировка</h3>
+          <h3 class="svc-title i18n" data-key="svc_extra3_t">Тренировка</h3>
         </div>
-        <p class="svc-desc">Персональное фитнес-занятие/гимнастика на 30 минут.</p>
+        <p class="svc-desc i18n" data-key="svc_extra3_d">
+          Персональное фитнес-занятие/гимнастика на 30 минут.
+        </p>
       </article>
+
     </div><!-- /.svc-grid -->
   </div><!-- /.container -->
 </section>
+
 
    <!-- WHY -->
 <section id="why" class="why section panel--list">
