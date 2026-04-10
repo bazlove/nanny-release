@@ -221,6 +221,7 @@ document.addEventListener('copy', function (e) {
       foot_privacy:'Конфиденциальность',
       // отдельная ссылка в футере
       foot_cookie:'Настройки cookie',
+      foot_dev_label: 'Разработано',
 
       /* COOKIES (баннер/настройки) */
       ck_title:'Файлы cookie',
@@ -364,7 +365,8 @@ document.addEventListener('copy', function (e) {
       foot_open_gmaps:'Otvoriti u Google Maps',
       foot_privacy:'Privatnost',
       foot_cookie:'Podešavanja kolačića',
-
+      foot_dev_label: 'Razvio',
+      
       /* COOKIES */
       ck_title:'Kolačići',
       ck_desc:'Koristimo isključivo neophodne kolačiće za rad sajta i, uz vašu saglasnost, analitičke kolačiće (Google Analytics 4) za merenje posećenosti. Reklamnih kolačića nema. Saglasnost možete povući u bilo kom trenutku u „Podešavanja kolačića“. Više u Politici privatnosti.',
