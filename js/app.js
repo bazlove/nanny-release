@@ -123,12 +123,12 @@ document.addEventListener('copy', function (e) {
       xp_list_aria:'Лента опыта по годам',
       // заголовок как в HTML (множественное число прилагательных)
       xp1_h:'Частные и государственные детсады',
-      xp1_p:'Воспитатель детского сада: поддержание распорядка дня, организация развивающих занятий и досуга, развитие речи, постановка и автоматизация звуков, наблюдение и фиксация прогресса, взаимодействие с родителями.',
+      xp1_p:'<strong>Воспитатель детского сада:</strong> поддержание распорядка дня, организация развивающих занятий и досуга, развитие речи, постановка и автоматизация звуков, наблюдение и фиксация прогресса, взаимодействие с родителями.',
       xp2_h:'ВлГУ им. Столетовых',
-      xp2_p:'Высшее педагогическое образование по направлению дефектология.',
+      xp2_p:'<strong>Выпускная квалификационная работа на тему:</strong> «Развитие мышления у детей старшего дошкольного возраста с нарушением речи посредством дидактических игр». Защита государственной итоговой аттестации и получение диплома о высшем педагогическом образовании по направлению дефектология.',
       xp3_h:'World Class, фитнес-клуб',
-      xp3_p:'Фитнес-инструктор: коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2-16 лет); организация детских праздников и творческих мастер-классов.',
-
+      xp3_p:'<strong>Фитнес-инструктор:</strong> коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2–16 лет); организация детских праздников и творческих мастер-классов.',
+      
       /* REVIEWS */
       reviews_title:'Отзывы родителей',
       reviews_tabs_aria:'Категории отзывов',
@@ -274,12 +274,12 @@ document.addEventListener('copy', function (e) {
       xp_title:'Moje iskustvo',
       xp_list_aria:'Traka iskustva po godinama',
       xp1_h:'Privatni i državni vrtići',
-      xp1_p:'Vaspitač: održavanje dnevne rutine, organizacija razvojnih aktivnosti i odmora, razvoj govora, korekcija izgovora.',
+      xp1_p:'<strong>Vaspitač:</strong> održavanje dnevne rutine, organizacija razvojnih aktivnosti i odmora, razvoj govora, korekcija izgovora.',
       xp2_h:'Vladimir državni univerzitet (VlGU)',
-      xp2_p:'Visoko pedagoško obrazovanje - defektologija.',
+      xp2_p:'<strong>Završni kvalifikacioni rad na temu:</strong> „Razvoj mišljenja kod dece starijeg predškolskog uzrasta sa govornim teškoćama pomoću didaktičkih igara“. Odbrana završnog državnog ispita i sticanje diplome visokog pedagoškog obrazovanja iz oblasti defektologije.',
       xp3_h:'World Class, fitnes klub',
-      xp3_p:'Fitnes instruktor: korektivni, opšti i snaga; personalni treninzi (2–16 god); organizacija dečijih proslava i kreativnih radionica.',
-
+      xp3_p:'<strong>Fitnes instruktor:</strong> korektivni, opšti i treninzi snage; personalni treninzi (2-16 god); organizacija dečijih proslava i kreativnih radionica.',
+      
       /* REVIEWS */
       reviews_title:'Utisci roditelja',
       reviews_tabs_aria:'Kategorije utisaka',
