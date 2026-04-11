@@ -166,7 +166,8 @@ document.addEventListener('copy', function (e) {
 
       /* FAQ */
       faq_title:'Ответы на частые вопросы',
-      faq_updated_prefix:'Обновлено: {when}',
+      faq_updated_label:'Обновлено:',
+      faq_updated_value:'Ноябрь 2025',
       faq_q_meet:'Как происходит знакомство?',
       faq_a_meet_1:'Проводим короткий созвон на 10–15 минут.',
       faq_a_meet_2:'По возможности делаем совместную встречу-знакомство на 30–40 минут.',
@@ -174,7 +175,7 @@ document.addEventListener('copy', function (e) {
       faq_q_price:'Сколько стоит услуга?',
       // как в HTML: от 900 дин/час
       faq_a_price_1:'Базовая ставка в Нови-Саде: от 900 дин/час днём. Не работаю поздно вечером и ночью.',
-      faq_a_price_2:'Если двое детей: +25–50% к ставке в зависимости от их возраста.',
+      faq_a_price_2:'Если двое или трое детей: +25-75% к ставке в зависимости от их возраста.',
       faq_a_price_3:'В выходные/праздники и при срочных вызовах действует повышающий коэффициент - условия обсуждаем индивидуально.',
       faq_q_docs:'Какие документы вы предоставляете?',
       faq_a_docs_intro:'По запросу на первой встрече показываю оригиналы:',
@@ -314,14 +315,15 @@ document.addEventListener('copy', function (e) {
 
       /* FAQ */
       faq_title:'Odgovori na česta pitanja',
-      faq_updated_prefix:'Ažurirano: {when}',
+      faq_updated_label:'Ažurirano:',
+      faq_updated_value:'Novembar 2025',
       faq_q_meet:'Kako izgleda upoznavanje?',
       faq_a_meet_1:'Kratak poziv 10–15 minuta.',
       faq_a_meet_2:'Po mogućnosti zajednički susret-upoznavanje 30-40 minuta.',
       faq_a_meet_3:'Dodatno prolazimo vašu rutinu, dogovore, osobine deteta, ciljeve i nijanse.',
       faq_q_price:'Koliko košta usluga?',
       faq_a_price_1:'Osnovna cena u Novom Sadu: od 900 RSD/sat preko dana. Ne radim kasno uveče i noću.',
-      faq_a_price_2:'Ako su dvoje dece: +25-50% u zavisnosti od uzrasta.',
+      faq_a_price_2:'Ako su dvoje ili troje dece: +25-75% u zavisnosti od uzrasta.',
       faq_a_price_3:'Vikendom/praznikom i kod hitnih poziva primenjuje se koeficijent - uslove dogovaramo.',
       faq_q_docs:'Koja dokumenta pružate?',
       faq_a_docs_intro:'Na zahtev na prvom sastanku pokazujem originale:',
@@ -341,7 +343,7 @@ document.addEventListener('copy', function (e) {
       faq_q_terms:'Koji su uslovi saradnje?',
       faq_a_terms:'Ne čuvam bolesno dete (temperatura, znaci prehlade, osip, mučnina/povraćanje). O povredama/bolestima javite unapred. Ako nema verodostojnih informacija, zadržavam pravo da prekinem saradnju.',
       faq_q_taxi:'Koji su uslovi nadoknade prevoza?',
-      faq_a_taxi:'Ako narudžbina počinje pre 9:00 ili završava posle 21:00, kao i ako put traje duže od 30 minuta - molim za nadoknadu taksija od/do kuće.',
+      faq_a_taxi:'🚕 Ako narudžbina počinje pre 9:00 ili završava posle 21:00, kao i ako put traje duže od 30 minuta - molim za nadoknadu taksija od/do kuće.',
       faq_q_cancel:'Koji su uslovi otkazivanja?',
       faq_a_cancel_1:'Otkaz manje od 3 sata ranije — naplata 1 sata rada.',
       faq_a_cancel_2:'Otkaz manje od 1 sata — puna cena planiranog termina.',
