@@ -215,6 +215,8 @@ document.addEventListener('copy', function (e) {
       form_msg:'Сообщение', form_msg_ph:'Коротко опишите запрос',
       form_consent:'Даю согласие на обработку данных согласно политике.',
       form_submit:'Отправить запрос',
+      contact_call:'Позвонить',
+      form_consent_html:'Даю согласие на обработку данных согласно <a href="/privacy">политике</a>.',
 
       /* FOOTER */
       foot_open_gmaps:'Открыть в Google Maps',
@@ -362,6 +364,8 @@ document.addEventListener('copy', function (e) {
       form_msg:'Poruka', form_msg_ph:'Ukratko opišite zahtev',
       form_consent:'Dajem saglasnost za obradu podataka prema politici.',
       form_submit:'Pošalji zahtev',
+      contact_call:'Pozovite',
+      form_consent_html:'Dajem saglasnost za obradu podataka u skladu sa <a href="/privacy">politikom</a>.',
 
       /* FOOTER */
       foot_open_gmaps:'Otvoriti u Google Maps',
