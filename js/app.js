@@ -1081,8 +1081,8 @@ document.addEventListener('copy', function (e) {
   const tel  = document.getElementById('ctaTel');
 
   // ——— ВПИШИ свой номер (без плюса), а также TG-юзернейм/линк ———
-  const phoneDigits = '381XXXXXXXXX';         // пример: 381641234567
-  if (tg)  tg.href  = 'https://t.me/yourusername';
+  const phoneDigits = '381611141701';         // пример: 381641234567
+  if (tg)  tg.href  = 'https://t.me/katbazlova';
   if (vb)  vb.href  = `viber://chat?number=%2B${phoneDigits}`;
   if (tel) tel.href = `tel:+${phoneDigits}`;
 
