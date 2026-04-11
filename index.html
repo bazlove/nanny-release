@@ -927,81 +927,137 @@
 </section>
 	
 <!-- CONTACT -->
-  <section id="contact" class="section">
+<section id="contact" class="section">
   <div class="container">
     <div class="contact card">
       <div class="contact-head">
-        <h2 class="section-title">Свяжитесь со мной</h2>
-        <p class="contact-meta">
-  <span class="meta-left">Режим работы: 09:00 - 21:00</span>
-  <span class="meta-right">
-    <span class="hint" aria-label="Время указано по Белграду">
-      <span class="i">i</span>
-      <span class="tip">Время по Белграду (UTC+1 зима, UTC+2 лето)</span>
-    </span>
-	   <span class="sep" aria-hidden="true">·</span>
-    <span class="meta-lang">RU / SRB</span>
-  </span>
-</p>
-</div>
+        <h2 class="section-title i18n" data-key="contact_title">Свяжитесь со мной</h2>
 
-      <!-- ОДИНА ФОРМА в 3 колонки -->
+        <p class="contact-meta">
+          <span class="meta-left i18n" data-key="contact_hours">Режим работы: 09:00 - 21:00</span>
+
+          <span class="meta-right">
+            <span
+              class="hint i18n-attr"
+              aria-label="Время указано по Белграду"
+              data-key="contact_tz_tip"
+              data-i18n-attr="aria-label"
+            >
+              <span class="i">i</span>
+              <span class="tip i18n" data-key="contact_tz_tip">Время по Белграду (UTC+1 зима, UTC+2 лето)</span>
+            </span>
+
+            <span class="sep" aria-hidden="true">·</span>
+            <span class="meta-lang i18n" data-key="contact_lang">RU / SRB</span>
+          </span>
+        </p>
+      </div>
+
+      <!-- ОДНА ФОРМА в 3 колонки -->
       <form id="contactForm" class="contact-form contact-3col" novalidate>
-        
-		  <!-- 1) КОЛОНКА: КНОПКИ -->
-        <!-- левая колонка -->
-<div class="col col-actions">
-  <h3 class="actions-title">Контакты</h3>
-  
-	<!-- список кнопок контактов -->
-  <div class="c-list">
-    <a class="c-btn c-btn--tg"   href="https://t.me/katebazlova"   target="_blank" rel="noopener noreferrer">
-      <span class="dot" aria-hidden="true"></span><span class="txt">Telegram</span>
-    </a>
-    <a class="c-btn c-btn--vb"   href="viber://chat?number=%2B381611141701">
-      <span class="dot" aria-hidden="true"></span><span class="txt">Viber</span>
-    </a>
-    <a class="c-btn c-btn--ph"   href="tel:+381611141701">
-      <span class="dot" aria-hidden="true"></span><span class="txt">Позвонить</span>
-    </a>
-  </div>
-</div>
+
+        <!-- 1) КОЛОНКА: КНОПКИ -->
+        <div class="col col-actions">
+          <h3 class="actions-title i18n" data-key="contact_actions">Контакты</h3>
+
+          <div class="c-list">
+            <a
+              id="ctaTg"
+              class="c-btn c-btn--tg"
+              href="https://t.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="dot" aria-hidden="true"></span>
+              <span class="txt i18n" data-key="contact_tg">Telegram</span>
+            </a>
+
+            <a
+              id="ctaViber"
+              class="c-btn c-btn--vb"
+              href="viber://chat?number=%2B"
+            >
+              <span class="dot" aria-hidden="true"></span>
+              <span class="txt i18n" data-key="contact_vb">Viber</span>
+            </a>
+
+            <a
+              id="ctaTel"
+              class="c-btn c-btn--ph"
+              href="tel:+381"
+            >
+              <span class="dot" aria-hidden="true"></span>
+              <span class="txt i18n" data-key="contact_call">Позвонить</span>
+            </a>
+          </div>
+        </div>
+
         <!-- 2) КОЛОНКА: ПОЛЯ -->
         <div class="col col-fields">
           <div class="fld">
-            <label class="lbl" for="cname">Ваше имя<span class="req" aria-hidden="true">*</span></label>
-            <input class="input" id="cname" name="name" type="text" required autocomplete="name" autocapitalize="words" minlength="3"/>
-            <small class="err" id="err-name" hidden>Пожалуйста, укажите имя.</small>
-          </div>
+  <label class="lbl" for="cname">
+    <span class="i18n" data-key="form_name">Ваше имя</span>
+    <span class="req" aria-hidden="true">*</span>
+  </label>
+  <input class="input" id="cname" name="name" type="text" required autocomplete="name" autocapitalize="words" minlength="3" />
+  <small class="err i18n" id="err-name" hidden data-key="form_name_err">Пожалуйста, укажите имя.</small>
+</div>
+
+<div class="fld">
+  <label class="lbl" for="ccontact">
+    <span class="i18n" data-key="form_contact">Телефон/мессенджер</span>
+    <span class="req" aria-hidden="true">*</span>
+  </label>
+  <input class="input" id="ccontact" name="contact" type="text" required />
+  <small class="err i18n" id="err-contact" hidden data-key="form_contact_err">Пожалуйста, укажите телефон или @username.</small>
+</div>
 
           <div class="fld">
-            <label class="lbl" for="ccontact">Телефон/мессенджер<span class="req" aria-hidden="true">*</span></label>
-            <input class="input" id="ccontact" name="contact" type="text" required />
-            <small class="err" id="err-contact" hidden>Пожалуйста, укажите телефон или @username.</small>
-          </div>
-
-          <div class="fld">
-            <label class="lbl" for="ctime">Желаемая дата/время</label>
-            <input class="input" id="ctime" name="preferred_time" placeholder="напр.: пн, 01.12 · 10:00" />
+            <label class="lbl i18n" for="ctime" data-key="form_time">Желаемая дата/время</label>
+            <input
+              class="input i18n-attr"
+              id="ctime"
+              name="preferred_time"
+              placeholder="напр.: пн, 01.12 · 10:00"
+              data-key="form_time_ph"
+              data-i18n-attr="placeholder"
+            />
           </div>
         </div>
 
         <!-- 3) КОЛОНКА: СООБЩЕНИЕ + ЧЕКБОКС + КНОПКА -->
         <div class="col col-message">
           <div class="fld fld-message">
-            <label class="lbl" for="cmsg">Сообщение</label>
-            <textarea id="cmsg" name="message" class="input" rows="10" placeholder="Коротко опишите запрос"></textarea>
+            <label class="lbl i18n" for="cmsg" data-key="form_msg">Сообщение</label>
+            <textarea
+              id="cmsg"
+              name="message"
+              class="input i18n-attr"
+              rows="10"
+              placeholder="Коротко опишите запрос"
+              data-key="form_msg_ph"
+              data-i18n-attr="placeholder"
+            ></textarea>
           </div>
 
           <!-- honeypot от спама -->
-          <input type="text" name="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0" />
+          <input
+            type="text"
+            name="website"
+            autocomplete="off"
+            tabindex="-1"
+            aria-hidden="true"
+            style="position:absolute;left:-9999px;opacity:0"
+          />
 
           <label class="agree" id="agreeWrap">
-			  <input type="checkbox" id="cagree" name="agree" required>
-            <span>Даю согласие на обработку данных согласно <a href="/privacy">политике</a>.</span>
+            <input type="checkbox" id="cagree" name="agree" required>
+            <span class="i18n" data-key="form_consent_html" data-i18n-html>
+              Даю согласие на обработку данных согласно <a href="/privacy">политике</a>.
+            </span>
           </label>
 
-          <button id="contactSubmit" type="submit" class="btn btn-primary btn-lg">Отправить запрос</button>
+          <button id="contactSubmit" type="submit" class="btn btn-primary btn-lg i18n" data-key="form_submit">Отправить запрос</button>
           <div id="contactNotice" class="subnote"></div>
         </div>
       </form>
