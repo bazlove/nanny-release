@@ -964,7 +964,7 @@
             <a
               id="ctaTg"
               class="c-btn c-btn--tg"
-              href="https://t.me/katbazlova"
+              href="https://t.me/katebazlova"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -1066,78 +1066,118 @@
 </section>
 
 <!-- Back to top -->
-<nav class="back-to-top" aria-label="Навигация по странице">
-  <a href="#top" class="link-ghost back-top-link" aria-label="Вернуться к началу страницы">
+<nav
+  class="back-to-top i18n-attr"
+  aria-label="Навигация по странице"
+  data-key="backtop_nav_aria"
+  data-i18n-attr="aria-label"
+>
+  <a
+    href="#top"
+    class="link-ghost back-top-link i18n-attr"
+    aria-label="Вернуться к началу страницы"
+    data-key="backtop_link_aria"
+    data-i18n-attr="aria-label"
+  >
     <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
       <path fill="currentColor" d="M7.41 15.59 12 11l4.59 4.59L18 14l-6-6-6 6z"/>
     </svg>
-    <span class="back-top-label" data-i18n="text:link_back_top">Наверх</span>
+    <span class="back-top-label i18n" data-key="link_back_top">Наверх</span>
   </a>
 </nav>
 
 <footer class="site-footer">
   <div class="container footer-bar">
-    <div class="foot-left" aria-label="Локация и копирайт">
+    <div
+      class="foot-left i18n-attr"
+      aria-label="Локация и копирайт"
+      data-key="foot_left_aria"
+      data-i18n-attr="aria-label"
+    >
       <span class="foot-loc" aria-hidden="true"></span>
+
       <a
-        class="link-dashed"
+        class="link-dashed i18n-attr"
         href="https://maps.app.goo.gl/joCXvsRE9F43ht3T7"
         target="_blank"
         rel="noopener noreferrer"
+        title="Открыть в Google Maps"
+        data-key="foot_open_gmaps"
+        data-i18n-attr="title"
       >
-        <span class="txt" data-i18n="text:city">Нови-Сад</span>
+        <span class="txt i18n" data-key="city">Нови-Сад</span>
       </a>
-      <span>·</span>
+
+      <span aria-hidden="true">·</span>
       <span class="foot-copy">© 2026 Ekaterina Bazlova</span>
     </div>
 
-    <div class="foot-dev" aria-label="Ссылка на сайт разработчика">
+    <div
+      class="foot-dev i18n-attr"
+      aria-label="Ссылка на сайт разработчика"
+      data-key="foot_dev_wrap_aria"
+      data-i18n-attr="aria-label"
+    >
       <a
-        class="dev-credit"
+        class="dev-credit i18n-attr"
         href="https://cv.bazlove.com/"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Разработано @bazlov"
         title="Перейти на сайт"
+        data-key="foot_dev_link_aria"
+        data-i18n-attr="aria-label"
       >
-        <span class="dev-credit__front">
-          <span class="txt" data-i18n="text:foot_dev_label">Разработано</span>
+        <span
+          class="dev-credit__front i18n-attr"
+          title="Перейти на сайт"
+          data-key="foot_dev_title"
+          data-i18n-attr="title"
+        >
+          <span class="txt i18n" data-key="foot_dev_label">Разработано</span>
           <span class="dev-credit__handle">@bazlov</span>
         </span>
         <span class="dev-credit__back">cv.bazlove.com</span>
       </a>
     </div>
 
-    <nav class="foot-nav" aria-label="Нижняя навигация">
+    <nav
+      class="foot-nav i18n-attr"
+      aria-label="Нижняя навигация"
+      data-key="foot_nav_aria"
+      data-i18n-attr="aria-label"
+    >
       <a href="#services" class="link-dashed">
-        <span class="txt" data-i18n="text:nav_services">Услуги</span>
+        <span class="txt i18n" data-key="nav_services">Услуги</span>
       </a>
       <span aria-hidden="true">·</span>
 
       <a href="#reviews" class="link-dashed">
-        <span class="txt" data-i18n="text:nav_reviews">Отзывы</span>
+        <span class="txt i18n" data-key="nav_reviews">Отзывы</span>
       </a>
       <span aria-hidden="true">·</span>
 
       <a href="#calc" class="link-dashed">
-        <span class="txt" data-i18n="text:nav_price">Цена</span>
+        <span class="txt i18n" data-key="nav_price">Цена</span>
       </a>
       <span aria-hidden="true">·</span>
 
       <a href="/privacy" class="link-dashed">
-        <span class="txt" data-i18n="text:foot_privacy">Конфиденциальность</span>
+        <span class="txt i18n" data-key="foot_privacy">Конфиденциальность</span>
       </a>
       <span aria-hidden="true">·</span>
 
       <a
         href="#"
-        class="link-dashed js-cookie-open"
+        class="link-dashed js-cookie-open i18n-attr"
         aria-haspopup="dialog"
         aria-controls="ck-modal"
         aria-label="Открыть настройки cookie"
         rel="nofollow"
+        data-key="foot_cookie_open_aria"
+        data-i18n-attr="aria-label"
       >
-        <span class="txt" data-i18n="text:foot_cookie">Настройки cookie</span>
+        <span class="txt i18n" data-key="foot_cookie">Настройки cookie</span>
       </a>
     </nav>
   </div>
