@@ -225,6 +225,16 @@ document.addEventListener('copy', function (e) {
       // отдельная ссылка в футере
       foot_cookie:'Настройки cookie',
       foot_dev_label: 'Разработано',
+      backtop_nav_aria:'Навигация по странице',
+      backtop_link_aria:'Вернуться к началу страницы',
+
+      foot_left_aria:'Локация и копирайт',
+      foot_dev_wrap_aria:'Ссылка на сайт разработчика',
+      foot_dev_link_aria:'Разработано @bazlov',
+      foot_dev_title:'Перейти на сайт',
+
+      foot_nav_aria:'Нижняя навигация',
+      foot_cookie_open_aria:'Открыть настройки cookie',
 
       /* COOKIES (баннер/настройки) */
       ck_title:'Файлы cookie',
@@ -372,6 +382,16 @@ document.addEventListener('copy', function (e) {
       foot_privacy:'Privatnost',
       foot_cookie:'Podešavanja kolačića',
       foot_dev_label: 'Razvio',
+      backtop_nav_aria:'Navigacija po stranici',
+      backtop_link_aria:'Povratak na vrh stranice',
+
+      foot_left_aria:'Lokacija i autorska oznaka',
+      foot_dev_wrap_aria:'Link ka sajtu developera',
+      foot_dev_link_aria:'Razvio @bazlov',
+      foot_dev_title:'Idi na sajt',
+
+      foot_nav_aria:'Donja navigacija',
+      foot_cookie_open_aria:'Otvori podešavanja kolačića',
       
       /* COOKIES */
       ck_title:'Kolačići',
