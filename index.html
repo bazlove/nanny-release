@@ -515,14 +515,36 @@
 <section id="reviews" class="rv-reviews">
   <div class="container">
     <div class="rv-reviews__head">
-      <h2 class="rv-title">Отзывы родителей</h2>
+      <h2 class="rv-title i18n" data-key="reviews_title">Отзывы родителей</h2>
 
       <!-- Чипы статичные -->
-      <ul class="rv-chips" role="tablist" aria-label="Категории отзывов">
-        <li><button type="button" class="rv-chip is-active" data-filter="all" role="tab" aria-selected="true">Все</button></li>
-        <li><button type="button" class="rv-chip" data-filter="toddlers" role="tab" aria-selected="false">Малыши</button></li>
-        <li><button type="button" class="rv-chip" data-filter="preschool" role="tab" aria-selected="false">3-7 лет</button></li>
-        <li><button type="button" class="rv-chip" data-filter="two" role="tab" aria-selected="false">2 детей</button></li>
+      <ul
+        class="rv-chips i18n-attr"
+        role="tablist"
+        aria-label="Категории отзывов"
+        data-key="reviews_tabs_aria"
+        data-i18n-attr="aria-label"
+      >
+        <li>
+          <button type="button" class="rv-chip is-active" data-filter="all" role="tab" aria-selected="true">
+            <span class="i18n" data-key="reviews_filter_all">Все</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="rv-chip" data-filter="toddlers" role="tab" aria-selected="false">
+            <span class="i18n" data-key="reviews_filter_toddlers">Малыши</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="rv-chip" data-filter="preschool" role="tab" aria-selected="false">
+            <span class="i18n" data-key="reviews_filter_preschool">3-7 лет</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="rv-chip" data-filter="two" role="tab" aria-selected="false">
+            <span class="i18n" data-key="reviews_filter_two">2 детей</span>
+          </button>
+        </li>
       </ul>
     </div>
 
