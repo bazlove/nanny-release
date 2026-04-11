@@ -286,7 +286,7 @@ document.addEventListener('copy', function (e) {
       reviews_filter_all:'Svi',
       reviews_filter_two:'2 dece',
       reviews_filter_toddlers:'Mališani',
-      reviews_filter_preschool:'3–7',
+      reviews_filter_preschool:'3–7 god',
       reviews_region_label:'Karusel utisaka',
 
       /* SLOTS */
