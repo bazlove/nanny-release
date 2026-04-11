@@ -585,7 +585,7 @@
 <section id="calc">
   <div class="container card calc-elevate">
     <div class="calc-head">
-      <h2 style="margin:0">Калькулятор стоимости (Нови-Сад)</h2>
+      <h2 class="i18n" data-key="calc_title" style="margin:0">Калькулятор стоимости (Нови-Сад)</h2>
     </div>
 
     <div class="calc-grid">
@@ -593,93 +593,114 @@
       <div class="field">
         <div class="label-row">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.75a10.25 10.25 0 1 0 0 20.5 10.25 10.25 0 0 0 0-20.5Zm0 1.5a8.75 8.75 0 1 1 0 17.5 8.75 8.75 0 0 1 0-17.5Zm.75 3a.75.75 0 0 0-1.5 0v6.19l-3.28 3.28a.75.75 0 1 0 1.06 1.06l3.47-3.47c.16-.16.25-.38.25-.6V6.25Z"/></svg>
-          <span>Часы (кол-во за визит)</span>
-          <span class="hint" tabindex="0" aria-label="Минимум от 2-х часов">
-            <span class="i">i</span><span class="tip">Минимум от 2-х часов</span>
+          <span class="i18n" data-key="calc_hours_label">Часы (кол-во за визит)</span>
+          <span class="hint i18n-attr" tabindex="0" aria-label="Минимум от 2-х часов" data-key="calc_hours_hint" data-i18n-attr="aria-label">
+            <span class="i">i</span>
+            <span class="tip i18n" data-key="calc_hours_hint">Минимум от 2-х часов</span>
           </span>
         </div>
         <input id="hours" class="input" type="number" min="2" max="10" step="0.5" value="4" aria-describedby="hoursErr" />
-        <div id="hoursErr" class="field-error" style="display:none">Минимум 2 часа за визит</div>
-        <label class="subcheck"><input id="optA" type="checkbox"> <span>Сделать лёгкий перекус для ребёнка<span class="subnote">+300</span></span></label>
+        <div id="hoursErr" class="field-error i18n" style="display:none" data-key="calc_hours_err">Минимум 2 часа за визит</div>
+        <label class="subcheck">
+          <input id="optA" type="checkbox">
+          <span>
+            <span class="i18n" data-key="calc_optA">Сделать лёгкий перекус для ребёнка</span>
+            <span class="subnote i18n" data-key="calc_optA_add">+300</span>
+          </span>
+        </label>
       </div>
 
       <!-- Колонка 2: Дети -->
       <div class="field">
         <div class="label-row label-kids">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-6.5 8.25a6.5 6.5 0 0 1 13 0H5.5Z"/></svg>
-          <span>Дети</span>
-          <span class="hint" tabindex="0" aria-label="2 детей: +25%; если один младше 2 лет: +50% • 3 детей: +75%">
-            <span class="i">i</span><span class="tip">2 детей: +25% • если один &lt; 2 лет: +50% • 3 детей: +75%</span>
+          <span class="i18n" data-key="calc_kids_label">Дети</span>
+          <span class="hint i18n-attr" tabindex="0" aria-label="2 детей: +25%; если один младше 2 лет: +50% • 3 детей: +75%" data-key="calc_kids_hint" data-i18n-attr="aria-label">
+            <span class="i">i</span>
+            <span class="tip i18n" data-key="calc_kids_hint">2 детей: +25% • если один &lt; 2 лет: +50% • 3 детей: +75%</span>
           </span>
         </div>
         <select id="kids" class="input">
-          <option value="1" selected>1 ребёнок</option>
-          <option value="2">2 ребёнка</option>
-          <option value="2_infant">2 ребёнка (если один младше 2-х лет)</option>
-		  <option value="3">3 ребёнка</option>
+          <option value="1" selected class="i18n" data-key="calc_k1">1 ребёнок</option>
+          <option value="2" class="i18n" data-key="calc_k2">2 ребёнка</option>
+          <option value="2_infant" class="i18n" data-key="calc_k2inf">2 ребёнка (если один младше 2-х лет)</option>
+          <option value="3" class="i18n" data-key="calc_k3">3 ребёнка</option>
         </select>
-        <label class="subcheck"><input id="optB" type="checkbox"> <span>Сделать уборку в детской комнате<span class="subnote">+300</span></span></label>
+        <label class="subcheck">
+          <input id="optB" type="checkbox">
+          <span>
+            <span class="i18n" data-key="calc_optB">Сделать уборку в детской комнате</span>
+            <span class="subnote i18n" data-key="calc_optB_add">+300</span>
+          </span>
+        </label>
       </div>
 
       <!-- Колонка 3: День недели -->
       <div class="field">
         <div class="label-row">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2.75a.75.75 0 0 0-1.5 0V4H3.75A1.75 1.75 0 0 0 2 5.75V8h20V5.75A1.75 1.75 0 0 0 20.25 4H18.5V2.75a.75.75 0 0 0-1.5 0V4h-8V2.75ZM22 9.5H2V18.25A1.75 1.75 0 0 0 3.75 20h16.5A1.75 1.75 0 0 0 22 18.25V9.5Z"/></svg>
-          <span>День недели</span>
-          <span class="hint" tabindex="0" aria-label="Коэффициент">
-            <span class="i">i</span><span class="tip">Выходной/праздник: +25%</span>
+          <span class="i18n" data-key="calc_day_label">День недели</span>
+          <span class="hint i18n-attr" tabindex="0" aria-label="Коэффициент" data-key="calc_day_hint" data-i18n-attr="aria-label">
+            <span class="i">i</span>
+            <span class="tip i18n" data-key="calc_day_hint">Выходной/праздник: +25%</span>
           </span>
         </div>
         <select id="dayType" class="input">
-          <option value="weekday" selected>Будни</option>
-          <option value="weekend">Выходной/праздник</option>
+          <option value="weekday" selected class="i18n" data-key="calc_day_weekday">Будни</option>
+          <option value="weekend" class="i18n" data-key="calc_day_weekend">Выходной/праздник</option>
         </select>
-        <label class="subcheck"><input id="optC" type="checkbox"> <span>Провести фитнес-занятие на 30 мин<span class="subnote">+600</span></span></label>
+        <label class="subcheck">
+          <input id="optC" type="checkbox">
+          <span>
+            <span class="i18n" data-key="calc_optC">Провести фитнес-занятие на 30 мин</span>
+            <span class="subnote i18n" data-key="calc_optC_add">+600</span>
+          </span>
+        </label>
       </div>
     </div>
 
     <!-- Пресеты -->
-    <div class="presets" aria-label="Быстрый выбор">
-      <button class="tag" id="p2h">2 ч</button>
-      <button class="tag" id="p3h">3 ч</button>
-      <button class="tag" id="p4h">4 ч</button>
-	  <button class="tag" id="p5h">5 ч</button>
-	  <button class="tag" id="pWeekday">Будни</button>
-      <button class="tag" id="pWeekend">Выходной</button>
-      <button class="tag" id="pKids2">Два ребёнка</button>
+    <div class="presets i18n-attr" aria-label="Быстрый выбор" data-key="calc_presets_aria" data-i18n-attr="aria-label">
+      <button class="tag i18n" id="p2h" data-key="p2h">2 ч</button>
+      <button class="tag i18n" id="p3h" data-key="p3h">3 ч</button>
+      <button class="tag i18n" id="p4h" data-key="p4h">4 ч</button>
+      <button class="tag i18n" id="p5h" data-key="p5h">5 ч</button>
+      <button class="tag i18n" id="pWeekday" data-key="pWeekday">Будни</button>
+      <button class="tag i18n" id="pWeekend" data-key="pWeekend">Выходной</button>
+      <button class="tag i18n" id="pKids2" data-key="pKids2">Два ребёнка</button>
     </div>
 
     <!-- Результат -->
-    <div id="calcNotice" class="note notice">Минимальный расчёт ведётся от 2 часов.</div>
+    <div id="calcNotice" class="note notice i18n" data-key="calc_notice">Минимальный расчёт ведётся от 2 часов.</div>
 
     <div class="result-card">
-  <div class="calc-summary">
-    <div class="result-row">
-      <div id="result" style="font-weight:700" aria-live="polite">Итог: — дин</div>
-      <a href="#" id="shareLink" class="share-link">
-        <span class="icon">🔗</span>
-        <span class="txt">Поделиться</span>
-      </a>
+      <div class="calc-summary">
+        <div class="result-row">
+          <div id="result" style="font-weight:700" aria-live="polite">Итог: — дин</div>
+          <a href="#" id="shareLink" class="share-link">
+            <span class="icon">🔗</span>
+            <span class="txt i18n" data-key="calc_share">Поделиться</span>
+          </a>
+        </div>
+
+        <div class="res-sep"></div>
+
+        <div class="calc-line">
+          <small id="breakdown" class="calc-rate" style="color:#555"></small>
+          <div class="calc-chips" id="badges"></div>
+        </div>
+
+        <label id="eurWrap" class="calc-eur">
+          <input id="eurToggle" type="checkbox">
+          <span>Показать итог в евро (курс <span id="eurRateLabel">117</span> дин/€)</span>
+        </label>
+
+        <div class="cta-bottom-wrap">
+          <a id="ctaForm" class="btn btn-primary i18n" data-key="calc_cta" href="#contact">Уточнить стоимость</a>
+        </div>
+      </div>
     </div>
-
-    <div class="res-sep"></div>
-
-    <div class="calc-line">
-      <small id="breakdown" class="calc-rate" style="color:#555"></small>
-      <div class="calc-chips" id="badges"></div>
-    </div>
-
-    <label id="eurWrap" class="calc-eur">
-      <input id="eurToggle" type="checkbox">
-      <span>Показать итог в евро (курс <span id="eurRateLabel">117</span> дин/€)</span>
-    </label>
-
-    <div class="cta-bottom-wrap">
-      <a id="ctaForm" class="btn btn-primary" href="#contact">Уточнить стоимость</a>
-    		</div>
-  		</div>
-	</div>
-</div>
+  </div>
 </section>
 
 <!-- FAQ -->
