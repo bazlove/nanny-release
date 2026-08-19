@@ -1168,22 +1168,45 @@ document.addEventListener('copy', function (e) {
     form.setAttribute('aria-busy', 'true');
 
     // 5) отправка (Google Apps Script Web App)
-    const fd = new FormData(form);
-    try{
-      const res = await fetch('https://script.google.com/macros/s/AKfycbyUhl5Vc9r_kDgzYpx96iuvGLXPql9Y4XtKyPrtMtePRw2Tlsrhvp6x_-ktyr1uiE12/exec', {
-        method:'POST',
-        body: fd
-      });
-      if (!res.ok) throw new Error('bad_status');
+const fd = new FormData(form);
 
-      if (note) note.textContent = 'Спасибо! Ваш запрос отправлен. Я отвечу в ближайшее время.';
-      form.reset();
-      t0 = Date.now();
-      window.gtag?.('event','contact_form_submit',{success:true});
-    } catch (err) {
-      if (note) note.textContent = 'Не получилось отправить запрос... Пожалуйста, напишите мне в Telegram.';
-      window.gtag?.('event','contact_form_submit',{success:false});
-    } finally {
+try {
+  await fetch(
+    'https://script.google.com/macros/s/AKfycbyUhl5Vc9r_kDgzYpx96iuvGLXPql9Y4XtKyPrtMtePRw2Tlsrhvp6x_-ktyr1uiE12/exec',
+    {
+      method: 'POST',
+      body: fd,
+      mode: 'no-cors'
+    }
+  );
+
+  if (note) {
+    note.textContent =
+      'Спасибо! ✅ Ваш запрос отправлен. Я отвечу в ближайшее время.';
+  }
+
+  form.reset();
+  t0 = Date.now();
+
+  window.gtag?.('event', 'contact_form_submit', {
+    success: true
+  });
+
+} catch (err) {
+
+  console.error('Contact form send error:', err);
+
+  if (note) {
+    note.textContent =
+      '❌ Не получилось отправить запрос. Пожалуйста, напишите мне в Telegram.';
+  }
+
+  window.gtag?.('event', 'contact_form_submit', {
+    success: false
+  });
+}
+    
+    finally {
       // 6) вернуть UI в норму
       form.removeAttribute('aria-busy');
       if (submitBtn) {
