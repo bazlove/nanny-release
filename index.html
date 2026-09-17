@@ -59,7 +59,7 @@
     var raw = localStorage.getItem('cookieConsent:v1');
     if (raw){
       var c = JSON.parse(raw)||{};
-      var ana = !!c.analytics, mkt = !!c.marketing;
+      var ana = !!c.analytics, mkt = false;
       gtag('consent','update',{
         analytics_storage:  ana ? 'granted' : 'denied',
         ad_storage:         mkt ? 'granted' : 'denied',
@@ -72,15 +72,6 @@
 	</script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-74CLB809PN"></script>
-
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "wnbr5dagxb");
-</script>
-	
 <script>
   gtag('js', new Date());
   gtag('config','G-74CLB809PN',{ anonymize_ip:true });
@@ -1064,7 +1055,7 @@
           <label class="agree" id="agreeWrap">
             <input type="checkbox" id="cagree" name="agree" required>
             <span class="i18n" data-key="form_consent_html" data-i18n-html>
-              Даю согласие на обработку данных согласно <a href="/privacy">политике</a>.
+              Я ознакомился(-ась) с <a href="/privacy/">Политикой конфиденциальности</a>.
             </span>
           </label>
 
@@ -1173,7 +1164,7 @@
       </a>
       <span aria-hidden="true">·</span>
 
-      <a href="/privacy" class="link-dashed">
+      <a href="/privacy/" class="link-dashed">
         <span class="txt i18n" data-key="foot_privacy">Конфиденциальность</span>
       </a>
       <span aria-hidden="true">·</span>
@@ -1199,19 +1190,19 @@
   <div class="ck-inner">
     <div class="ck-text">
       <strong>Сайт использует файлы cookie</strong>
-      <p>Они помогают работать сайту, анализировать трафик и показывать релевантный контент.</p>
-      <p>Нажимая «Принять все», вы соглашаетесь на использование аналитических и маркетинговых cookie.</p>
+      <p>Необходимые настройки обеспечивают работу сайта, а аналитические помогают оценивать посещаемость.</p>
+      <p>Google Analytics включается только с вашего согласия. Рекламные и маркетинговые cookie не используются.</p>
     </div>
 
     <!-- две вертикальные кнопки справа: сверху «Принять все», ниже «Только необходимые» -->
     <div class="ck-actions">
-      <button class="ck-btn ck-primary" id="ck-accept">Принять все</button>
+      <button class="ck-btn ck-primary" id="ck-accept">Принять аналитику</button>
       <button class="ck-btn ck-ghost"   id="ck-necessary">Только необходимые</button>
     </div>
 
     <!-- ОБЕ ссылки строго под текстом -->
     <div class="ck-links">
-      <a class="ck-footlink" href="/privacy" target="_blank" rel="noopener noreferrer">Политика конфиденциальности</a>
+      <a class="ck-footlink" href="/privacy/" target="_blank" rel="noopener noreferrer">Политика конфиденциальности</a>
       <a class="ck-footlink" id="ck-settings-link" href="#">Настроить cookie</a>
     </div>
   </div>
@@ -1249,22 +1240,11 @@
         </div>
         <p class="ck-note">Помогают измерять посещаемость и улучшать интерфейс.</p>
       </li>
-
-      <li class="ck-group">
-        <div class="ck-row">
-          <span class="ck-name">Маркетинг</span>
-          <label class="ck-switch">
-            <input id="ck-mkt" type="checkbox" />
-            <span class="ck-slider" aria-hidden="true"></span>
-          </label>
-        </div>
-        <p class="ck-note">Релевантные предложения и реклама (например, Google Ads / Meta / TikTok).</p>
-      </li>
     </ul>
 
     <div class="ck-foot">
       <button class="ck-btn ck-ghost"   id="ck-save-necessary">Только необходимые</button>
-      <button class="ck-btn ck-outline" id="ck-save-all">Принять все</button>
+      <button class="ck-btn ck-outline" id="ck-save-all">Принять аналитику</button>
       <button class="ck-btn ck-primary" id="ck-save">Сохранить выбор</button>
     </div>
   </div>
