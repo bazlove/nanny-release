@@ -101,8 +101,7 @@ document.addEventListener('copy', function (e) {
       /* SERVICES */
       services_title:'Услуги',
       services_hint:'Дополнительные услуги учитываются в калькуляторе через чекбокс.',
-      services_filter_all:'Все', services_filter_basic:'Базовые', services_filter_addon:'Дополнительные',
-      svc_badge_extra:'по договорённости',
+      svc_badge_extra:'Дополнительно',
       svc_base1_t:'Распорядок дня',      svc_base1_d:'Спокойное бодрствование, присмотр, быт, гигиена, сон.',
       svc_base2_t:'Занятия и игры',      svc_base2_d:'Рисование, лепка, творчество, активности, моторика, логика.',
       svc_base3_t:'Прогулки',            svc_base3_d:'Подвижные игры на свежем воздухе в парке/дворе.',
@@ -113,10 +112,10 @@ document.addEventListener('copy', function (e) {
 
       /* WHY */
       why_title:'Почему я',
-      why1_t:'Безопасность',           why1_d:'Сертификаты CPR/First Aid, учёт аллергий, чек-лист на случай ЧП.',
-      why2_t:'Эмпатия и границы',      why2_d:'Спокойная адаптация и дисциплина, уважение к личности ребёнка.',
-      why3_t:'Игры без экранов',       why3_d:'Занятия по возрасту: моторика, творчество, прогулки - без гаджетов.',
-      why4_t:'Режим семьи',            why4_d:'Поддержание вашего распорядка, правил и ценностей семьи.',
+      why1_t:'Безопасность и ясные правила', why1_d:'Учитываю аллергии и заранее фиксирую действия на случай ЧП; есть сертификаты CPR/First Aid.',
+      why2_t:'Спокойная адаптация',          why2_d:'Выстраиваю контакт постепенно, сохраняю границы и уважение к личности ребёнка.',
+      why3_t:'Занятия по возрасту',          why3_d:'Прогулки, моторика и творчество без экранов — с учётом возраста ребёнка.',
+      why4_t:'Привычный режим семьи',        why4_d:'Поддерживаю ваш распорядок, договорённости и семейные правила во время визита.',
 
       /* EXPERIENCE */
       xp_title:'Мой опыт',
@@ -128,6 +127,9 @@ document.addEventListener('copy', function (e) {
       xp2_p:'<strong>Выпускная квалификационная работа на тему:</strong> «Развитие мышления у детей старшего дошкольного возраста с нарушением речи посредством дидактических игр». Защита государственной итоговой аттестации и получение диплома о высшем педагогическом образовании по направлению дефектология.',
       xp3_h:'World Class, фитнес-клуб',
       xp3_p:'<strong>Фитнес-инструктор:</strong> коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2–16 лет); организация детских праздников и творческих мастер-классов.',
+      xp4_period:'2018 — сейчас',
+      xp4_h:'Частная няня',
+      xp4_p:'<strong>Частная няня:</strong> с 2018 года занимаюсь частной работой с семьями в роли няни. Беру на себя повседневный уход, прогулки, игры и развивающие занятия с учётом возраста и привычного режима ребёнка. Поддерживаю семейные правила и договорённости с родителями.',
       
       /* REVIEWS */
       reviews_title:'Отзывы родителей',
@@ -166,8 +168,6 @@ document.addEventListener('copy', function (e) {
 
       /* FAQ */
       faq_title:'Ответы на частые вопросы',
-      faq_updated_label:'Обновлено:',
-      faq_updated_value:'Ноябрь 2025',
       faq_q_meet:'Как происходит знакомство?',
       faq_a_meet_1:'Проводим короткий созвон на 10–15 минут.',
       faq_a_meet_2:'По возможности делаем совместную встречу-знакомство на 30–40 минут.',
@@ -267,8 +267,7 @@ document.addEventListener('copy', function (e) {
       /* SERVICES */
       services_title:'Usluge',
       services_hint:'Dodatne usluge ulaze u kalkulator preko ček-boksa.',
-      services_filter_all:'Sve', services_filter_basic:'Osnovne', services_filter_addon:'Dodatne',
-      svc_badge_extra:'po dogovoru',
+      svc_badge_extra:'Dodatno',
       svc_base1_t:'Raspored dana',     svc_base1_d:'Miran boravak, briga, higijena, san.',
       svc_base2_t:'Aktivnosti i igre',  svc_base2_d:'Crtanje, plastelin, kreativnost, motorika, logika.',
       svc_base3_t:'Šetnje',             svc_base3_d:'Igre na otvorenom u parku/dvorištu.',
@@ -279,10 +278,10 @@ document.addEventListener('copy', function (e) {
 
       /* WHY */
       why_title:'Zašto ja',
-      why1_t:'Bezbednost',           why1_d:'Sertifikati CPR/Prva pomoć, alergije, ček-lista za vanredne situacije.',
-      why2_t:'Empatija i granice',   why2_d:'Meka adaptacija i disciplina, poštovanje ličnosti deteta.',
-      why3_t:'Igre bez ekrana',      why3_d:'Aktivnosti po uzrastu: motorika, kreativnost, šetnje — bez ekrana.',
-      why4_t:'Režim porodice',       why4_d:'Održavanje vaše rutine, pravila i porodičnih vrednosti.',
+      why1_t:'Bezbednost i jasna pravila', why1_d:'Vodim računa o alergijama i unapred dogovaram postupanje u hitnim situacijama; imam CPR/First Aid sertifikate.',
+      why2_t:'Mirna adaptacija',            why2_d:'Kontakt gradim postepeno, uz jasne granice i poštovanje ličnosti deteta.',
+      why3_t:'Aktivnosti prema uzrastu',    why3_d:'Šetnje, motorika i kreativne aktivnosti bez ekrana — u skladu sa uzrastom deteta.',
+      why4_t:'Porodična rutina',            why4_d:'Tokom posete pratim vaš raspored, dogovore i porodična pravila.',
 
       /* EXPERIENCE */
       xp_title:'Moje iskustvo',
@@ -293,6 +292,9 @@ document.addEventListener('copy', function (e) {
       xp2_p:'<strong>Završni kvalifikacioni rad na temu:</strong> „Razvoj mišljenja kod dece starijeg predškolskog uzrasta sa govornim teškoćama pomoću didaktičkih igara“. Odbrana završnog državnog ispita i sticanje diplome visokog pedagoškog obrazovanja iz oblasti defektologije.',
       xp3_h:'World Class, fitnes klub',
       xp3_p:'<strong>Fitnes instruktor:</strong> korektivni, opšti i treninzi snage; personalni treninzi (2-16 god); organizacija dečijih proslava i kreativnih radionica.',
+      xp4_period:'2018 — danas',
+      xp4_h:'Privatna dadilja',
+      xp4_p:'<strong>Privatna dadilja:</strong> privatnim angažmanima sa porodicama bavim se od 2018. Brinem o svakodnevnoj rutini, šetnjama, igrama i razvojnim aktivnostima u skladu sa uzrastom i uobičajenim ritmom deteta. Poštujem porodična pravila i dogovore sa roditeljima.',
       
       /* REVIEWS */
       reviews_title:'Utisci roditelja',
@@ -328,8 +330,6 @@ document.addEventListener('copy', function (e) {
 
       /* FAQ */
       faq_title:'Odgovori na česta pitanja',
-      faq_updated_label:'Ažurirano:',
-      faq_updated_value:'Novembar 2025',
       faq_q_meet:'Kako izgleda upoznavanje?',
       faq_a_meet_1:'Kratak poziv 10–15 minuta.',
       faq_a_meet_2:'Po mogućnosti zajednički susret-upoznavanje 30-40 minuta.',
@@ -1436,29 +1436,6 @@ const SlotBusinessTime = (() => {
       setTimeout(() => wishInput?.focus(), 350);
     }
   }); // ← без { passive:true }
-})();
-
-
-// Фильтр "Все / Базовые / Дополнительные"
-(() => {
-  const root = document.querySelector('#services');
-  if (!root) return;
-
-  const chips = root.querySelectorAll('.svc-chip');
-  const cards = root.querySelectorAll('.svc-card');
-
-  chips.forEach(ch => ch.addEventListener('click', () => {
-    chips.forEach(c => c.classList.remove('is-active'));
-    ch.classList.add('is-active');
-
-    const f = ch.dataset.filter;
-    cards.forEach(card => {
-      const tier = card.dataset.tier; // "base" | "extra"
-      card.style.display =
-        f === 'all' ? '' :
-        (f === tier ? '' : 'none');
-    });
-  }));
 })();
 
 
