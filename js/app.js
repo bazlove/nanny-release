@@ -211,6 +211,7 @@ document.addEventListener('copy', function (e) {
       contact_actions:'Контакты', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
       form_name:'Ваше имя', form_name_err:'Пожалуйста, укажите имя.',
       form_contact:'Телефон/мессенджер', form_contact_err:'Пожалуйста, укажите телефон или username.',
+      form_consent_err:'Пожалуйста, подтвердите согласие на обработку данных.',
       form_time:'Желаемая дата/время', form_time_ph:'напр.: пн, 01.12 · 10:00',
       form_msg:'Сообщение', form_msg_ph:'Коротко опишите запрос',
       form_consent:'Даю согласие на обработку данных согласно политике.',
@@ -370,6 +371,7 @@ document.addEventListener('copy', function (e) {
       contact_actions:'Kontakti', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
       form_name:'Vaše ime', form_name_err:'Molim unesite ime.',
       form_contact:'Telefon/mesežer', form_contact_err:'Molim unesite telefon ili username.',
+      form_consent_err:'Molim potvrdite saglasnost za obradu podataka.',
       form_time:'Željeni datum/vreme', form_time_ph:'npr.: pon, 01.12 · 10:00',
       form_msg:'Poruka', form_msg_ph:'Ukratko opišite zahtev',
       form_consent:'Dajem saglasnost za obradu podataka prema politici.',
@@ -1200,121 +1202,10 @@ const SlotBusinessTime = (() => {
   const vb   = document.getElementById('ctaViber');
   const tel  = document.getElementById('ctaTel');
 
-  // ——— ВПИШИ свой номер (без плюса), а также TG-юзернейм/линк ———
-  const phoneDigits = '381611141701';         // пример: 381641234567
+  const phoneDigits = '381611141701';
   if (tg)  tg.href  = 'https://t.me/katebazlova';
   if (vb)  vb.href  = `viber://chat?number=%2B${phoneDigits}`;
   if (tel) tel.href = `tel:+${phoneDigits}`;
-
-  // ——— форма ———
-  const form   = document.getElementById('contactForm');
-  if (!form) return;
-
-  const note   = document.getElementById('contactNotice');
-  const name   = document.getElementById('cname');
-  const cont   = document.getElementById('ccontact');
-  const time   = document.getElementById('ctime');      // уйдёт в FormData
-  const msg    = document.getElementById('cmsg');
-  const agree  = document.getElementById('cagree');
-  const eName  = document.getElementById('err-name');
-  const eCont  = document.getElementById('err-contact');
-  const submitBtn = document.getElementById('contactSubmit');
-
-  let t0 = Date.now();
-
-  // подсветка чекбокса при изменении
-  agree?.addEventListener('change', () => agree.classList.remove('is-error'));
-
-  // утилиты
-  const setErr = (el, small, on) => {
-    if (!el) return;
-    el.classList.toggle('invalid', on);
-    el.setAttribute('aria-invalid', on ? 'true' : 'false');
-    if (small) small.hidden = !on;
-  };
-  [name, cont].forEach(i => i?.addEventListener('input', ()=> setErr(i, i===name?eName:eCont, !i.value.trim())));
-
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-
-    // 1) согласие обязательно
-    if (!agree?.checked) {
-      agree?.classList.add('is-error');
-      agree?.focus();
-      return;
-    }
-
-    // 2) honeypot + таймер
-    const hp = form.querySelector('[name="website"]');
-    if (hp && hp.value) return;
-    if (Date.now() - t0 < 2500) return;
-
-    // 3) валидация полей
-    const badName = !name?.value.trim() || name.value.trim().length < 3;
-    const badCont = !cont?.value.trim();
-    setErr(name, eName, badName);
-    setErr(cont, eCont, badCont);
-    if (badName || badCont) {
-      (badName ? name : cont)?.focus();
-      return;
-    }
-
-    // 4) UI: блокируем кнопку и ставим aria-busy
-    const oldLabel = submitBtn?.textContent;
-    if (submitBtn) {
-      submitBtn.setAttribute('disabled', 'true');
-      submitBtn.textContent = 'Отправляю…';
-    }
-    form.setAttribute('aria-busy', 'true');
-
-    // 5) отправка (Google Apps Script Web App)
-const fd = new FormData(form);
-
-try {
-  await fetch(
-    'https://script.google.com/macros/s/AKfycbyUhl5Vc9r_kDgzYpx96iuvGLXPql9Y4XtKyPrtMtePRw2Tlsrhvp6x_-ktyr1uiE12/exec',
-    {
-      method: 'POST',
-      body: fd,
-      mode: 'no-cors'
-    }
-  );
-
-  if (note) {
-    note.textContent =
-      '✅ Ваш запрос отправлен! Я отвечу в ближайшее время.';
-  }
-
-  form.reset();
-  t0 = Date.now();
-
-  window.gtag?.('event', 'contact_form_submit', {
-    success: true
-  });
-
-} catch (err) {
-
-  console.error('Contact form send error:', err);
-
-  if (note) {
-    note.textContent =
-      '❌ Не получилось отправить запрос. Пожалуйста, напишите мне в Telegram.';
-  }
-
-  window.gtag?.('event', 'contact_form_submit', {
-    success: false
-  });
-}
-    
-    finally {
-      // 6) вернуть UI в норму
-      form.removeAttribute('aria-busy');
-      if (submitBtn) {
-        submitBtn.removeAttribute('disabled');
-        submitBtn.textContent = oldLabel || 'Отправить запрос';
-      }
-    }
-  });
 })();
 
 
@@ -1337,9 +1228,9 @@ try {
     // если ввели 8... (часто так копируют), не трогаем — пользователь мог писать не номер
     // маску включаем только когда явно идём в сторону +381
     if (!d.startsWith('381')) {
-      // если просто печатают цифры (начинает с 3/38), дадим возможность дойти до 381
-      if (d.length < 3) return '+' + d;
-      // иначе не навязываем маску
+      // Помогаем только при явном вводе международного кода 3 → 38 → 381.
+      // Локальные номера вроде 061 и текстовые контакты оставляем как ввёл пользователь.
+      if (d === '3' || d === '38') return '+' + d;
       return raw;
     }
     // убираем сам код страны
@@ -1477,79 +1368,6 @@ try {
   }); // ← без { passive:true }
 })();
 
-
-// === In-field error helper ===
-
-(function inFieldErrors() {
-  const form = document.querySelector('#contactForm');
-  if (!form) return;
-
-  // какие поля валидируем таким способом
-  const fields = [
-    { sel: '#cname',    err: '#err-name',    msg: 'Укажите ваше имя', minLen: 3 },
-    { sel: '#ccontact', err: '#err-contact', msg: 'Укажите ваш телефон или @username' }
-  ];
-
-  const setInFieldError = (fld, msg) => {
-    const wrap = fld.closest('.fld');
-    if (!wrap) return;
-    if (!fld.dataset.oldPh) fld.dataset.oldPh = fld.placeholder || '';
-    wrap.classList.add('infield-err');
-    fld.value = '';
-    fld.placeholder = msg;
-    fld.setAttribute('aria-invalid', 'true');
-  };
-
-  const clearInFieldError = (fld) => {
-    const wrap = fld.closest('.fld');
-    if (!wrap) return;
-    wrap.classList.remove('infield-err');
-    fld.placeholder = fld.dataset.oldPh || '';
-    fld.removeAttribute('aria-invalid');
-  };
-
-  // при отправке — если поле пустое/слишком короткое, показываем «ошибку в поле»
-  form.addEventListener('submit', (e) => {
-    let bad = false;
-    fields.forEach((f) => {
-      const input = form.querySelector(f.sel);
-      const hint  = form.querySelector(f.err);
-      if (!input) return;
-
-      const v = input.value.trim();
-      const tooShort = f.minLen ? v.length < f.minLen : false;
-
-      if (!v || tooShort) {
-        e.preventDefault();
-        setInFieldError(input, f.msg);
-        if (hint) hint.hidden = true;
-        if (!bad) input.focus();
-        bad = true;
-      }
-    });
-  });
-
-  // при вводе/блюре — сброс/повтор ошибки
-  fields.forEach((f) => {
-    const input = form.querySelector(f.sel);
-    const hint  = form.querySelector(f.err);
-    if (!input) return;
-
-    input.addEventListener('input', () => {
-      clearInFieldError(input);
-      if (hint) hint.hidden = true;
-    });
-
-    input.addEventListener('blur', () => {
-      const v = input.value.trim();
-      const tooShort = f.minLen ? v.length < f.minLen : false;
-      if (!v || tooShort) {
-        setInFieldError(input, f.msg);
-        if (hint) hint.hidden = true;
-      }
-    });
-  });
-})();
 
 // Фильтр "Все / Базовые / Дополнительные"
 (() => {
