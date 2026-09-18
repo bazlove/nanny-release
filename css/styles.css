@@ -1420,6 +1420,12 @@ select:focus{
   padding:6px 10px; border-radius:999px;
   background:#eaf7f0; color:#1f5a47; border:1px solid #b7dbc9;
   font-size:.9rem; line-height:1; position:relative; overflow:visible;
+  text-decoration:none;
+}
+.avail-badge:hover{ background:#def2e7; }
+.avail-badge:focus-visible{
+  outline:2px solid currentColor;
+  outline-offset:3px;
 }
 .avail-badge .dot{ width:8px; height:8px; border-radius:50%; position:relative; }
 
