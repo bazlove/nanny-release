@@ -1101,29 +1101,97 @@ const SlotBusinessTime = (() => {
 })();
 
 
-// Active menu on scroll
-(function(){
+// Active navigation state: one deterministic scroll-spy for all page sections.
+(function initActiveNavigation(){
+  const header = document.querySelector('.site-header');
   const links = Array.from(document.querySelectorAll('.header-nav a[href^="#"]'));
-  const map = new Map();
-  links.forEach(a => {
-    const id = a.getAttribute('href').slice(1);
-    const sec = document.getElementById(id);
-    if (sec) map.set(sec, a);
-  });
-  if (!map.size) return;
+  const badge = document.getElementById('headerFreeBadge');
+  if (!header || !links.length) return;
 
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      const link = map.get(e.target);
-      if (!link) return;
-      if (e.isIntersecting) {
-        links.forEach(l => l.classList.remove('is-active'));
-        link.classList.add('is-active');
-      }
+  const sectionToNav = {
+    top: null,
+    services: 'services',
+    why: 'services',
+    experience: 'services',
+    reviews: 'reviews',
+    calc: 'calc',
+    faq: 'faq',
+    slots: 'slots',
+    contact: 'contact'
+  };
+
+  const sections = Object.keys(sectionToNav)
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+  const linksById = new Map(
+    links.map(link => [link.getAttribute('href').slice(1), link])
+  );
+
+  function clearState(){
+    links.forEach(link => {
+      link.classList.remove('is-active');
+      link.removeAttribute('aria-current');
     });
-  }, { rootMargin: `-${parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h'))||64}px 0px -65% 0px`, threshold: 0.01 });
+    badge?.classList.remove('is-section-active');
+  }
 
-  map.forEach((_, sec) => io.observe(sec));
+  function setState(sectionId){
+    clearState();
+
+    const target = sectionToNav[sectionId];
+    if (!target) return;
+
+    if (target === 'slots') {
+      badge?.classList.add('is-section-active');
+      return;
+    }
+
+    const link = linksById.get(target);
+    if (!link) return;
+    link.classList.add('is-active');
+    link.setAttribute('aria-current', 'location');
+  }
+
+  function getActivationY(){
+    const headerHeight = Math.ceil(header.getBoundingClientRect().height);
+    const marginTop = sections[0]
+      ? parseFloat(getComputedStyle(sections[0]).scrollMarginTop) || 0
+      : 0;
+    return Math.max(headerHeight, marginTop) + 1;
+  }
+
+  function update(){
+    const activationY = getActivationY();
+    let activeId = sections[0]?.id || null;
+
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= activationY) {
+        activeId = section.id;
+      } else {
+        break;
+      }
+    }
+
+    setState(activeId);
+  }
+
+  let rafId = 0;
+  function requestUpdate(){
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      update();
+    });
+  }
+
+  ['scroll','resize','orientationchange','hashchange'].forEach(eventName => {
+    window.addEventListener(eventName, requestUpdate, { passive:true });
+  });
+  document.addEventListener('i18nready', requestUpdate);
+  document.addEventListener('langchange', requestUpdate);
+  window.addEventListener('load', requestUpdate, { once:true });
+
+  update();
 })();
 
 
@@ -1506,9 +1574,11 @@ const SlotBusinessTime = (() => {
   const TABLET_BP = 980;
   const TRANSITION_MS = 220;
 
-  // Динамически задаём высоту шапки → меню начинается строго под шапкой
+  // Динамически задаём фактическую высоту шапки для меню и якорного скролла.
   function setHeaderHeightVar(){
-    const h = header.getBoundingClientRect().height || 56;
+    const h = Math.ceil(header.getBoundingClientRect().height);
+    if (!h) return;
+    document.documentElement.style.setProperty('--header-h', `${h}px`);
     mnav.style.setProperty('--hdr-h', `${h}px`);
   }
   setHeaderHeightVar();
