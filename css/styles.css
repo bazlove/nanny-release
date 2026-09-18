@@ -1620,7 +1620,13 @@ section[id], #services, #calc, #faq, #contact, #main {
   position: relative;
 }
 .rv-title{
-  margin: 24px 0 28px;
+  margin: 24px 0 6px;
+}
+.reviews-intro{
+  margin: 0 0 28px;
+  color: #6B7280;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 .reviews-grid{
@@ -1635,7 +1641,7 @@ section[id], #services, #calc, #faq, #contact, #main {
   background: #fff;
   border: 1px solid #E5E7EB;
   border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.04);
+  box-shadow: 0 4px 16px rgba(15,23,42,.025);
   padding: 22px;
 }
 
@@ -1668,6 +1674,18 @@ section[id], #services, #calc, #faq, #contact, #main {
   line-height: 1.65;
 }
 
+.review-card__quote-mark{
+  display: block;
+  height: 22px;
+  margin-bottom: 6px;
+  color: #D1D5DB;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+}
+
 .review-card__text p{
   margin: 0;
 }
@@ -1683,6 +1701,8 @@ section[id], #services, #calc, #faq, #contact, #main {
   appearance: none;
   display: inline-flex;
   align-items: center;
+  gap: 7px;
+  white-space: nowrap;
   padding: 0 0 2px;
   border: 0;
   border-bottom: 1px dashed #9CA3AF;
@@ -1692,6 +1712,11 @@ section[id], #services, #calc, #faq, #contact, #main {
   font-size: 14px;
   line-height: 1.4;
   cursor: pointer;
+}
+.review-source__icon{
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
 }
 .review-source:hover{
   color: #15803D;
@@ -1704,7 +1729,7 @@ section[id], #services, #calc, #faq, #contact, #main {
 }
 
 @media (max-width: 767.98px){
-  .rv-title{
+  .reviews-intro{
     margin-bottom: 24px;
   }
   .reviews-grid{
