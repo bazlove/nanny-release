@@ -1620,13 +1620,7 @@ section[id], #services, #calc, #faq, #contact, #main {
   position: relative;
 }
 .rv-title{
-  margin: 24px 0 6px;
-}
-.reviews-intro{
-  margin: 0 0 28px;
-  color: #6B7280;
-  font-size: 14px;
-  line-height: 1.45;
+  margin: 24px 0 28px;
 }
 
 .reviews-grid{
@@ -1669,7 +1663,7 @@ section[id], #services, #calc, #faq, #contact, #main {
   margin: 0;
   padding: 0;
   border: 0;
-  color: #374151;
+  color: #4B5563;
   font-size: 15px;
   line-height: 1.65;
 }
@@ -1729,9 +1723,6 @@ section[id], #services, #calc, #faq, #contact, #main {
 }
 
 @media (max-width: 767.98px){
-  .reviews-intro{
-    margin-bottom: 24px;
-  }
   .reviews-grid{
     grid-template-columns: 1fr;
     gap: 16px;
