@@ -1187,8 +1187,8 @@ const SlotBusinessTime = (() => {
   ['scroll','resize','orientationchange','hashchange'].forEach(eventName => {
     window.addEventListener(eventName, requestUpdate, { passive:true });
   });
-  document.addEventListener('i18nready', requestUpdate);
-  document.addEventListener('langchange', requestUpdate);
+  window.addEventListener('i18nready', requestUpdate);
+  window.addEventListener('langchange', requestUpdate);
   window.addEventListener('load', requestUpdate, { once:true });
 
   update();
