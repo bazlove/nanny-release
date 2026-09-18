@@ -1738,7 +1738,8 @@ section[id], #services, #calc, #faq, #contact, #main {
   z-index: 1;
   display: grid;
   place-items: center;
-  width: min(720px, 92vw);
+  width: fit-content;
+  max-width: min(720px, 92vw);
   max-height: 90vh;
   margin: 0;
   outline: none;
