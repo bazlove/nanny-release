@@ -2384,21 +2384,6 @@ section[id], #services, #calc, #faq, #contact, #main {
 #contact .fld{ margin-bottom:14px; }
 #contact .fld.has-error{ margin-bottom:10px; }
 
-/* состояние «ошибка прямо в поле» */
-#contact .fld.infield-err .input{
-  border-color:#f59ea8;                /* мягкая красная рамка */
-  box-shadow:0 0 0 3px rgba(244,63,94,.12);
-}
-
-/* сам «текст ошибки» как placeholder */
-#contact .fld.infield-err .input::placeholder{
-  color:#b91c1c;                        /* красный */
-  opacity:1;                            /* чтобы не был бледным */
-}
-
-/* прячем стандартную подпись-ошибку, когда используем in-field режим */
-#contact .fld.infield-err .err{ display:none !important; }
-
 /* === Contact: единая типографика инпутов/textarea === */
 :root{
   --inp-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
@@ -2457,11 +2442,16 @@ section[id], #services, #calc, #faq, #contact, #main {
   line-height: var(--inp-line);
 }
 
-/* «ошибка в placeholder» — такой же уменьшенный кегль */
+#contact .agree-err{
+  font-family: var(--inp-font);
+  font-size: var(--err-size, 12px);
+  line-height: var(--inp-line);
+  color: var(--err-color);
+}
+
+/* уменьшенный кегль для placeholder-состояний ошибок */
 #contact .fld .input.is-error::placeholder,
-#contact .fld textarea.is-error::placeholder,
-#contact .fld.infield-err .input::placeholder,     /* твой текущий режим in-field */
-#contact .fld.infield-err textarea::placeholder{
+#contact .fld textarea.is-error::placeholder{
   font-size: var(--err-size, calc(var(--inp-size) - 1px));
 }
 
