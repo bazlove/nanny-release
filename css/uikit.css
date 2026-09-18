@@ -1044,19 +1044,15 @@ input[type="checkbox"], input[type="radio"]{
 .header-nav a.is-active{ font-weight:500; }
 
 
-/* Chips: mobile sizing override */
+/* Reviews chips: mobile sizing override */
 @media (max-width: 640px){
-  /* Фильтры: Услуги + Отзывы */
-  #services .svc-chip,
   .rv-chip{
     font-size: 13px;
+    padding: 8px 16px;  /* высоту не трогаем, чтобы не прыгала линия */
   }
-  #services .svc-chip{ padding: 8px 16px; }
-  .rv-chip{ padding: 8px 16px; }  /* высоту не трогаем, чтобы не прыгала линия */
 }
 
 @media (max-width: 360px){
-  #services .svc-chip,
   .rv-chip{
     font-size: 11px;
   }
