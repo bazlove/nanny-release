@@ -140,8 +140,8 @@
     }
   }
 
-  name?.addEventListener('focus', () => clearFieldError('name'));
-  contact?.addEventListener('focus', () => clearFieldError('contact'));
+  name?.addEventListener('pointerdown', () => clearFieldError('name'));
+  contact?.addEventListener('pointerdown', () => clearFieldError('contact'));
   name?.addEventListener('input', () => clearFieldError('name'));
   contact?.addEventListener('input', () => clearFieldError('contact'));
   name?.addEventListener('blur', () => revalidateField('name'));
