@@ -123,13 +123,13 @@ document.addEventListener('copy', function (e) {
       // заголовок как в HTML (множественное число прилагательных)
       xp1_h:'Частные и государственные детсады',
       xp1_p:'<strong>Воспитатель детского сада:</strong> поддержание распорядка дня, организация развивающих занятий и досуга, развитие речи, постановка и автоматизация звуков, наблюдение и фиксация прогресса, взаимодействие с родителями.',
-      xp2_h:'ВлГУ им. Столетовых',
-      xp2_p:'<strong>Выпускная квалификационная работа на тему:</strong> «Развитие мышления у детей старшего дошкольного возраста с нарушением речи посредством дидактических игр». Защита государственной итоговой аттестации и получение диплома о высшем педагогическом образовании по направлению дефектология.',
+      xp2_h:'Высшее педагогическое образование',
+      xp2_p:'<strong>Выпускная квалификационная работа:</strong> «Развитие мышления у детей старшего дошкольного возраста с нарушением речи посредством дидактических игр». Защита государственной итоговой аттестации по направлению «Дефектология».',
       xp3_h:'World Class, фитнес-клуб',
       xp3_p:'<strong>Фитнес-инструктор:</strong> коррекционные, общеразвивающие и силовые занятия; персональные тренировки (2–16 лет); организация детских праздников и творческих мастер-классов.',
       xp4_period:'2018 — сейчас',
-      xp4_h:'Частная няня',
-      xp4_p:'<strong>Частная няня:</strong> с 2018 года занимаюсь частной работой с семьями в роли няни. Беру на себя повседневный уход, прогулки, игры и развивающие занятия с учётом возраста и привычного режима ребёнка. Поддерживаю семейные правила и договорённости с родителями.',
+      xp4_h:'Няня и бебиситтер',
+      xp4_p:'<strong>Частная практика:</strong> с 2018 года работаю с семьями как няня и бебиситтер. Повседневный уход, прогулки, игры и развивающие занятия с учётом возраста и режима ребёнка. Соблюдаю семейные правила и договорённости с родителями.',
       
       /* REVIEWS */
       reviews_title:'Отзывы родителей',
@@ -302,13 +302,13 @@ document.addEventListener('copy', function (e) {
       xp_list_aria:'Traka iskustva po godinama',
       xp1_h:'Privatni i državni vrtići',
       xp1_p:'<strong>Vaspitač:</strong> održavanje dnevne rutine, organizacija razvojnih aktivnosti i odmora, razvoj govora, korekcija izgovora.',
-      xp2_h:'Vladimir državni univerzitet (VlGU)',
-      xp2_p:'<strong>Završni kvalifikacioni rad na temu:</strong> „Razvoj mišljenja kod dece starijeg predškolskog uzrasta sa govornim teškoćama pomoću didaktičkih igara“. Odbrana završnog državnog ispita i sticanje diplome visokog pedagoškog obrazovanja iz oblasti defektologije.',
+      xp2_h:'Visoko pedagoško obrazovanje',
+      xp2_p:'<strong>Završni kvalifikacioni rad:</strong> „Razvoj mišljenja kod dece starijeg predškolskog uzrasta sa govornim teškoćama pomoću didaktičkih igara“. Odbrana završnog državnog ispita iz oblasti „Defektologija“.',
       xp3_h:'World Class, fitnes klub',
       xp3_p:'<strong>Fitnes instruktor:</strong> korektivni, opšti i treninzi snage; personalni treninzi (2-16 god); organizacija dečijih proslava i kreativnih radionica.',
       xp4_period:'2018 — danas',
-      xp4_h:'Privatna dadilja',
-      xp4_p:'<strong>Privatna dadilja:</strong> privatnim angažmanima sa porodicama bavim se od 2018. Brinem o svakodnevnoj rutini, šetnjama, igrama i razvojnim aktivnostima u skladu sa uzrastom i uobičajenim ritmom deteta. Poštujem porodična pravila i dogovore sa roditeljima.',
+      xp4_h:'Dadilja i bebisiterka',
+      xp4_p:'<strong>Privatna praksa:</strong> od 2018. godine radim sa porodicama kao dadilja i bebisiterka. Svakodnevna briga, šetnje, igre i razvojne aktivnosti u skladu sa uzrastom i ritmom deteta. Poštujem porodična pravila i dogovore sa roditeljima.',
       
       /* REVIEWS */
       reviews_title:'Utisci roditelja',
