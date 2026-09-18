@@ -140,7 +140,7 @@ document.addEventListener('copy', function (e) {
       reviews_region_label:'Карусель отзывов',
 
       /* SLOTS */
-      slots_title:'Свободные слоты на неделю',
+      slots_title:'Ближайшие свободные слоты',
       slots_badge_next:'Ближайший слот: {date} | {t1}–{t2}',
       slots_badge_none:'Свободно: по запросу',
       slots_btn_request:'Запросить',
@@ -303,7 +303,7 @@ document.addEventListener('copy', function (e) {
       reviews_region_label:'Karusel utisaka',
 
       /* SLOTS */
-      slots_title:'Slobodni termini za nedelju',
+      slots_title:'Najbliži slobodni termini',
       slots_badge_next:'Najbliži termin: {date} | {t1}–{t2}',
       slots_badge_none:'Slobodno: na upit',
       slots_btn_request:'Zatraži',
@@ -511,6 +511,112 @@ document.addEventListener('copy', function (e) {
   }
 })();
 
+// ===== Slots business time (Europe/Belgrade) =====
+const SlotBusinessTime = (() => {
+  const BUSINESS_TZ = 'Europe/Belgrade';
+  const pad2 = n => String(n).padStart(2, '0');
+  const dateKeyFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: BUSINESS_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+
+  function getBusinessDateKey(value = Date.now()){
+    const date = value instanceof Date ? value : new Date(value);
+    if (!Number.isFinite(date.getTime())) return '';
+
+    const parts = {};
+    dateKeyFormatter.formatToParts(date).forEach(part => {
+      if (part.type !== 'literal') parts[part.type] = part.value;
+    });
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  }
+
+  function getNextDateKey(ymd){
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd || ''));
+    if (!match) return '';
+
+    let year = Number(match[1]);
+    let month = Number(match[2]);
+    let day = Number(match[3]) + 1;
+    const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+    const daysInMonth = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    if (day > daysInMonth[month - 1]) {
+      day = 1;
+      month += 1;
+      if (month > 12) {
+        month = 1;
+        year += 1;
+      }
+    }
+    return `${year}-${pad2(month)}-${pad2(day)}`;
+  }
+
+  const getBusinessTodayKey = (now = Date.now()) => getBusinessDateKey(now);
+  const getBusinessTomorrowKey = (now = Date.now()) => getNextDateKey(getBusinessTodayKey(now));
+
+  function getStartTs(slot){
+    if (slot?.startTs != null) {
+      const ts = Number(slot.startTs);
+      if (Number.isFinite(ts)) return ts;
+    }
+    const parsed = slot?.startISO ? Date.parse(slot.startISO) : NaN;
+    return Number.isFinite(parsed) ? parsed : NaN;
+  }
+
+  function getEndTs(slot){
+    if (slot?.endTs != null) {
+      const ts = Number(slot.endTs);
+      if (Number.isFinite(ts)) return ts;
+    }
+    const parsed = slot?.endISO ? Date.parse(slot.endISO) : NaN;
+    return Number.isFinite(parsed) ? parsed : NaN;
+  }
+
+  function getSlotDateKey(slot){
+    const apiDate = String(slot?.date || '');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(apiDate)) return apiDate;
+
+    const ts = getStartTs(slot);
+    return Number.isFinite(ts) ? getBusinessDateKey(ts) : '';
+  }
+
+  function formatBusinessDate(ymd, locale = 'ru-RU', options = {}){
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd || ''));
+    if (!match) return '';
+
+    // UTC noon is only a stable anchor for formatting the already-known
+    // Belgrade calendar date; it is not used to determine the business date.
+    const anchor = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12));
+    return new Intl.DateTimeFormat(locale, { ...options, timeZone: BUSINESS_TZ }).format(anchor);
+  }
+
+  function formatBusinessTime(value, locale = 'ru-RU'){
+    const date = value instanceof Date ? value : new Date(value);
+    if (!Number.isFinite(date.getTime())) return '';
+
+    return new Intl.DateTimeFormat(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: BUSINESS_TZ
+    }).format(date);
+  }
+
+  return {
+    BUSINESS_TZ,
+    getBusinessDateKey,
+    getBusinessTodayKey,
+    getBusinessTomorrowKey,
+    getStartTs,
+    getEndTs,
+    getSlotDateKey,
+    formatBusinessDate,
+    formatBusinessTime
+  };
+})();
+
 // ===== Slots + Badge (i18n, final)
 (function(){
   const API_SLOTS_URL =
@@ -523,30 +629,27 @@ document.addEventListener('copy', function (e) {
     return String(s).replace(/\{(\w+)\}/g, (_,k)=> (params && params[k] != null ? params[k] : ''));
   };
   const getLocale = ()=> (window.i18n && window.i18n.locale) || 'ru-RU';
-  const fmtDay = (ymd)=>{
-    if (window.i18n && window.i18n.fmtDay) return window.i18n.fmtDay(ymd);
-    if (!ymd) return '';
-    const [y,m,d] = ymd.split('-').map(Number);
-    return new Intl.DateTimeFormat(getLocale(), { weekday:'short', day:'numeric', month:'long' })
-      .format(new Date(y, m-1, d));
-  };
+  const fmtDay = ymd => SlotBusinessTime.formatBusinessDate(
+    ymd,
+    getLocale(),
+    { weekday:'short', day:'numeric', month:'long' }
+  );
 
   /* ---------- time helpers ---------- */
-  const hhmm = d => new Intl.DateTimeFormat(getLocale(), {hour:'2-digit', minute:'2-digit'}).format(d);
+  const getStartTs = SlotBusinessTime.getStartTs;
+  const getSlotDateKey = SlotBusinessTime.getSlotDateKey;
+  const hhmm = value => SlotBusinessTime.formatBusinessTime(value, getLocale());
   function safeStart(s){
     if (s.startLabel) return s.startLabel;
-    const d = s.startISO ? new Date(s.startISO) : new Date(s.startTs || 0);
-    return Number.isFinite(d.getTime()) ? hhmm(d) : '';
+    const ts = getStartTs(s);
+    return Number.isFinite(ts) ? hhmm(ts) : '';
   }
   function safeEnd(s){
     if (s.endLabel) return s.endLabel;
-    const d = s.endISO ? new Date(s.endISO) : new Date(s.endTs || 0);
-    return Number.isFinite(d.getTime()) ? hhmm(d) : '';
+    const ts = SlotBusinessTime.getEndTs(s);
+    return Number.isFinite(ts) ? hhmm(ts) : '';
   }
-  const getStartTs = s => s.startTs ?? Date.parse(s.startISO || 0);
   const timeLabel  = s => `${safeStart(s)}–${safeEnd(s)}`;
-  const pad2 = n => String(n).padStart(2,'0');
-  const ymdLocal = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
 
   /* ---------- badge helpers ---------- */
   const BADGE_SHORT_BP = '(max-width: 420px)';
@@ -580,11 +683,7 @@ document.addEventListener('copy', function (e) {
   function groupByDate(slots){
     const m = new Map();
     for (const s of slots) {
-      let key = s.date;
-      if (!key) {
-        const dt = s.startTs ? new Date(s.startTs) : (s.startISO ? new Date(s.startISO) : null);
-        if (dt) key = ymdLocal(dt);
-      }
+      const key = getSlotDateKey(s);
       if (!key) continue;
       if (!m.has(key)) m.set(key, []);
       m.get(key).push(s);
@@ -618,26 +717,27 @@ document.addEventListener('copy', function (e) {
     if (!badge) return;
 
     const now = Date.now();
-    const todayYMD    = new Date().toISOString().slice(0,10);
-    const tomorrowYMD = new Date(now + 86400000).toISOString().slice(0,10);
+    const todayYMD = SlotBusinessTime.getBusinessTodayKey(now);
+    const tomorrowYMD = SlotBusinessTime.getBusinessTomorrowKey(now);
 
     const byStart = arr => arr.slice().sort((a,b)=> getStartTs(a)-getStartTs(b));
+    const future = byStart(list.filter(s => getStartTs(s) > now));
 
-    const today = byStart(list.filter(s => (s.date || (s.startISO||'').slice(0,10)) === todayYMD))[0];
+    const today = future.find(s => getSlotDateKey(s) === todayYMD);
     if (today){
-      setBadge(t('slots_badge_next', { date: fmtDay(today.date || todayYMD), t1: safeStart(today), t2: safeEnd(today) }),
+      setBadge(t('slots_badge_next', { date: fmtDay(getSlotDateKey(today)), t1: safeStart(today), t2: safeEnd(today) }),
                ['is-today','is-live']);
       return;
     }
-    const tomorrow = byStart(list.filter(s => (s.date || (s.startISO||'').slice(0,10)) === tomorrowYMD))[0];
+    const tomorrow = future.find(s => getSlotDateKey(s) === tomorrowYMD);
     if (tomorrow){
-      setBadge(t('slots_badge_next', { date: fmtDay(tomorrow.date || tomorrowYMD), t1: safeStart(tomorrow), t2: safeEnd(tomorrow) }),
+      setBadge(t('slots_badge_next', { date: fmtDay(getSlotDateKey(tomorrow)), t1: safeStart(tomorrow), t2: safeEnd(tomorrow) }),
                ['is-tomorrow','is-live']);
       return;
     }
-    const next = byStart(list.filter(s => getStartTs(s) > now))[0] || byStart(list)[0];
+    const next = future[0];
     if (next){
-      const ymd = next.date || (next.startISO ? next.startISO.slice(0,10) : '');
+      const ymd = getSlotDateKey(next);
       setBadge(t('slots_badge_next', { date: fmtDay(ymd), t1: safeStart(next), t2: safeEnd(next) }),
                ['is-next','is-live']);
       return;
@@ -1273,25 +1373,27 @@ try {
   phoneInput?.addEventListener('blur',  maybeMaskPhone);
 
   /* ---------- 2) Автозаполнение «Желаемой даты/времени» ближайшим слотом ---------- */
-  function formatDayRU(date){
-    // пн, 14.10
-    return date.toLocaleDateString('ru-RU', { weekday:'short', day:'2-digit', month:'2-digit' });
-  }
+  const getContactLocale = () => (window.i18n && window.i18n.locale) || 'ru-RU';
+  const formatSlotDay = ymd => SlotBusinessTime.formatBusinessDate(
+    ymd,
+    getContactLocale(),
+    { weekday:'short', day:'2-digit', month:'2-digit' }
+  );
+
   function getNearestSlotFromGlobal(){
     // если на странице уже есть модуль слотов и он положил слоты глобально
     const arr = Array.isArray(window.__freeSlots) ? window.__freeSlots : null;
     if (!arr || !arr.length) return null;
     const now = Date.now();
-    const getTs = s => s.startTs ?? Date.parse(s.startISO || 0);
     const sorted = arr
-      .filter(s => getTs(s) > now)
-      .sort((a,b)=> getTs(a) - getTs(b));
+      .filter(s => SlotBusinessTime.getStartTs(s) > now)
+      .sort((a,b)=> SlotBusinessTime.getStartTs(a) - SlotBusinessTime.getStartTs(b));
     const s = sorted[0];
     if (!s) return null;
 
-    const labelDay  = formatDayRU(new Date(getTs(s)));
-    const startText = s.startLabel || (s.startISO ? new Date(s.startISO).toTimeString().slice(0,5) : '');
-    const endText   = s.endLabel   || (s.endISO   ? new Date(s.endISO).toTimeString().slice(0,5)   : '');
+    const labelDay = formatSlotDay(SlotBusinessTime.getSlotDateKey(s));
+    const startText = s.startLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getStartTs(s), getContactLocale());
+    const endText = s.endLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getEndTs(s), getContactLocale());
     return `${labelDay} · ${startText}–${endText}`;
   }
 
@@ -1306,12 +1408,10 @@ try {
     const timeRange = (t.match(/\b(\d{2}:\d{2}–\d{2}:\d{2})\b/)||[])[1];
 
     if (t.includes('сегодня') && timeRange){
-      const d = new Date();
-      return `${formatDayRU(d)} · ${timeRange}`;
+      return `${formatSlotDay(SlotBusinessTime.getBusinessTodayKey())} · ${timeRange}`;
     }
     if (t.includes('завтра') && timeRange){
-      const d = new Date(Date.now() + 86400000);
-      return `${formatDayRU(d)} · ${timeRange}`;
+      return `${formatSlotDay(SlotBusinessTime.getBusinessTomorrowKey())} · ${timeRange}`;
     }
     // «вт, 14.10 • 09:00–16:00»
     const day = (t.match(/([а-я]{2},?\s*\d{1,2}\.\d{1,2})/)||[])[1];
