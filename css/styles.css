@@ -1427,6 +1427,10 @@ select:focus{
   outline:2px solid currentColor;
   outline-offset:3px;
 }
+.avail-badge.is-section-active{
+  border-color:#78c6a7;
+  box-shadow:0 0 0 2px rgba(120,198,167,.22);
+}
 .avail-badge .dot{ width:8px; height:8px; border-radius:50%; position:relative; }
 
 /* цвета состояний */
