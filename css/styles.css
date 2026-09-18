@@ -285,13 +285,13 @@ section{padding:64px 0}
 
 /* === SERVICES === */
 
-/* --- layout секции: слева title+hint, справа чипы; ниже сетка карточек --- */
+/* --- layout секции: заголовок/подсказка, ниже единая сетка карточек --- */
 #services .container{
   display: block;
 }
 
 /* секционный header (внутри: заголовок + подсказка) */
-#services .section-head{ grid-area: head; margin: 0; }
+#services .section-head{ margin: 0; }
 #services .section-head .section-title{ margin: 0 0 2px; }
 #services .section-head .section-hint{
   margin: 0;
