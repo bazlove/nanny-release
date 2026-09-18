@@ -1,11 +1,9 @@
 // P0: reliable contact-form acknowledgement for Google Apps Script Web App.
-// The GAS response is delivered through a hidden iframe + postMessage because
-// a no-cors fetch only yields an opaque response that cannot confirm backend success.
+// The browser reads the backend JSON response and reports success only after ok:true.
 (function contactFormReliableSubmit(){
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbyUhl5Vc9r_kDgzYpx96iuvGLXPql9Y4XtKyPrtMtePRw2Tlsrhvp6x_-ktyr1uiE12/exec';
   const TELEGRAM_URL = 'https://t.me/katebazlova';
-  const RESPONSE_TYPE = 'nanny-contact-result';
-  const TIMEOUT_MS = 20000;
+  const TIMEOUT_MS = 30000;
 
   const form = document.getElementById('contactForm');
   if (!form) return;
@@ -64,86 +62,43 @@
     return !firstBad;
   }
 
-  function isTrustedGasOrigin(origin){
+  async function submitToBackend(fd, clientNonce){
+    fd.set('response_mode', 'json');
+    fd.set('client_nonce', clientNonce);
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
     try {
-      const url = new URL(origin);
-      return url.protocol === 'https:' && (
-        url.hostname === 'script.google.com' ||
-        url.hostname.endsWith('script.googleusercontent.com')
-      );
-    } catch (_) {
-      return false;
-    }
-  }
+      const response = await fetch(GAS_URL, {
+        method: 'POST',
+        body: fd,
+        signal: controller.signal
+      });
 
-  function appendHidden(formEl, name, value){
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = name;
-    input.value = String(value ?? '');
-    formEl.appendChild(input);
-  }
-
-  function submitViaIframe(fd, clientNonce){
-    return new Promise((resolve, reject) => {
-      const frameName = `contactGas_${clientNonce.replace(/[^a-zA-Z0-9_-]/g, '')}`;
-      const iframe = document.createElement('iframe');
-      iframe.name = frameName;
-      iframe.hidden = true;
-      iframe.setAttribute('aria-hidden', 'true');
-      iframe.setAttribute('tabindex', '-1');
-
-      const relay = document.createElement('form');
-      relay.method = 'POST';
-      relay.action = GAS_URL;
-      relay.target = frameName;
-      relay.style.display = 'none';
-      relay.setAttribute('aria-hidden', 'true');
-
-      for (const [key, value] of fd.entries()) {
-        if (typeof value === 'string') appendHidden(relay, key, value);
+      if (!response.ok) {
+        throw new Error(`backend_http_${response.status}`);
       }
-      appendHidden(relay, 'response_mode', 'postmessage');
-      appendHidden(relay, 'client_nonce', clientNonce);
 
-      let settled = false;
-      let timer;
+      const data = await response.json();
 
-      const cleanup = () => {
-        window.removeEventListener('message', onMessage);
-        if (timer) clearTimeout(timer);
-        relay.remove();
-        iframe.remove();
-      };
+      if (!data || data.clientNonce !== clientNonce) {
+        throw new Error('backend_nonce_mismatch');
+      }
 
-      const finish = (fn, value) => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        fn(value);
-      };
+      if (data.ok !== true || !data.requestId) {
+        const err = new Error(data.error || 'backend_failure');
+        err.backend = data;
+        throw err;
+      }
 
-      const onMessage = (event) => {
-        if (!isTrustedGasOrigin(event.origin)) return;
-        const data = event.data;
-        if (!data || data.type !== RESPONSE_TYPE || data.clientNonce !== clientNonce) return;
-
-        if (data.ok === true && data.requestId) {
-          finish(resolve, data);
-        } else {
-          const err = new Error(data?.error || 'backend_failure');
-          err.backend = data;
-          finish(reject, err);
-        }
-      };
-
-      window.addEventListener('message', onMessage);
-      timer = setTimeout(() => finish(reject, new Error('backend_timeout')), TIMEOUT_MS);
-
-      document.body.appendChild(iframe);
-      document.body.appendChild(relay);
-      relay.submit();
-    });
+      return data;
+    } catch (err) {
+      if (err?.name === 'AbortError') throw new Error('backend_timeout');
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   name?.addEventListener('input', () => setFieldError(name, errName, false));
@@ -174,7 +129,7 @@
     const fd = new FormData(form);
 
     try {
-      const result = await submitViaIframe(fd, clientNonce);
+      const result = await submitToBackend(fd, clientNonce);
 
       if (note) note.textContent = text('success');
       form.reset();
