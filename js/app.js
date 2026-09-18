@@ -133,7 +133,6 @@ document.addEventListener('copy', function (e) {
       
       /* REVIEWS */
       reviews_title:'Отзывы родителей',
-      reviews_supporting:'4 отзыва родителей · можно посмотреть оригиналы сообщений',
       review1_author:'Екатерина',
       review1_meta:'мама девочки · 5 лет',
       review1_text:'Очень хочу рекомендовать Катю, как ответственную, заботливую и творческую няню! Дочка любит проводить с Катей время, они всегда придумывают что-то соответствующее её интересам. Катя уточняет детали, соблюдает временные договорённости и заботится о безопасности. Рада нашему знакомству и сотрудничеству!',
@@ -313,7 +312,6 @@ document.addEventListener('copy', function (e) {
       
       /* REVIEWS */
       reviews_title:'Utisci roditelja',
-      reviews_supporting:'4 utiska roditelja · možete pogledati originalne poruke',
       review1_author:'Ekaterina',
       review1_meta:'mama devojčice · 5 godina',
       review1_text:'Veoma želim da preporučim Katju kao odgovornu, brižnu i kreativnu dadilju! Ćerka voli da provodi vreme sa Katjom, uvek smisle nešto što odgovara njenim interesovanjima. Katja proverava detalje, poštuje dogovoreno vreme i brine o bezbednosti. Drago mi je što smo se upoznale i što sarađujemo!',
