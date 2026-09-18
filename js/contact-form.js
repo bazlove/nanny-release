@@ -62,7 +62,7 @@
     const nameValue = name?.value.trim() || '';
     const contactValue = contact?.value.trim() || '';
 
-    if (nameValue.length < 3) errors.name = true;
+    if (nameValue.length < 2) errors.name = true;
     if (!contactValue) errors.contact = true;
     if (!agree?.checked) errors.consent = true;
 
