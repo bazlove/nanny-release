@@ -209,6 +209,11 @@ section{padding:64px 0}
   background:#fff;
   box-shadow:0 12px 28px rgba(0,0,0,.10);
 }
+#top .hero-photo picture{
+  display:block;
+  width:100%;
+  height:100%;
+}
 #top .hero-photo img{
   display:block;
   width:100%;

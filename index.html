@@ -26,7 +26,6 @@
   <link rel="alternate" hreflang="ru" href="https://nanny.bazlove.com/">
   <link rel="alternate" hreflang="sr" href="https://nanny.bazlove.com/?lang=sr">
   <link rel="alternate" hreflang="x-default" href="https://nanny.bazlove.com/">
-  <link rel="preload" as="image" href="img/hero.jpg" imagesrcset="img/hero.jpg 1x" imagesizes="100vw">
 <!-- Favicon basics -->
 <link rel="mask-icon" href="/heart-circle.svg" color="#15803D">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -273,13 +272,36 @@
     <!-- ПРАВАЯ КОЛОНКА: фото + рейтинг/цитата -->
     <div class="hero-visual">
       <figure class="hero-photo">
-        <img
-          src="img/hero.jpg"
-          width="720" height="540"
-          loading="eager" decoding="async"
-          fetchpriority="high"
-          alt="Няня с ребёнком на прогулке"
-        >
+        <picture>
+          <source
+            type="image/avif"
+            srcset="
+              img/hero/hero-480.avif 480w,
+              img/hero/hero-720.avif 720w,
+              img/hero/hero-960.avif 960w,
+              img/hero/hero-1440.avif 1440w
+            "
+            sizes="(max-width: 768px) calc(100vw - 40px), (max-width: 1388px) 500px, (max-width: 1555px) 36vw, 560px"
+          >
+          <source
+            type="image/webp"
+            srcset="
+              img/hero/hero-480.webp 480w,
+              img/hero/hero-720.webp 720w,
+              img/hero/hero-960.webp 960w,
+              img/hero/hero-1440.webp 1440w
+            "
+            sizes="(max-width: 768px) calc(100vw - 40px), (max-width: 1388px) 500px, (max-width: 1555px) 36vw, 560px"
+          >
+          <img
+            src="img/hero.jpg"
+            width="1472" height="1473"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            alt="Няня с ребёнком на прогулке"
+          >
+        </picture>
       </figure>
 
       <div class="hero-social">
