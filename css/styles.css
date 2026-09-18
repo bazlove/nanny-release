@@ -2126,6 +2126,11 @@ section[id], #services, #calc, #faq, #contact, #main {
 .contact-form .col{ display:flex; flex-direction:column; gap:14px; }
 .col-actions .contact-actions{ display:flex; flex-direction:column; gap:12px; }
 
+/* Desktop: поджимаем только колонку полей для выравнивания нижней границы. */
+@media (min-width: 1025px){
+  #contact .contact-form .col-fields{ gap:8px; }
+}
+
 /* кнопки-ссылки целиком кликабельные (у тебя уже есть .cbtn) */
 .cbtn{ min-height:56px; }
 
