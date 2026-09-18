@@ -14,9 +14,11 @@
   const agree = document.getElementById('cagree');
   const errName = document.getElementById('err-name');
   const errContact = document.getElementById('err-contact');
+  const errConsent = document.getElementById('err-consent');
   const submitBtn = document.getElementById('contactSubmit');
 
   let inFlight = false;
+  let validationActive = false;
 
   if (note) {
     note.setAttribute('role', 'status');
@@ -48,18 +50,49 @@
     if (hint) hint.hidden = !on;
   }
 
-  function validate(){
-    const badName = !name?.value.trim() || name.value.trim().length < 3;
-    const badContact = !contact?.value.trim();
-    const badAgree = !agree?.checked;
+  function setConsentError(on){
+    if (!agree) return;
+    agree.classList.toggle('is-error', on);
+    agree.setAttribute('aria-invalid', on ? 'true' : 'false');
+    if (errConsent) errConsent.hidden = !on;
+  }
 
-    setFieldError(name, errName, badName);
-    setFieldError(contact, errContact, badContact);
-    agree?.classList.toggle('is-error', badAgree);
+  function getValidationErrors(){
+    const errors = {};
+    const nameValue = name?.value.trim() || '';
+    const contactValue = contact?.value.trim() || '';
 
-    const firstBad = badName ? name : badContact ? contact : badAgree ? agree : null;
+    if (nameValue.length < 3) errors.name = true;
+    if (!contactValue) errors.contact = true;
+    if (!agree?.checked) errors.consent = true;
+
+    return errors;
+  }
+
+  function renderValidation(errors, focusFirst = false){
+    setFieldError(name, errName, Boolean(errors.name));
+    setFieldError(contact, errContact, Boolean(errors.contact));
+    setConsentError(Boolean(errors.consent));
+
+    if (!focusFirst) return;
+    const firstBad = errors.name ? name : errors.contact ? contact : errors.consent ? agree : null;
     firstBad?.focus();
-    return !firstBad;
+  }
+
+  function validate(){
+    validationActive = true;
+    const errors = getValidationErrors();
+    renderValidation(errors, true);
+    return Object.keys(errors).length === 0;
+  }
+
+  function revalidateField(field){
+    if (!validationActive) return;
+    const errors = getValidationErrors();
+
+    if (field === 'name') setFieldError(name, errName, Boolean(errors.name));
+    if (field === 'contact') setFieldError(contact, errContact, Boolean(errors.contact));
+    if (field === 'consent') setConsentError(Boolean(errors.consent));
   }
 
   async function submitToBackend(fd, clientNonce){
@@ -101,9 +134,9 @@
     }
   }
 
-  name?.addEventListener('input', () => setFieldError(name, errName, false));
-  contact?.addEventListener('input', () => setFieldError(contact, errContact, false));
-  agree?.addEventListener('change', () => agree.classList.remove('is-error'));
+  name?.addEventListener('input', () => revalidateField('name'));
+  contact?.addEventListener('input', () => revalidateField('contact'));
+  agree?.addEventListener('change', () => revalidateField('consent'));
 
   // Capture phase intentionally supersedes the legacy no-cors submit listener in app.js.
   form.addEventListener('submit', async (event) => {
@@ -120,6 +153,7 @@
     const originalLabel = submitBtn?.textContent || '';
     if (submitBtn) {
       submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
       submitBtn.textContent = text('sending');
     }
     form.setAttribute('aria-busy', 'true');
@@ -133,6 +167,8 @@
 
       if (note) note.textContent = text('success');
       form.reset();
+      validationActive = false;
+      renderValidation({}, false);
 
       window.gtag?.('event', 'contact_form_submit', {
         success: true,
@@ -161,6 +197,7 @@
       form.removeAttribute('aria-busy');
       if (submitBtn) {
         submitBtn.disabled = false;
+        submitBtn.removeAttribute('aria-busy');
         submitBtn.textContent = originalLabel || (lang() === 'sr' ? 'Pošalji zahtev' : 'Отправить запрос');
       }
     }
