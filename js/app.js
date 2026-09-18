@@ -133,13 +133,27 @@ document.addEventListener('copy', function (e) {
       
       /* REVIEWS */
       reviews_title:'Отзывы родителей',
-      reviews_tabs_aria:'Категории отзывов',
-      reviews_filter_all:'Все',
-      // как в чипах HTML:
-      reviews_filter_two:'2 детей',
-      reviews_filter_toddlers:'Малыши',
-      reviews_filter_preschool:'3–7 лет',
-      reviews_region_label:'Карусель отзывов',
+      review1_author:'Екатерина',
+      review1_meta:'мама девочки · 5 лет',
+      review1_text:'Очень хочу рекомендовать Катю, как ответственную, заботливую и творческую няню! Дочка любит проводить с Катей время, они всегда придумывают что-то соответствующее её интересам. Катя уточняет детали, соблюдает временные договорённости и заботится о безопасности. Рада нашему знакомству и сотрудничеству!',
+      review2_author:'Виктория',
+      review2_meta:'мама девочки · 3 года',
+      review2_text:'Работаем с Катей с августа этого года, нас в целом все устраивает. Для нас было важно как пройдет первая встреча и будет ли интересно Кристине с новым человеком, к счастью для всех, все сложилось хорошо 😊 Нам нравится, что комбинируется и прогулка (с геопозицией) и времяпровождение дома, а также что они не просто гуляют/играют, а ещё постоянно делают/придумывают различные поделки (даже из палок и листьев) и рисуют. В плане коммуникации тоже хорошо, какие-то вопросы решали быстро и с пониманием. Можем рекомендовать 👍',
+      review3_author:'Юлия',
+      review3_meta:'мама мальчика · 1 г 9 мес',
+      review3_text:'Катя занимается с моим сыном 1,9 года уже 3 месяца и я очень рада, что нашла ее, когда наша основная няня заболела. За эти 3 месяца Катя из запасной стала основной. Всегда пунктуальная, чистоплотная, внимательная ко всем моим пожеланиям по развитию ребенка. Постоянно придумывает новые игры, умеет увлечь, сын ждет ее и всегда бежит встречать первым. Когда они хохочут вместе, пока я работаю в другой комнате - для меня это главный показатель, что Мэтч произошел.',
+      review4_author:'Наталья',
+      review4_meta:'мама девочки · 4 месяца',
+      review4_p1:'Катя работает с нашей дочкой с двух месяцев, сейчас малышке уже четыре. С первых дней Катя смогла найти к ней подход — дочка с ней спокойна, чувствует себя комфортно и всегда довольна.',
+      review4_p2:'Катя гуляет с малышкой, занимается с ней и уделяет большое внимание развитию. Она знает множество упражнений для детей этого возраста и регулярно занимается физическим развитием дочки: помогает укреплять мышцы и осваивать новые навыки.',
+      review4_p3:'Для меня важно видеть, что ребёнку с Катей хорошо и спокойно. Я довольна её работой и могу смело рекомендовать Катю как внимательную, заботливую и вовлечённую няню.',
+      reviews_source:'Посмотреть оригинал',
+      review1_source_alt:'Скриншот оригинала отзыва — Екатерина, мама девочки, 5 лет',
+      review2_source_alt:'Скриншот оригинала отзыва — Виктория, мама девочки, 3 года',
+      review3_source_alt:'Скриншот оригинала отзыва — Юлия, мама мальчика, 1 г 9 мес',
+      review4_source_alt:'Скриншот оригинала отзыва — Наталья, мама девочки, 4 месяца',
+      reviews_dialog_title:'Оригинал отзыва',
+      reviews_dialog_close:'Закрыть оригинал отзыва',
 
       /* SLOTS */
       slots_title:'Ближайшие свободные слоты',
@@ -298,12 +312,27 @@ document.addEventListener('copy', function (e) {
       
       /* REVIEWS */
       reviews_title:'Utisci roditelja',
-      reviews_tabs_aria:'Kategorije utisaka',
-      reviews_filter_all:'Svi',
-      reviews_filter_two:'2 dece',
-      reviews_filter_toddlers:'Mališani',
-      reviews_filter_preschool:'3–7 god',
-      reviews_region_label:'Karusel utisaka',
+      review1_author:'Ekaterina',
+      review1_meta:'mama devojčice · 5 godina',
+      review1_text:'Veoma želim da preporučim Katju kao odgovornu, brižnu i kreativnu dadilju! Ćerka voli da provodi vreme sa Katjom, uvek smisle nešto što odgovara njenim interesovanjima. Katja proverava detalje, poštuje dogovoreno vreme i brine o bezbednosti. Drago mi je što smo se upoznale i što sarađujemo!',
+      review2_author:'Viktorija',
+      review2_meta:'mama devojčice · 3 godine',
+      review2_text:'Radimo sa Katjom od avgusta ove godine i generalno nam sve odgovara. Za nas je bilo važno kako će proći prvi susret i da li će Kristini biti zanimljivo sa novom osobom, na sreću svih, sve je prošlo dobro 😊 Sviđa nam se što se kombinuju i šetnja (sa geolokacijom) i vreme kod kuće, kao i to što ne samo da šetaju/igraju se, već stalno prave/smišljaju razne rukotvorine (čak i od štapića i lišća) i crtaju. Što se komunikacije tiče, takođe je dobro, neka pitanja smo rešavali brzo i sa razumevanjem. Možemo da preporučimo 👍',
+      review3_author:'Julija',
+      review3_meta:'mama dečaka · 1 god 9 mes',
+      review3_text:'Katja se bavi mojim sinom od 1,9 godine već 3 meseca i veoma mi je drago što sam je našla kada se naša glavna dadilja razbolela. Za ova 3 meseca Katja je od zamene postala glavna. Uvek je tačna, uredna, pažljiva prema svim mojim željama u vezi sa razvojem deteta. Stalno smišlja nove igre, ume da ga zainteresuje, sin je čeka i uvek prvi trči da je dočeka. Kada se zajedno smeju dok ja radim u drugoj sobi - za mene je to glavni pokazatelj da se Meč dogodio.',
+      review4_author:'Natalija',
+      review4_meta:'mama devojčice · 4 meseca',
+      review4_p1:'Katja radi sa našom ćerkom od njenog drugog meseca, a sada beba ima četiri meseca. Od prvih dana Katja je uspela da joj pronađe pristup — ćerka je uz nju mirna, oseća se prijatno i uvek je zadovoljna.',
+      review4_p2:'Katja šeta sa bebom, bavi se njom i posvećuje veliku pažnju razvoju. Zna mnogo vežbi za decu tog uzrasta i redovno radi na fizičkom razvoju ćerke: pomaže joj da ojača mišiće i usvaja nove veštine.',
+      review4_p3:'Važno mi je da vidim da je detetu sa Katjom dobro i mirno. Zadovoljna sam njenim radom i mogu bez zadrške da preporučim Katju kao pažljivu, brižnu i angažovanu dadilju.',
+      reviews_source:'Pogledaj original',
+      review1_source_alt:'Snimak originalnog utiska — Ekaterina, mama devojčice, 5 godina',
+      review2_source_alt:'Snimak originalnog utiska — Viktorija, mama devojčice, 3 godine',
+      review3_source_alt:'Snimak originalnog utiska — Julija, mama dečaka, 1 god 9 mes',
+      review4_source_alt:'Snimak originalnog utiska — Natalija, mama devojčice, 4 meseca',
+      reviews_dialog_title:'Original utiska',
+      reviews_dialog_close:'Zatvori original utiska',
 
       /* SLOTS */
       slots_title:'Najbliži slobodni termini',
@@ -1197,74 +1226,114 @@ const SlotBusinessTime = (() => {
 })();
 
 
-/* ===== Reviews: фильтр по чипам + пересборка дорожки ===== */
-(function initReviewsFilter(){
-  const sec   = document.getElementById('reviews');
-  const list  = sec?.querySelector('.rv-chips');
-  const mq    = sec?.querySelector('.rv-marquee');
-  const track = mq?.querySelector('.rv-track');
-  if (!sec || !list || !track) return;
+/* ===== Reviews: source lightbox ===== */
+(function initReviewSourceLightbox(){
+  const root = document.getElementById('reviews');
+  const lightbox = document.getElementById('lightbox');
+  const dialog = lightbox?.querySelector('.lb-content');
+  const image = document.getElementById('lbImg');
 
-  // 1) Сохраняем оригинальные карточки (до любых дублей маркизы)
-  //    Берём первые уникальные по src/img — этого достаточно, чтобы отсечь клоны.
-  const firstRun = [];
-  const seen = new Set();
-  track.querySelectorAll('.rv-item').forEach(card => {
-    const key = card.querySelector('img')?.getAttribute('src') || card.outerHTML;
-    if (seen.has(key)) return;
-    seen.add(key);
-    firstRun.push(card.cloneNode(true));
-  });
+  if (!root || !lightbox || !dialog || !image) return;
 
-  // 2) Сервис: собрать дорожку из базового набора + довести ширину (как в маркизе)
-  const cloneChildrenOnce = (t) => {
-    const frag = document.createDocumentFragment();
-    Array.from(t.children).forEach(n => frag.appendChild(n.cloneNode(true)));
-    t.appendChild(frag);
-  };
-  const fillToWidth = (mqEl, trackEl) => {
-    let safety = 0;
-    while (trackEl.scrollWidth < mqEl.clientWidth * 2 && safety < 3){
-      cloneChildrenOnce(trackEl);
-      safety++;
-    }
-  };
+  let opener = null;
 
-  // 3) Применить фильтр и пересобрать дорожку
-  function applyFilter(filter){
-    // База
-    const base = firstRun.filter(el => {
-      if (filter === 'all') return true;
-      const cats = (el.dataset.cat || '').split(/\s+/);
-      return cats.includes(filter);
-    });
-    const items = base.length ? base : firstRun;
+  const focusableSelector = [
+    'button:not([disabled])',
+    'a[href]',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])'
+  ].join(',');
 
-    // Пересборка дорожки
-    track.innerHTML = '';
-    items.forEach(el => track.appendChild(el.cloneNode(true)));
-    fillToWidth(mq, track);
+  function currentAlt(key){
+    if (!key) return '';
+    if (window.i18n?.t) return window.i18n.t(key);
+    return '';
   }
 
-  // 4) Чипы: переключение состояний и вызов applyFilter
-  list.addEventListener('click', (e) => {
-    const btn = e.target.closest('.rv-chip[role="tab"]');
-    if (!btn) return;
-    const filter = btn.getAttribute('data-filter') || 'all';
+  function openLightbox(button){
+    const src = button.getAttribute('data-review-src');
+    if (!src) return;
 
-    list.querySelectorAll('.rv-chip').forEach(c => {
-      c.classList.toggle('is-active', c === btn);
-      c.setAttribute('aria-selected', c === btn ? 'true' : 'false');
+    opener = button;
+    image.alt = currentAlt(button.getAttribute('data-review-alt-key'));
+    image.setAttribute('src', src);
+
+    lightbox.hidden = false;
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+
+    const first = dialog.querySelector(focusableSelector) || dialog;
+    requestAnimationFrame(() => {
+      try { first.focus({ preventScroll: true }); } catch (_) { first.focus(); }
     });
+  }
 
-    applyFilter(filter);
+  function closeLightbox(){
+    if (lightbox.hidden) return;
+
+    lightbox.hidden = true;
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+    image.removeAttribute('src');
+    image.alt = '';
+
+    const target = opener;
+    opener = null;
+    if (target?.isConnected) {
+      try { target.focus({ preventScroll: true }); } catch (_) { target.focus(); }
+    }
+  }
+
+  root.addEventListener('click', (event) => {
+    const button = event.target.closest('.review-source[data-review-src]');
+    if (!button) return;
+    openLightbox(button);
   });
 
-  // Инициализация
-  applyFilter('all');
+  lightbox.addEventListener('click', (event) => {
+    if (event.target.closest('[data-review-close]')) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (lightbox.hidden) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeLightbox();
+      return;
+    }
+
+    if (event.key !== 'Tab') return;
+
+    const focusables = Array.from(dialog.querySelectorAll(focusableSelector))
+      .filter(el => !el.hidden && el.getAttribute('aria-hidden') !== 'true');
+
+    if (!focusables.length) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && (active === first || !dialog.contains(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  window.addEventListener('langchange', () => {
+    if (lightbox.hidden || !opener) return;
+    image.alt = currentAlt(opener.getAttribute('data-review-alt-key'));
+  });
 })();
-
-
 
 // ====== CONTACT ======
 (function contactInit(){

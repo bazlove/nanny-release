@@ -533,76 +533,77 @@
 </section>
 
 <!-- TESTIMONIALS -->
-<section id="reviews" class="rv-reviews">
+<section id="reviews" class="rv-reviews" aria-labelledby="reviews-title">
   <div class="container">
-    <div class="rv-reviews__head">
-      <h2 class="rv-title i18n" data-key="reviews_title">Отзывы родителей</h2>
+    <h2 id="reviews-title" class="rv-title i18n" data-key="reviews_title">Отзывы родителей</h2>
 
-      <!-- Чипы статичные -->
-      <ul
-        class="rv-chips i18n-attr"
-        role="tablist"
-        aria-label="Категории отзывов"
-        data-key="reviews_tabs_aria"
-        data-i18n-attr="aria-label"
-      >
-        <li>
-          <button type="button" class="rv-chip is-active" data-filter="all" role="tab" aria-selected="true">
-            <span class="i18n" data-key="reviews_filter_all">Все</span>
+    <div class="reviews-grid">
+      <article class="review-card">
+        <header class="review-card__head">
+          <strong class="review-card__author i18n" data-key="review1_author">Екатерина</strong>
+          <span class="review-card__meta i18n" data-key="review1_meta">мама девочки · 5 лет</span>
+        </header>
+        <blockquote class="review-card__text">
+          <p class="i18n" data-key="review1_text">Очень хочу рекомендовать Катю, как ответственную, заботливую и творческую няню! Дочка любит проводить с Катей время, они всегда придумывают что-то соответствующее её интересам. Катя уточняет детали, соблюдает временные договорённости и заботится о безопасности. Рада нашему знакомству и сотрудничеству!</p>
+        </blockquote>
+        <footer class="review-card__footer">
+          <button type="button" class="review-source" data-review-src="img/reviews/rev1.png" data-review-alt-key="review1_source_alt">
+            <span class="i18n" data-key="reviews_source">Посмотреть оригинал</span>
           </button>
-        </li>
-        <li>
-          <button type="button" class="rv-chip" data-filter="toddlers" role="tab" aria-selected="false">
-            <span class="i18n" data-key="reviews_filter_toddlers">Малыши</span>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="rv-chip" data-filter="preschool" role="tab" aria-selected="false">
-            <span class="i18n" data-key="reviews_filter_preschool">3-7 лет</span>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="rv-chip" data-filter="two" role="tab" aria-selected="false">
-            <span class="i18n" data-key="reviews_filter_two">2 детей</span>
-          </button>
-        </li>
-      </ul>
-    </div>
+        </footer>
+      </article>
 
-    <!-- Карусель-маркиза (плавный бесконечный скролл) -->
-    <div class="rv-marquee" role="region" aria-label="Карусель отзывов" aria-live="polite">
-      <div class="rv-track" id="rvTrack">
-        
-		  <!-- оригинальные элементы -->
-        <figure class="rv-item" data-cat="preschool" tabindex="0">
-          <img src="img/reviews/rev1.jpg" loading="lazy" alt="Екатерина, мама девочки (5 лет)">
-          <figcaption>Екатерина, мама девочки (5 лет)</figcaption>
-        </figure>
-        <figure class="rv-item" data-cat="preschool" tabindex="0">
-          <img src="img/reviews/rev2.jpg" loading="lazy" alt="Виктория, мама девочки (3 года)">
-          <figcaption>Виктория, мама девочки (3 года)</figcaption>
-        </figure>
-        <figure class="rv-item" data-cat="toddlers" tabindex="0">
-          <img src="img/reviews/rev3.jpg" loading="lazy" alt="Юлия, мама мальчика (1,9 года)">
-          <figcaption>Юлия, мама мальчика (1,9 года)</figcaption>
-        </figure>
+      <article class="review-card">
+        <header class="review-card__head">
+          <strong class="review-card__author i18n" data-key="review2_author">Виктория</strong>
+          <span class="review-card__meta i18n" data-key="review2_meta">мама девочки · 3 года</span>
+        </header>
+        <blockquote class="review-card__text">
+          <p class="i18n" data-key="review2_text">Работаем с Катей с августа этого года, нас в целом все устраивает. Для нас было важно как пройдет первая встреча и будет ли интересно Кристине с новым человеком, к счастью для всех, все сложилось хорошо 😊 Нам нравится, что комбинируется и прогулка (с геопозицией) и времяпровождение дома, а также что они не просто гуляют/играют, а ещё постоянно делают/придумывают различные поделки (даже из палок и листьев) и рисуют. В плане коммуникации тоже хорошо, какие-то вопросы решали быстро и с пониманием. Можем рекомендовать 👍</p>
+        </blockquote>
+        <footer class="review-card__footer">
+          <button type="button" class="review-source" data-review-src="img/reviews/rev2.png" data-review-alt-key="review2_source_alt">
+            <span class="i18n" data-key="reviews_source">Посмотреть оригинал</span>
+          </button>
+        </footer>
+      </article>
 
-        <!-- Дубликаты для бесшовной анимации (динамически можно клонировать) -->
-        <figure class="rv-item" data-cat="preschool" aria-hidden="true" tabindex="-1">
-          <img src="img/reviews/rev1.jpg" loading="lazy" alt="">
-        </figure>
-        <figure class="rv-item" data-cat="preschool" aria-hidden="true" tabindex="-1">
-          <img src="img/reviews/rev2.jpg" loading="lazy" alt="">
-        </figure>
-        <figure class="rv-item" data-cat="toddlers" aria-hidden="true" tabindex="-1">
-          <img src="img/reviews/rev3.jpg" loading="lazy" alt="">
-        </figure>
-      </div>
+      <article class="review-card">
+        <header class="review-card__head">
+          <strong class="review-card__author i18n" data-key="review3_author">Юлия</strong>
+          <span class="review-card__meta i18n" data-key="review3_meta">мама мальчика · 1 г 9 мес</span>
+        </header>
+        <blockquote class="review-card__text">
+          <p class="i18n" data-key="review3_text">Катя занимается с моим сыном 1,9 года уже 3 месяца и я очень рада, что нашла ее, когда наша основная няня заболела. За эти 3 месяца Катя из запасной стала основной. Всегда пунктуальная, чистоплотная, внимательная ко всем моим пожеланиям по развитию ребенка. Постоянно придумывает новые игры, умеет увлечь, сын ждет ее и всегда бежит встречать первым. Когда они хохочут вместе, пока я работаю в другой комнате - для меня это главный показатель, что Мэтч произошел.</p>
+        </blockquote>
+        <footer class="review-card__footer">
+          <button type="button" class="review-source" data-review-src="img/reviews/rev3.png" data-review-alt-key="review3_source_alt">
+            <span class="i18n" data-key="reviews_source">Посмотреть оригинал</span>
+          </button>
+        </footer>
+      </article>
+
+      <article class="review-card">
+        <header class="review-card__head">
+          <strong class="review-card__author i18n" data-key="review4_author">Наталья</strong>
+          <span class="review-card__meta i18n" data-key="review4_meta">мама девочки · 4 месяца</span>
+        </header>
+        <blockquote class="review-card__text">
+          <p class="i18n" data-key="review4_p1">Катя работает с нашей дочкой с двух месяцев, сейчас малышке уже четыре. С первых дней Катя смогла найти к ней подход — дочка с ней спокойна, чувствует себя комфортно и всегда довольна.</p>
+          <p class="i18n" data-key="review4_p2">Катя гуляет с малышкой, занимается с ней и уделяет большое внимание развитию. Она знает множество упражнений для детей этого возраста и регулярно занимается физическим развитием дочки: помогает укреплять мышцы и осваивать новые навыки.</p>
+          <p class="i18n" data-key="review4_p3">Для меня важно видеть, что ребёнку с Катей хорошо и спокойно. Я довольна её работой и могу смело рекомендовать Катю как внимательную, заботливую и вовлечённую няню.</p>
+        </blockquote>
+        <footer class="review-card__footer">
+          <button type="button" class="review-source" data-review-src="img/reviews/rev4.png" data-review-alt-key="review4_source_alt">
+            <span class="i18n" data-key="reviews_source">Посмотреть оригинал</span>
+          </button>
+        </footer>
+      </article>
     </div>
   </div>
 </section>
-    
-	<!-- CALCULATOR -->
+
+<!-- CALCULATOR -->
 <section id="calc">
   <div class="container card calc-elevate">
     <div class="calc-head">
@@ -1274,12 +1275,23 @@
 
 <button id="ck-manage" class="ck-manage" hidden>Настройки cookie</button>
 
-<!-- Lightbox -->
-<div id="lightbox" class="lightbox" hidden>
-  <div class="lb-backdrop" data-close="1" tabindex="-1"></div>
-  <figure class="lb-content" role="dialog" aria-modal="true" aria-label="Просмотр отзыва">
-    <img id="lbImg" src="" alt="">
-  </figure>
+<!-- Review source lightbox -->
+<div id="lightbox" class="lightbox" hidden aria-hidden="true">
+  <div class="lb-backdrop" data-review-close aria-hidden="true"></div>
+  <div class="lb-content" role="dialog" aria-modal="true" aria-labelledby="reviews-dialog-title" tabindex="-1">
+    <h2 id="reviews-dialog-title" class="sr-only i18n" data-key="reviews_dialog_title">Оригинал отзыва</h2>
+    <button
+      type="button"
+      class="lb-close i18n-attr"
+      data-review-close
+      aria-label="Закрыть оригинал отзыва"
+      data-key="reviews_dialog_close"
+      data-i18n-attr="aria-label"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+    <img id="lbImg" alt="">
+  </div>
 </div>
 	
   <script src="js/app.js" defer></script>
