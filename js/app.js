@@ -1133,6 +1133,7 @@ const SlotBusinessTime = (() => {
       link.removeAttribute('aria-current');
     });
     badge?.classList.remove('is-section-active');
+    badge?.removeAttribute('aria-current');
   }
 
   function setState(sectionId){
@@ -1143,6 +1144,7 @@ const SlotBusinessTime = (() => {
 
     if (target === 'slots') {
       badge?.classList.add('is-section-active');
+      badge?.setAttribute('aria-current', 'location');
       return;
     }
 
