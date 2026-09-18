@@ -1001,7 +1001,7 @@
     <span class="i18n" data-key="form_name">Ваше имя</span>
     <span class="req" aria-hidden="true">*</span>
   </label>
-  <input class="input" id="cname" name="name" type="text" required autocomplete="name" autocapitalize="words" minlength="3" />
+  <input class="input" id="cname" name="name" type="text" required autocomplete="name" autocapitalize="words" minlength="3" aria-describedby="err-name" />
   <small class="err i18n" id="err-name" hidden data-key="form_name_err">Пожалуйста, укажите имя.</small>
 </div>
 
@@ -1010,7 +1010,7 @@
     <span class="i18n" data-key="form_contact">Телефон/мессенджер</span>
     <span class="req" aria-hidden="true">*</span>
   </label>
-  <input class="input" id="ccontact" name="contact" type="text" required />
+  <input class="input" id="ccontact" name="contact" type="text" required aria-describedby="err-contact" />
   <small class="err i18n" id="err-contact" hidden data-key="form_contact_err">Пожалуйста, укажите телефон или @username.</small>
 </div>
 
@@ -1053,11 +1053,12 @@
           />
 
           <label class="agree" id="agreeWrap">
-            <input type="checkbox" id="cagree" name="agree" required>
+            <input type="checkbox" id="cagree" name="agree" required aria-describedby="err-consent">
             <span class="i18n" data-key="form_consent_html" data-i18n-html>
               Я ознакомился(-ась) с <a href="/privacy/">Политикой конфиденциальности</a>.
             </span>
           </label>
+          <small class="err agree-err i18n" id="err-consent" hidden data-key="form_consent_err">Пожалуйста, подтвердите согласие на обработку данных.</small>
 
           <button id="contactSubmit" type="submit" class="btn btn-primary btn-lg i18n" data-key="form_submit">Отправить запрос</button>
           <div id="contactNotice" class="subnote"></div>
