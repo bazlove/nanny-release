@@ -2495,7 +2495,7 @@ section[id], #services, #calc, #faq, #contact, #main {
 #contact .submit-error-slot{
   min-height:calc(var(--err-size, 12px) * 1.35);
 }
-#contact .submit-error-slot .agree-err{
+#contact .submit-error-slot .agree-err:not([hidden]){
   display:block;
   margin:0;
 }
