@@ -216,7 +216,7 @@ document.addEventListener('copy', function (e) {
       form_consent:'Даю согласие на обработку данных согласно политике.',
       form_submit:'Отправить запрос',
       contact_call:'Позвонить',
-      form_consent_html:'Даю согласие на обработку данных согласно <a href="/privacy">политике</a>.',
+      form_consent_html:'Я ознакомился(-ась) с <a href="/privacy/">Политикой конфиденциальности</a>.',
 
       /* FOOTER */
       foot_open_gmaps:'Открыть в Google Maps',
@@ -375,7 +375,7 @@ document.addEventListener('copy', function (e) {
       form_consent:'Dajem saglasnost za obradu podataka prema politici.',
       form_submit:'Pošalji zahtev',
       contact_call:'Pozovite',
-      form_consent_html:'Dajem saglasnost za obradu podataka u skladu sa <a href="/privacy">politikom</a>.',
+      form_consent_html:'Pročitao/la sam <a href="/privacy/">Politiku privatnosti</a>.',
 
       /* FOOTER */
       foot_open_gmaps:'Otvoriti u Google Maps',
@@ -1855,6 +1855,7 @@ try {
       if(!raw) return null;
       const obj = JSON.parse(raw);
       if(!obj.ts || (now()-obj.ts)>inDays(TTL_DAYS)) return null;
+      obj.marketing = false;
       return obj;
     }catch(_){ return null; }
   }
@@ -1906,7 +1907,7 @@ try {
   function closeModal(){ els.modal.hidden = true; }
 
   function acceptAll(){
-    write({ necessary:true, analytics:true, marketing:true });
+    write({ necessary:true, analytics:true, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
   }
   function onlyNecessary(){
@@ -1914,7 +1915,7 @@ try {
     els.banner.hidden = true; els.manage.hidden = false;
   }
   function saveSelection(){
-    write({ necessary:true, analytics: !!els.ana?.checked, marketing: !!els.mkt?.checked });
+    write({ necessary:true, analytics: !!els.ana?.checked, marketing:false });
     closeModal(); els.banner.hidden = true; els.manage.hidden = false;
   }
 
