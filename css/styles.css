@@ -2458,6 +2458,47 @@ section[id], #services, #calc, #faq, #contact, #main {
   line-height: var(--inp-line);
   color: var(--err-color);
 }
+/* Валидация имени/контакта: сообщение внутри поля без изменения высоты. */
+#contact .field-control{
+  position:relative;
+  width:100%;
+}
+#contact .field-control .input{
+  height:52px;
+}
+#contact .field-control .input.invalid{
+  padding:8px 14px 22px;
+}
+#contact .field-control .field-error{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:5px;
+  margin:0;
+  font-size:var(--err-size, 12px);
+  line-height:1.15;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  pointer-events:none;
+}
+
+/* Consent error: постоянный слот под кнопкой, чтобы форма не прыгала. */
+#contact .submit-wrap{
+  display:grid;
+  gap:6px;
+  width:100%;
+}
+#contact .submit-wrap #contactSubmit{
+  width:100%;
+}
+#contact .submit-error-slot{
+  min-height:calc(var(--err-size, 12px) * 1.35);
+}
+#contact .submit-error-slot .agree-err:not([hidden]){
+  display:block;
+  margin:0;
+}
 
 /* уменьшенный кегль для placeholder-состояний ошибок */
 #contact .fld .input.is-error::placeholder,
