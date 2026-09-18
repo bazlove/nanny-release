@@ -140,7 +140,7 @@ document.addEventListener('copy', function (e) {
       reviews_region_label:'Карусель отзывов',
 
       /* SLOTS */
-      slots_title:'Свободные слоты на неделю',
+      slots_title:'Ближайшие свободные слоты',
       slots_badge_next:'Ближайший слот: {date} | {t1}–{t2}',
       slots_badge_none:'Свободно: по запросу',
       slots_btn_request:'Запросить',
@@ -211,6 +211,7 @@ document.addEventListener('copy', function (e) {
       contact_actions:'Контакты', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
       form_name:'Ваше имя', form_name_err:'Пожалуйста, укажите имя.',
       form_contact:'Телефон/мессенджер', form_contact_err:'Пожалуйста, укажите телефон или username.',
+      form_consent_err:'Пожалуйста, подтвердите согласие на обработку данных.',
       form_time:'Желаемая дата/время', form_time_ph:'напр.: пн, 01.12 · 10:00',
       form_msg:'Сообщение', form_msg_ph:'Коротко опишите запрос',
       form_consent:'Даю согласие на обработку данных согласно политике.',
@@ -303,7 +304,7 @@ document.addEventListener('copy', function (e) {
       reviews_region_label:'Karusel utisaka',
 
       /* SLOTS */
-      slots_title:'Slobodni termini za nedelju',
+      slots_title:'Najbliži slobodni termini',
       slots_badge_next:'Najbliži termin: {date} | {t1}–{t2}',
       slots_badge_none:'Slobodno: na upit',
       slots_btn_request:'Zatraži',
@@ -370,6 +371,7 @@ document.addEventListener('copy', function (e) {
       contact_actions:'Kontakti', contact_tg:'Telegram', contact_vb:'Viber', contact_phone:'+381 XX XXX XX XX',
       form_name:'Vaše ime', form_name_err:'Molim unesite ime.',
       form_contact:'Telefon/mesežer', form_contact_err:'Molim unesite telefon ili username.',
+      form_consent_err:'Molim potvrdite saglasnost za obradu podataka.',
       form_time:'Željeni datum/vreme', form_time_ph:'npr.: pon, 01.12 · 10:00',
       form_msg:'Poruka', form_msg_ph:'Ukratko opišite zahtev',
       form_consent:'Dajem saglasnost za obradu podataka prema politici.',
@@ -511,6 +513,112 @@ document.addEventListener('copy', function (e) {
   }
 })();
 
+// ===== Slots business time (Europe/Belgrade) =====
+const SlotBusinessTime = (() => {
+  const BUSINESS_TZ = 'Europe/Belgrade';
+  const pad2 = n => String(n).padStart(2, '0');
+  const dateKeyFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: BUSINESS_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+
+  function getBusinessDateKey(value = Date.now()){
+    const date = value instanceof Date ? value : new Date(value);
+    if (!Number.isFinite(date.getTime())) return '';
+
+    const parts = {};
+    dateKeyFormatter.formatToParts(date).forEach(part => {
+      if (part.type !== 'literal') parts[part.type] = part.value;
+    });
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  }
+
+  function getNextDateKey(ymd){
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd || ''));
+    if (!match) return '';
+
+    let year = Number(match[1]);
+    let month = Number(match[2]);
+    let day = Number(match[3]) + 1;
+    const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+    const daysInMonth = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    if (day > daysInMonth[month - 1]) {
+      day = 1;
+      month += 1;
+      if (month > 12) {
+        month = 1;
+        year += 1;
+      }
+    }
+    return `${year}-${pad2(month)}-${pad2(day)}`;
+  }
+
+  const getBusinessTodayKey = (now = Date.now()) => getBusinessDateKey(now);
+  const getBusinessTomorrowKey = (now = Date.now()) => getNextDateKey(getBusinessTodayKey(now));
+
+  function getStartTs(slot){
+    if (slot?.startTs != null) {
+      const ts = Number(slot.startTs);
+      if (Number.isFinite(ts)) return ts;
+    }
+    const parsed = slot?.startISO ? Date.parse(slot.startISO) : NaN;
+    return Number.isFinite(parsed) ? parsed : NaN;
+  }
+
+  function getEndTs(slot){
+    if (slot?.endTs != null) {
+      const ts = Number(slot.endTs);
+      if (Number.isFinite(ts)) return ts;
+    }
+    const parsed = slot?.endISO ? Date.parse(slot.endISO) : NaN;
+    return Number.isFinite(parsed) ? parsed : NaN;
+  }
+
+  function getSlotDateKey(slot){
+    const apiDate = String(slot?.date || '');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(apiDate)) return apiDate;
+
+    const ts = getStartTs(slot);
+    return Number.isFinite(ts) ? getBusinessDateKey(ts) : '';
+  }
+
+  function formatBusinessDate(ymd, locale = 'ru-RU', options = {}){
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd || ''));
+    if (!match) return '';
+
+    // UTC noon is only a stable anchor for formatting the already-known
+    // Belgrade calendar date; it is not used to determine the business date.
+    const anchor = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12));
+    return new Intl.DateTimeFormat(locale, { ...options, timeZone: BUSINESS_TZ }).format(anchor);
+  }
+
+  function formatBusinessTime(value, locale = 'ru-RU'){
+    const date = value instanceof Date ? value : new Date(value);
+    if (!Number.isFinite(date.getTime())) return '';
+
+    return new Intl.DateTimeFormat(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: BUSINESS_TZ
+    }).format(date);
+  }
+
+  return {
+    BUSINESS_TZ,
+    getBusinessDateKey,
+    getBusinessTodayKey,
+    getBusinessTomorrowKey,
+    getStartTs,
+    getEndTs,
+    getSlotDateKey,
+    formatBusinessDate,
+    formatBusinessTime
+  };
+})();
+
 // ===== Slots + Badge (i18n, final)
 (function(){
   const API_SLOTS_URL =
@@ -523,30 +631,27 @@ document.addEventListener('copy', function (e) {
     return String(s).replace(/\{(\w+)\}/g, (_,k)=> (params && params[k] != null ? params[k] : ''));
   };
   const getLocale = ()=> (window.i18n && window.i18n.locale) || 'ru-RU';
-  const fmtDay = (ymd)=>{
-    if (window.i18n && window.i18n.fmtDay) return window.i18n.fmtDay(ymd);
-    if (!ymd) return '';
-    const [y,m,d] = ymd.split('-').map(Number);
-    return new Intl.DateTimeFormat(getLocale(), { weekday:'short', day:'numeric', month:'long' })
-      .format(new Date(y, m-1, d));
-  };
+  const fmtDay = ymd => SlotBusinessTime.formatBusinessDate(
+    ymd,
+    getLocale(),
+    { weekday:'short', day:'numeric', month:'long' }
+  );
 
   /* ---------- time helpers ---------- */
-  const hhmm = d => new Intl.DateTimeFormat(getLocale(), {hour:'2-digit', minute:'2-digit'}).format(d);
+  const getStartTs = SlotBusinessTime.getStartTs;
+  const getSlotDateKey = SlotBusinessTime.getSlotDateKey;
+  const hhmm = value => SlotBusinessTime.formatBusinessTime(value, getLocale());
   function safeStart(s){
     if (s.startLabel) return s.startLabel;
-    const d = s.startISO ? new Date(s.startISO) : new Date(s.startTs || 0);
-    return Number.isFinite(d.getTime()) ? hhmm(d) : '';
+    const ts = getStartTs(s);
+    return Number.isFinite(ts) ? hhmm(ts) : '';
   }
   function safeEnd(s){
     if (s.endLabel) return s.endLabel;
-    const d = s.endISO ? new Date(s.endISO) : new Date(s.endTs || 0);
-    return Number.isFinite(d.getTime()) ? hhmm(d) : '';
+    const ts = SlotBusinessTime.getEndTs(s);
+    return Number.isFinite(ts) ? hhmm(ts) : '';
   }
-  const getStartTs = s => s.startTs ?? Date.parse(s.startISO || 0);
   const timeLabel  = s => `${safeStart(s)}–${safeEnd(s)}`;
-  const pad2 = n => String(n).padStart(2,'0');
-  const ymdLocal = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
 
   /* ---------- badge helpers ---------- */
   const BADGE_SHORT_BP = '(max-width: 420px)';
@@ -580,11 +685,7 @@ document.addEventListener('copy', function (e) {
   function groupByDate(slots){
     const m = new Map();
     for (const s of slots) {
-      let key = s.date;
-      if (!key) {
-        const dt = s.startTs ? new Date(s.startTs) : (s.startISO ? new Date(s.startISO) : null);
-        if (dt) key = ymdLocal(dt);
-      }
+      const key = getSlotDateKey(s);
       if (!key) continue;
       if (!m.has(key)) m.set(key, []);
       m.get(key).push(s);
@@ -618,26 +719,27 @@ document.addEventListener('copy', function (e) {
     if (!badge) return;
 
     const now = Date.now();
-    const todayYMD    = new Date().toISOString().slice(0,10);
-    const tomorrowYMD = new Date(now + 86400000).toISOString().slice(0,10);
+    const todayYMD = SlotBusinessTime.getBusinessTodayKey(now);
+    const tomorrowYMD = SlotBusinessTime.getBusinessTomorrowKey(now);
 
     const byStart = arr => arr.slice().sort((a,b)=> getStartTs(a)-getStartTs(b));
+    const future = byStart(list.filter(s => getStartTs(s) > now));
 
-    const today = byStart(list.filter(s => (s.date || (s.startISO||'').slice(0,10)) === todayYMD))[0];
+    const today = future.find(s => getSlotDateKey(s) === todayYMD);
     if (today){
-      setBadge(t('slots_badge_next', { date: fmtDay(today.date || todayYMD), t1: safeStart(today), t2: safeEnd(today) }),
+      setBadge(t('slots_badge_next', { date: fmtDay(getSlotDateKey(today)), t1: safeStart(today), t2: safeEnd(today) }),
                ['is-today','is-live']);
       return;
     }
-    const tomorrow = byStart(list.filter(s => (s.date || (s.startISO||'').slice(0,10)) === tomorrowYMD))[0];
+    const tomorrow = future.find(s => getSlotDateKey(s) === tomorrowYMD);
     if (tomorrow){
-      setBadge(t('slots_badge_next', { date: fmtDay(tomorrow.date || tomorrowYMD), t1: safeStart(tomorrow), t2: safeEnd(tomorrow) }),
+      setBadge(t('slots_badge_next', { date: fmtDay(getSlotDateKey(tomorrow)), t1: safeStart(tomorrow), t2: safeEnd(tomorrow) }),
                ['is-tomorrow','is-live']);
       return;
     }
-    const next = byStart(list.filter(s => getStartTs(s) > now))[0] || byStart(list)[0];
+    const next = future[0];
     if (next){
-      const ymd = next.date || (next.startISO ? next.startISO.slice(0,10) : '');
+      const ymd = getSlotDateKey(next);
       setBadge(t('slots_badge_next', { date: fmtDay(ymd), t1: safeStart(next), t2: safeEnd(next) }),
                ['is-next','is-live']);
       return;
@@ -999,29 +1101,99 @@ document.addEventListener('copy', function (e) {
 })();
 
 
-// Active menu on scroll
-(function(){
+// Active navigation state: one deterministic scroll-spy for all page sections.
+(function initActiveNavigation(){
+  const header = document.querySelector('.site-header');
   const links = Array.from(document.querySelectorAll('.header-nav a[href^="#"]'));
-  const map = new Map();
-  links.forEach(a => {
-    const id = a.getAttribute('href').slice(1);
-    const sec = document.getElementById(id);
-    if (sec) map.set(sec, a);
-  });
-  if (!map.size) return;
+  const badge = document.getElementById('headerFreeBadge');
+  if (!header || !links.length) return;
 
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      const link = map.get(e.target);
-      if (!link) return;
-      if (e.isIntersecting) {
-        links.forEach(l => l.classList.remove('is-active'));
-        link.classList.add('is-active');
-      }
+  const sectionToNav = {
+    top: null,
+    services: 'services',
+    why: 'services',
+    experience: 'services',
+    reviews: 'reviews',
+    calc: 'calc',
+    faq: 'faq',
+    slots: 'slots',
+    contact: 'contact'
+  };
+
+  const sections = Object.keys(sectionToNav)
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+  const linksById = new Map(
+    links.map(link => [link.getAttribute('href').slice(1), link])
+  );
+
+  function clearState(){
+    links.forEach(link => {
+      link.classList.remove('is-active');
+      link.removeAttribute('aria-current');
     });
-  }, { rootMargin: `-${parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h'))||64}px 0px -65% 0px`, threshold: 0.01 });
+    badge?.classList.remove('is-section-active');
+    badge?.removeAttribute('aria-current');
+  }
 
-  map.forEach((_, sec) => io.observe(sec));
+  function setState(sectionId){
+    clearState();
+
+    const target = sectionToNav[sectionId];
+    if (!target) return;
+
+    if (target === 'slots') {
+      badge?.classList.add('is-section-active');
+      badge?.setAttribute('aria-current', 'location');
+      return;
+    }
+
+    const link = linksById.get(target);
+    if (!link) return;
+    link.classList.add('is-active');
+    link.setAttribute('aria-current', 'location');
+  }
+
+  function getActivationY(){
+    const headerHeight = Math.ceil(header.getBoundingClientRect().height);
+    const marginTop = sections[0]
+      ? parseFloat(getComputedStyle(sections[0]).scrollMarginTop) || 0
+      : 0;
+    return Math.max(headerHeight, marginTop) + 1;
+  }
+
+  function update(){
+    const activationY = getActivationY();
+    let activeId = sections[0]?.id || null;
+
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= activationY) {
+        activeId = section.id;
+      } else {
+        break;
+      }
+    }
+
+    setState(activeId);
+  }
+
+  let rafId = 0;
+  function requestUpdate(){
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      update();
+    });
+  }
+
+  ['scroll','resize','orientationchange','hashchange'].forEach(eventName => {
+    window.addEventListener(eventName, requestUpdate, { passive:true });
+  });
+  window.addEventListener('i18nready', requestUpdate);
+  window.addEventListener('langchange', requestUpdate);
+  window.addEventListener('load', requestUpdate, { once:true });
+
+  update();
 })();
 
 
@@ -1100,121 +1272,10 @@ document.addEventListener('copy', function (e) {
   const vb   = document.getElementById('ctaViber');
   const tel  = document.getElementById('ctaTel');
 
-  // ——— ВПИШИ свой номер (без плюса), а также TG-юзернейм/линк ———
-  const phoneDigits = '381611141701';         // пример: 381641234567
+  const phoneDigits = '381611141701';
   if (tg)  tg.href  = 'https://t.me/katebazlova';
   if (vb)  vb.href  = `viber://chat?number=%2B${phoneDigits}`;
   if (tel) tel.href = `tel:+${phoneDigits}`;
-
-  // ——— форма ———
-  const form   = document.getElementById('contactForm');
-  if (!form) return;
-
-  const note   = document.getElementById('contactNotice');
-  const name   = document.getElementById('cname');
-  const cont   = document.getElementById('ccontact');
-  const time   = document.getElementById('ctime');      // уйдёт в FormData
-  const msg    = document.getElementById('cmsg');
-  const agree  = document.getElementById('cagree');
-  const eName  = document.getElementById('err-name');
-  const eCont  = document.getElementById('err-contact');
-  const submitBtn = document.getElementById('contactSubmit');
-
-  let t0 = Date.now();
-
-  // подсветка чекбокса при изменении
-  agree?.addEventListener('change', () => agree.classList.remove('is-error'));
-
-  // утилиты
-  const setErr = (el, small, on) => {
-    if (!el) return;
-    el.classList.toggle('invalid', on);
-    el.setAttribute('aria-invalid', on ? 'true' : 'false');
-    if (small) small.hidden = !on;
-  };
-  [name, cont].forEach(i => i?.addEventListener('input', ()=> setErr(i, i===name?eName:eCont, !i.value.trim())));
-
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-
-    // 1) согласие обязательно
-    if (!agree?.checked) {
-      agree?.classList.add('is-error');
-      agree?.focus();
-      return;
-    }
-
-    // 2) honeypot + таймер
-    const hp = form.querySelector('[name="website"]');
-    if (hp && hp.value) return;
-    if (Date.now() - t0 < 2500) return;
-
-    // 3) валидация полей
-    const badName = !name?.value.trim() || name.value.trim().length < 3;
-    const badCont = !cont?.value.trim();
-    setErr(name, eName, badName);
-    setErr(cont, eCont, badCont);
-    if (badName || badCont) {
-      (badName ? name : cont)?.focus();
-      return;
-    }
-
-    // 4) UI: блокируем кнопку и ставим aria-busy
-    const oldLabel = submitBtn?.textContent;
-    if (submitBtn) {
-      submitBtn.setAttribute('disabled', 'true');
-      submitBtn.textContent = 'Отправляю…';
-    }
-    form.setAttribute('aria-busy', 'true');
-
-    // 5) отправка (Google Apps Script Web App)
-const fd = new FormData(form);
-
-try {
-  await fetch(
-    'https://script.google.com/macros/s/AKfycbyUhl5Vc9r_kDgzYpx96iuvGLXPql9Y4XtKyPrtMtePRw2Tlsrhvp6x_-ktyr1uiE12/exec',
-    {
-      method: 'POST',
-      body: fd,
-      mode: 'no-cors'
-    }
-  );
-
-  if (note) {
-    note.textContent =
-      '✅ Ваш запрос отправлен! Я отвечу в ближайшее время.';
-  }
-
-  form.reset();
-  t0 = Date.now();
-
-  window.gtag?.('event', 'contact_form_submit', {
-    success: true
-  });
-
-} catch (err) {
-
-  console.error('Contact form send error:', err);
-
-  if (note) {
-    note.textContent =
-      '❌ Не получилось отправить запрос. Пожалуйста, напишите мне в Telegram.';
-  }
-
-  window.gtag?.('event', 'contact_form_submit', {
-    success: false
-  });
-}
-    
-    finally {
-      // 6) вернуть UI в норму
-      form.removeAttribute('aria-busy');
-      if (submitBtn) {
-        submitBtn.removeAttribute('disabled');
-        submitBtn.textContent = oldLabel || 'Отправить запрос';
-      }
-    }
-  });
 })();
 
 
@@ -1237,9 +1298,9 @@ try {
     // если ввели 8... (часто так копируют), не трогаем — пользователь мог писать не номер
     // маску включаем только когда явно идём в сторону +381
     if (!d.startsWith('381')) {
-      // если просто печатают цифры (начинает с 3/38), дадим возможность дойти до 381
-      if (d.length < 3) return '+' + d;
-      // иначе не навязываем маску
+      // Помогаем только при явном вводе международного кода 3 → 38 → 381.
+      // Локальные номера вроде 061 и текстовые контакты оставляем как ввёл пользователь.
+      if (d === '3' || d === '38') return '+' + d;
       return raw;
     }
     // убираем сам код страны
@@ -1273,25 +1334,27 @@ try {
   phoneInput?.addEventListener('blur',  maybeMaskPhone);
 
   /* ---------- 2) Автозаполнение «Желаемой даты/времени» ближайшим слотом ---------- */
-  function formatDayRU(date){
-    // пн, 14.10
-    return date.toLocaleDateString('ru-RU', { weekday:'short', day:'2-digit', month:'2-digit' });
-  }
+  const getContactLocale = () => (window.i18n && window.i18n.locale) || 'ru-RU';
+  const formatSlotDay = ymd => SlotBusinessTime.formatBusinessDate(
+    ymd,
+    getContactLocale(),
+    { weekday:'short', day:'2-digit', month:'2-digit' }
+  );
+
   function getNearestSlotFromGlobal(){
     // если на странице уже есть модуль слотов и он положил слоты глобально
     const arr = Array.isArray(window.__freeSlots) ? window.__freeSlots : null;
     if (!arr || !arr.length) return null;
     const now = Date.now();
-    const getTs = s => s.startTs ?? Date.parse(s.startISO || 0);
     const sorted = arr
-      .filter(s => getTs(s) > now)
-      .sort((a,b)=> getTs(a) - getTs(b));
+      .filter(s => SlotBusinessTime.getStartTs(s) > now)
+      .sort((a,b)=> SlotBusinessTime.getStartTs(a) - SlotBusinessTime.getStartTs(b));
     const s = sorted[0];
     if (!s) return null;
 
-    const labelDay  = formatDayRU(new Date(getTs(s)));
-    const startText = s.startLabel || (s.startISO ? new Date(s.startISO).toTimeString().slice(0,5) : '');
-    const endText   = s.endLabel   || (s.endISO   ? new Date(s.endISO).toTimeString().slice(0,5)   : '');
+    const labelDay = formatSlotDay(SlotBusinessTime.getSlotDateKey(s));
+    const startText = s.startLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getStartTs(s), getContactLocale());
+    const endText = s.endLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getEndTs(s), getContactLocale());
     return `${labelDay} · ${startText}–${endText}`;
   }
 
@@ -1306,12 +1369,10 @@ try {
     const timeRange = (t.match(/\b(\d{2}:\d{2}–\d{2}:\d{2})\b/)||[])[1];
 
     if (t.includes('сегодня') && timeRange){
-      const d = new Date();
-      return `${formatDayRU(d)} · ${timeRange}`;
+      return `${formatSlotDay(SlotBusinessTime.getBusinessTodayKey())} · ${timeRange}`;
     }
     if (t.includes('завтра') && timeRange){
-      const d = new Date(Date.now() + 86400000);
-      return `${formatDayRU(d)} · ${timeRange}`;
+      return `${formatSlotDay(SlotBusinessTime.getBusinessTomorrowKey())} · ${timeRange}`;
     }
     // «вт, 14.10 • 09:00–16:00»
     const day = (t.match(/([а-я]{2},?\s*\d{1,2}\.\d{1,2})/)||[])[1];
@@ -1377,79 +1438,6 @@ try {
   }); // ← без { passive:true }
 })();
 
-
-// === In-field error helper ===
-
-(function inFieldErrors() {
-  const form = document.querySelector('#contactForm');
-  if (!form) return;
-
-  // какие поля валидируем таким способом
-  const fields = [
-    { sel: '#cname',    err: '#err-name',    msg: 'Укажите ваше имя', minLen: 3 },
-    { sel: '#ccontact', err: '#err-contact', msg: 'Укажите ваш телефон или @username' }
-  ];
-
-  const setInFieldError = (fld, msg) => {
-    const wrap = fld.closest('.fld');
-    if (!wrap) return;
-    if (!fld.dataset.oldPh) fld.dataset.oldPh = fld.placeholder || '';
-    wrap.classList.add('infield-err');
-    fld.value = '';
-    fld.placeholder = msg;
-    fld.setAttribute('aria-invalid', 'true');
-  };
-
-  const clearInFieldError = (fld) => {
-    const wrap = fld.closest('.fld');
-    if (!wrap) return;
-    wrap.classList.remove('infield-err');
-    fld.placeholder = fld.dataset.oldPh || '';
-    fld.removeAttribute('aria-invalid');
-  };
-
-  // при отправке — если поле пустое/слишком короткое, показываем «ошибку в поле»
-  form.addEventListener('submit', (e) => {
-    let bad = false;
-    fields.forEach((f) => {
-      const input = form.querySelector(f.sel);
-      const hint  = form.querySelector(f.err);
-      if (!input) return;
-
-      const v = input.value.trim();
-      const tooShort = f.minLen ? v.length < f.minLen : false;
-
-      if (!v || tooShort) {
-        e.preventDefault();
-        setInFieldError(input, f.msg);
-        if (hint) hint.hidden = true;
-        if (!bad) input.focus();
-        bad = true;
-      }
-    });
-  });
-
-  // при вводе/блюре — сброс/повтор ошибки
-  fields.forEach((f) => {
-    const input = form.querySelector(f.sel);
-    const hint  = form.querySelector(f.err);
-    if (!input) return;
-
-    input.addEventListener('input', () => {
-      clearInFieldError(input);
-      if (hint) hint.hidden = true;
-    });
-
-    input.addEventListener('blur', () => {
-      const v = input.value.trim();
-      const tooShort = f.minLen ? v.length < f.minLen : false;
-      if (!v || tooShort) {
-        setInFieldError(input, f.msg);
-        if (hint) hint.hidden = true;
-      }
-    });
-  });
-})();
 
 // Фильтр "Все / Базовые / Дополнительные"
 (() => {
@@ -1588,9 +1576,11 @@ try {
   const TABLET_BP = 980;
   const TRANSITION_MS = 220;
 
-  // Динамически задаём высоту шапки → меню начинается строго под шапкой
+  // Динамически задаём фактическую высоту шапки для меню и якорного скролла.
   function setHeaderHeightVar(){
-    const h = header.getBoundingClientRect().height || 56;
+    const h = Math.ceil(header.getBoundingClientRect().height);
+    if (!h) return;
+    document.documentElement.style.setProperty('--header-h', `${h}px`);
     mnav.style.setProperty('--hdr-h', `${h}px`);
   }
   setHeaderHeightVar();
