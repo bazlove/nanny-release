@@ -86,6 +86,12 @@
     return Object.keys(errors).length === 0;
   }
 
+  function clearFieldError(field){
+    if (!validationActive) return;
+    if (field === 'name') setFieldError(name, errName, false);
+    if (field === 'contact') setFieldError(contact, errContact, false);
+  }
+
   function revalidateField(field){
     if (!validationActive) return;
     const errors = getValidationErrors();
@@ -134,8 +140,10 @@
     }
   }
 
-  name?.addEventListener('input', () => revalidateField('name'));
-  contact?.addEventListener('input', () => revalidateField('contact'));
+  name?.addEventListener('input', () => clearFieldError('name'));
+  contact?.addEventListener('input', () => clearFieldError('contact'));
+  name?.addEventListener('blur', () => revalidateField('name'));
+  contact?.addEventListener('blur', () => revalidateField('contact'));
   agree?.addEventListener('change', () => revalidateField('consent'));
 
   // Capture phase intentionally supersedes the legacy no-cors submit listener in app.js.
