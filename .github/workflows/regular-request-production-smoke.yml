@@ -1,0 +1,48 @@
+name: Regular request production smoke
+
+on:
+  push:
+    branches:
+      - feat/regular-nanny-request-mvp
+    paths:
+      - .github/workflows/regular-request-production-smoke.yml
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Submit marked test request
+        shell: bash
+        run: |
+          set -euo pipefail
+          nonce="$(cat /proc/sys/kernel/random/uuid)"
+          endpoint="https://script.google.com/macros/s/AKfycbyUhl5Vc9r_kDgzYpx96iuvGLXPql9Y4XtKyPrtMtePRw2Tlsrhvp6x_-ktyr1uiE12/exec"
+
+          response="$(
+            curl --fail-with-body --silent --show-error --location \
+              --max-time 45 \
+              --request POST "$endpoint" \
+              --data-urlencode "name=TEST — ChatGPT regular request" \
+              --data-urlencode "contact=@test_do_not_contact" \
+              --data-urlencode "schedule=TEST: Пн и Ср 15:00–19:00, 2 месяца. Не связываться — проверка production формы." \
+              --data-urlencode "preferred_time=TEST: Пн и Ср 15:00–19:00, 2 месяца. Не связываться — проверка production формы." \
+              --data-urlencode $'message=Тип запроса: Регулярная помощь\nИсточник: Ближайшие слоты\nИмя: TEST — ChatGPT regular request\nКонтакт: @test_do_not_contact\nГрафик: TEST: Пн и Ср 15:00–19:00, 2 месяца. Не связываться — проверка production формы.' \
+              --data-urlencode "request_type=regular" \
+              --data-urlencode "request_source=slots" \
+              --data-urlencode "agree=on" \
+              --data-urlencode "website=" \
+              --data-urlencode "response_mode=json" \
+              --data-urlencode "client_nonce=$nonce"
+          )"
+
+          echo "Response: $response"
+          python - "$nonce" "$response" <<'PY'
+          import json, sys
+          nonce, raw = sys.argv[1], sys.argv[2]
+          data = json.loads(raw)
+          assert data.get("ok") is True, data
+          assert data.get("clientNonce") == nonce, data
+          assert data.get("requestId"), data
+          print("Confirmed requestId:", data["requestId"])
+          PY
