@@ -1,7 +1,6 @@
 /* ===== Legacy stubs ===== */
 window.initSlots        = window.initSlots        || function(){ /* no-op: slots стартуют сами */ };
 window.initHeroSlider   = window.initHeroSlider   || function(){ /* no-op: слайдер убрали */ };
-window.initQuoteRotator = window.initQuoteRotator || function(){ /* no-op: ротатор работает IIFE */ };
 
 // helpers
 const $  = (sel, root=document) => root.querySelector(sel);
@@ -97,6 +96,10 @@ document.addEventListener('copy', function (e) {
       btn_slots:'Проверить свободные слоты',
       hero_calc:'Рассчитать цену за 1 минуту',
       hero_read_reviews:'Читать отзывы родителей',
+      hero_quote_1:'«всегда вовремя, ребёнок спокоен»',
+      hero_quote_2:'«без экранов, безопасность и дисциплина»',
+      hero_quote_3:'«всегда на связи, фото после визита»',
+      hero_quote_4:'«мягкая адаптация, поддержание распорядка»',
 
       /* SERVICES */
       services_title:'Услуги',
@@ -291,6 +294,10 @@ document.addEventListener('copy', function (e) {
       btn_slots:'Proverite slobodne termine',
       hero_calc:'Izračunajte cenu za 1 minut',
       hero_read_reviews:'Pročitajte utiske roditelja',
+      hero_quote_1:'«uvek na vreme, dete je spokojno»',
+      hero_quote_2:'«bez ekrana, bezbednost i disciplina»',
+      hero_quote_3:'«uvek na vezi, fotografije posle posete»',
+      hero_quote_4:'«blaga adaptacija, održavanje rutine»',
 
       /* SERVICES */
       services_title:'Usluge',
@@ -1667,24 +1674,16 @@ const SlotBusinessTime = (() => {
 
 // ===== Hero: ротатор без рефлоу (двухслойный кросс-фейд) =====
 
-(function normalizeHeroQuote(){
-  const r = document.getElementById('quoteRotator');
-  if (!r) return;
-  r.innerHTML = r.innerHTML.replace(/\s*<br\s*\/?>\s*/gi, ' ');
-})();
-
-(function initQuoteRotator(){
+(function initHeroQuoteRotator(){
   const el = document.getElementById('quoteRotator');
   if (!el) return;
 
-  const quotes = [
-    '«всегда вовремя, ребёнок спокоен»',
-    '«без экранов, безопасность и дисциплина»',
-    '«всегда на связи, фото после визита»',
-    '«мягкая адаптация, поддержание распорядка»'
-  ];
+  const quoteKeys = ['hero_quote_1','hero_quote_2','hero_quote_3','hero_quote_4'];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const INTERVAL_MS = 7000;
+  const t = key => window.i18n?.t?.(key) ?? window.I18N?.ru?.[key] ?? key;
 
-  // Гарантируем обёртку фиксированной высоты
+  // Keep the existing two-layer cross-fade, but with one owner and one timer.
   let wrap = el.closest('.quote-wrap');
   if (!wrap) {
     wrap = document.createElement('span');
@@ -1693,10 +1692,9 @@ const SlotBusinessTime = (() => {
     wrap.appendChild(el);
   }
 
-  // Два слоя: видимый + скрытый
   const a = el;
+  a.innerHTML = a.innerHTML.replace(/\s*<br\s*\/?>\s*/gi, ' ');
   a.classList.add('quote', 'is-active');
-  a.textContent = quotes[0];
 
   const b = a.cloneNode(true);
   b.removeAttribute('id');
@@ -1704,14 +1702,70 @@ const SlotBusinessTime = (() => {
   b.setAttribute('aria-hidden','true');
   wrap.appendChild(b);
 
-  let i = 0, visible = a, hidden = b;
-  setInterval(() => {
-    i = (i + 1) % quotes.length;
-    hidden.textContent = quotes[i];
+  let index = 0;
+  let visible = a;
+  let hidden = b;
+  let timer = null;
+
+  function renderCurrent(){
+    visible.textContent = t(quoteKeys[index]);
+    hidden.textContent = t(quoteKeys[(index + 1) % quoteKeys.length]);
+  }
+
+  function showStableFirst(){
+    index = 0;
+    visible = a;
+    hidden = b;
+    a.textContent = t(quoteKeys[0]);
+    b.textContent = t(quoteKeys[1]);
+    a.classList.add('is-active');
+    b.classList.remove('is-active');
+  }
+
+  function advance(){
+    index = (index + 1) % quoteKeys.length;
+    hidden.textContent = t(quoteKeys[index]);
     visible.classList.remove('is-active');
     hidden.classList.add('is-active');
     [visible, hidden] = [hidden, visible];
-  }, 7000);
+    hidden.textContent = t(quoteKeys[(index + 1) % quoteKeys.length]);
+  }
+
+  function stopTimer(){
+    if (timer !== null) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function startTimer(){
+    if (timer !== null || reduceMotion.matches || document.visibilityState === 'hidden') return;
+    timer = setInterval(advance, INTERVAL_MS);
+  }
+
+  function syncMotion(){
+    stopTimer();
+    if (reduceMotion.matches) {
+      showStableFirst();
+      return;
+    }
+    renderCurrent();
+    startTimer();
+  }
+
+  window.addEventListener('langchange', () => {
+    if (reduceMotion.matches) showStableFirst();
+    else renderCurrent();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') stopTimer();
+    else startTimer();
+  });
+  if (typeof reduceMotion.addEventListener === 'function') reduceMotion.addEventListener('change', syncMotion);
+  else if (typeof reduceMotion.addListener === 'function') reduceMotion.addListener(syncMotion);
+
+  showStableFirst();
+  startTimer();
 })();
 
 (function fixHeroSocialSep(){
@@ -1963,89 +2017,6 @@ const SlotBusinessTime = (() => {
   });
 })();
 
-
-
-
-
-/* === HERO: tablet quote rotator v3 (rAF clock, precise 3.5s) === */
-(function tabletQuoteRotatorV3() {
-  const host = document.querySelector('#top .hero-visual .hero-social #quoteRotator');
-  if (!host) return;
-
-  const mq = window.matchMedia('(min-width: 641px) and (max-width: 1024px)');
-  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const INTERVAL = REDUCED ? 7000 : 3500; // целевой интервал
-
-  // 1) Собираем фразы
-  function collect() {
-    let list = Array.from(host.querySelectorAll('.quote,[data-quote]'))
-      .map(el => el.textContent.trim()).filter(Boolean);
-    if (list.length <= 1) {
-      const backup = document.querySelectorAll('#top .hero-visual .hero-usp em, #top .hero-visual .hero-usp i');
-      list = Array.from(backup).map(el => el.textContent.trim()).filter(Boolean);
-    }
-    return Array.from(new Set(list));
-  }
-  const phrases = collect();
-  if (phrases.length <= 1) return;
-
-  // 2) Перестраиваем контейнер под один слой
-  host.textContent = '';
-  const node = document.createElement('span');
-  node.className = 'quote';
-  host.appendChild(node);
-
-  // срезаем любые унаследованные анимации
-  host.style.animation = 'none';
-  node.style.animation = 'none';
-  Object.assign(node.style, {
-    display: 'inline-block',
-    opacity: '0',
-    transition: 'opacity 240ms ease 0s'
-  });
-
-  // 3) Тик на rAF
-  let idx = 0, raf = null, running = false, nextAt = 0;
-
-  function render(i) {
-    node.style.opacity = '0';
-    void node.offsetWidth;              // рефлоу
-    node.textContent = phrases[i];
-    node.style.opacity = '1';
-  }
-
-  function tick(now) {
-    if (!running) return;
-    if (now >= nextAt) {
-      idx = (idx + 1) % phrases.length;
-      render(idx);
-      nextAt += INTERVAL;
-    }
-    raf = requestAnimationFrame(tick);
-  }
-
-  function start() {
-    if (running || !mq.matches) return;
-    running = true;
-    render(idx);
-    nextAt = performance.now() + INTERVAL;
-    raf = requestAnimationFrame(tick);
-  }
-
-  function stop() {
-    running = false;
-    if (raf) { cancelAnimationFrame(raf); raf = null; }
-  }
-
-  // Пауза вне экрана / при смене брейкпоинта / при скрытии вкладки
-  const io = new IntersectionObserver(es => (es[0]?.isIntersecting ? start() : stop()), {threshold: 0.01});
-  io.observe(host);
-  document.addEventListener('visibilitychange', () => (document.visibilityState === 'visible' ? start() : stop()));
-  mq.addEventListener('change', () => { stop(); start(); });
-
-  // Нормализуем случайные <br> внутри цитат
-  host.innerHTML = host.innerHTML.replace(/\s*<br\s*\/?>\s*/gi, ' ');
-})();
 
 
 
