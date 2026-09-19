@@ -720,17 +720,19 @@
     <div class="result-card">
       <div class="calc-summary">
         <div class="result-row">
-          <div id="result" style="font-weight:700" aria-live="polite">—</div>
+          <div class="result-main">
+            <div class="result-label i18n" data-key="calc_estimate_label">Предварительная стоимость</div>
+            <div id="result" class="result-total">—</div>
+          </div>
           <a href="#" id="shareLink" class="share-link">
-            <span class="icon">🔗</span>
+            <span class="icon" aria-hidden="true">🔗</span>
             <span class="txt i18n" data-key="calc_share">Поделиться</span>
           </a>
         </div>
-
-        <div class="res-sep"></div>
+        <div id="resultLive" class="calc-live" aria-live="polite" aria-atomic="true"></div>
 
         <div class="calc-line">
-          <small id="breakdown" class="calc-rate" style="color:#555"></small>
+          <small id="breakdown" class="calc-rate"></small>
           <div class="calc-chips" id="badges"></div>
         </div>
 

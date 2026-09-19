@@ -176,6 +176,8 @@ document.addEventListener('copy', function (e) {
       calc_optC:'Провести фитнес-занятие на 30 мин',  calc_optC_add:'+600', // как в HTML
       calc_presets_aria:'Быстрый выбор', p2h:'2 ч', p3h:'3 ч', p4h:'4 ч', p5h:'5 ч',
       calc_notice:'Минимальный расчёт ведётся от 2 часов.',
+      calc_estimate_label:'Предварительная стоимость',
+      calc_amount:'{sum} дин',
       calc_total:'Итог: {sum} дин',
       calc_rate:'Ставка: {rate} дин/ч × {hours} ч',
       calc_extra:'Дополнительно: +{sum} дин',
@@ -362,6 +364,8 @@ document.addEventListener('copy', function (e) {
       calc_optC:'Održati fitnes-trening 30 min', calc_optC_add:'+600',
       calc_presets_aria:'Brzi izbor', p2h:'2 č', p3h:'3 č', p4h:'4 č', p5h:'5 č',
       calc_notice:'Minimalni obračun od 2 sata.',
+      calc_estimate_label:'Okvirna cena',
+      calc_amount:'{sum} RSD',
       calc_total:'Ukupno: {sum} RSD',
       calc_rate:'Cena po satu: {rate} RSD/h × {hours} h',
       calc_extra:'Dodatno: +{sum} RSD',
@@ -849,8 +853,10 @@ const SlotBusinessTime = (() => {
   };
   const money = value => formatNumber(value, { maximumFractionDigits: 0 });
   const hoursText = value => formatNumber(value, { minimumFractionDigits: 0, maximumFractionDigits: 1 });
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let lastValidHours = 4;
   let shareFeedbackTimer = 0;
+  let animationFrame = 0;
 
   // ---------- helpers ----------
   function parseHoursValue(raw){
@@ -959,25 +965,56 @@ const SlotBusinessTime = (() => {
   const scrollToCalc = (smooth=true)=>{
     const el = $('calc');
     if (!el) return;
-    el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+    const behavior = smooth && !reducedMotion.matches ? 'smooth' : 'auto';
+    el.scrollIntoView({ behavior, block: 'start' });
   };
 
   // ---------- render/animate ----------
   let last=0;
-  const render = (sum)=>{
+  const resultText = (sum)=>{
     const eur = $('eurToggle')?.checked;
     let s = t('calc_total', { sum: money(sum) });
+    if (eur) s += ` ${t('calc_eur_value', { sum: money(Math.round(sum/EUR_RATE)) })}`;
+    return s;
+  };
+
+  const render = (sum)=>{
+    const eur = $('eurToggle')?.checked;
+    let s = t('calc_amount', { sum: money(sum) });
     if (eur) {
       s += ` <span class="eur">${t('calc_eur_value', { sum: money(Math.round(sum/EUR_RATE)) })}</span>`;
     }
     const el = $('result'); if (el) el.innerHTML = s;
   };
 
+  const announce = (sum)=>{
+    const live = $('resultLive');
+    if (live) live.textContent = resultText(sum);
+  };
+
   const animate = (to)=>{
-    const from=last; if(from===to){ render(to); return; }
+    cancelAnimationFrame(animationFrame);
+    const from=last;
+    if(reducedMotion.matches || from===to){
+      render(to);
+      last=to;
+      announce(to);
+      return;
+    }
     const start=performance.now(), dur=180, diff=to-from;
-    const step=(t)=>{ const p=Math.min(1,(t-start)/dur); render(Math.round(from+diff*p)); if(p<1) requestAnimationFrame(step); else last=to; };
-    requestAnimationFrame(step);
+    const step=(time)=>{
+      const progress=Math.min(1,(time-start)/dur);
+      const current=Math.round(from+diff*progress);
+      render(current);
+      last=current;
+      if(progress<1) animationFrame=requestAnimationFrame(step);
+      else {
+        animationFrame=0;
+        last=to;
+        announce(to);
+      }
+    };
+    animationFrame=requestAnimationFrame(step);
   };
 
   // ---------- core calc ----------
