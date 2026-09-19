@@ -919,7 +919,7 @@ const SlotBusinessTime = (() => {
     <article class="slot-card" data-slot-date="${date}">
       <div class="slot-date">${fmtDay(date)}</div>
       <div class="slot-time">${makeTimesLine(items)}</div>
-      <a class="btn btn-outline btn-lg slot-cta" href="#contact">${t('slots_btn_request')}</a>
+      <a class="btn btn-outline slot-cta" href="#contact">${t('slots_btn_request')}</a>
     </article>
   `;
 
