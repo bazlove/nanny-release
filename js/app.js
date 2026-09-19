@@ -2099,9 +2099,15 @@ const SlotBusinessTime = (() => {
 
   const modalFocusables = () => Array.from(els.modal?.querySelectorAll(FOCUSABLE) || [])
     .filter(el => el.tabIndex >= 0 && el.getAttribute('aria-hidden') !== 'true');
-  const canRestoreFocus = el => !!(el?.isConnected && !el.closest('[hidden]'));
+  const canRestoreFocus = el => {
+    if (!el?.isConnected || el.closest('[hidden]')) return false;
+    const style = getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden' && el.getClientRects().length > 0;
+  };
+  const getPersistentCookieTrigger = () => document.querySelector('.js-cookie-open');
 
   function openModal(){
+    if (!els.modal?.hidden) return; // avoid double-open from overlapping click handlers
     modalOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     restoreBannerOnClose = !!(els.banner && !els.banner.hidden);
     els.modal.hidden = false;
@@ -2129,22 +2135,26 @@ const SlotBusinessTime = (() => {
     const modalWasOpen = !els.modal.hidden;
     write({ necessary:true, analytics:true, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
-    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:els.manage });
+    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:getPersistentCookieTrigger() });
   }
   function onlyNecessary(){
     const modalWasOpen = !els.modal.hidden;
     write({ necessary:true, analytics:false, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
-    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:els.manage });
+    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:getPersistentCookieTrigger() });
   }
   function saveSelection(){
     write({ necessary:true, analytics: !!els.ana?.checked, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
-    closeModal({ restoreBanner:false, fallback:els.manage });
+    closeModal({ restoreBanner:false, fallback:getPersistentCookieTrigger() });
   }
 
   // Events
-  els.btnSettings?.addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
+  els.btnSettings?.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    openModal();
+  });
   els.btnNecessary?.addEventListener('click', onlyNecessary);
   els.btnAccept?.addEventListener('click', acceptAll);
 
