@@ -2820,6 +2820,11 @@ body.lightbox-open{
   transition:background .12s, border-color .12s, color .12s, transform .12s;
 }
 #calc .presets .tag:hover{ transform:translateY(-1px); border-color:#B9E0D1; background:#F2FAF6; color:#146C43; }
+#calc .presets .tag:focus-visible{
+  outline:2px solid #78c6a7;
+  outline-offset:2px;
+  border-color:#B9E0D1;
+}
 
 /* Результат */
 #calc .result-card{
@@ -2847,6 +2852,10 @@ body.lightbox-open{
 #calc input[type="checkbox"]{
   appearance:auto !important; -webkit-appearance:auto !important; -moz-appearance:auto !important;
   width:14px; height:14px; accent-color:#15803D; cursor:pointer;
+}
+#calc input[type="checkbox"]:focus-visible{
+  outline:2px solid #78c6a7;
+  outline-offset:2px;
 }
 #calc .subcheck:has(input:checked),
 #calc #eurWrap:has(input:checked){ border-color:#e6ebf3; box-shadow:0 0 0 2px rgba(16,185,129,.10) inset; }

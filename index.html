@@ -639,14 +639,15 @@
       <div class="field">
         <div class="label-row">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.75a10.25 10.25 0 1 0 0 20.5 10.25 10.25 0 0 0 0-20.5Zm0 1.5a8.75 8.75 0 1 1 0 17.5 8.75 8.75 0 0 1 0-17.5Zm.75 3a.75.75 0 0 0-1.5 0v6.19l-3.28 3.28a.75.75 0 1 0 1.06 1.06l3.47-3.47c.16-.16.25-.38.25-.6V6.25Z"/></svg>
-          <span class="i18n" data-key="calc_hours_label">Часы (кол-во за визит)</span>
+          <label class="i18n" data-key="calc_hours_label" for="hours">Часы (кол-во за визит)</label>
           <span class="hint i18n-attr" tabindex="0" aria-label="Минимум от 2-х часов" data-key="calc_hours_hint" data-i18n-attr="aria-label">
             <span class="i">i</span>
-            <span class="tip i18n" data-key="calc_hours_hint">Минимум от 2-х часов</span>
+            <span id="hoursHelp" class="tip i18n" data-key="calc_hours_hint">Минимум от 2-х часов</span>
           </span>
         </div>
-        <input id="hours" class="input" type="number" min="2" max="10" step="0.5" value="4" aria-describedby="hoursErr" />
-        <div id="hoursErr" class="field-error i18n" style="display:none" data-key="calc_hours_err">Минимум 2 часа за визит</div>
+        <input id="hours" class="input" type="number" min="2" max="10" step="0.5" value="4" aria-describedby="hoursHelp hoursErrMin hoursErrMax" aria-invalid="false" />
+        <div id="hoursErrMin" class="field-error i18n" hidden data-key="calc_hours_err">Минимум 2 часа за визит</div>
+        <div id="hoursErrMax" class="field-error i18n" hidden data-key="calc_hours_err_max">Максимум 10 часов за визит</div>
         <label class="subcheck">
           <input id="optA" type="checkbox">
           <span>
@@ -660,13 +661,13 @@
       <div class="field">
         <div class="label-row label-kids">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-6.5 8.25a6.5 6.5 0 0 1 13 0H5.5Z"/></svg>
-          <span class="i18n" data-key="calc_kids_label">Дети</span>
+          <label class="i18n" data-key="calc_kids_label" for="kids">Дети</label>
           <span class="hint i18n-attr" tabindex="0" aria-label="2 детей: +25%; если один младше 2 лет: +50% • 3 детей: +75%" data-key="calc_kids_hint" data-i18n-attr="aria-label">
             <span class="i">i</span>
-            <span class="tip i18n" data-key="calc_kids_hint">2 детей: +25% • если один &lt; 2 лет: +50% • 3 детей: +75%</span>
+            <span id="kidsHelp" class="tip i18n" data-key="calc_kids_hint">2 детей: +25% • если один &lt; 2 лет: +50% • 3 детей: +75%</span>
           </span>
         </div>
-        <select id="kids" class="input">
+        <select id="kids" class="input" aria-describedby="kidsHelp">
           <option value="1" selected class="i18n" data-key="calc_k1">1 ребёнок</option>
           <option value="2" class="i18n" data-key="calc_k2">2 ребёнка</option>
           <option value="2_infant" class="i18n" data-key="calc_k2inf">2 ребёнка (если один младше 2-х лет)</option>
@@ -685,13 +686,13 @@
       <div class="field">
         <div class="label-row">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2.75a.75.75 0 0 0-1.5 0V4H3.75A1.75 1.75 0 0 0 2 5.75V8h20V5.75A1.75 1.75 0 0 0 20.25 4H18.5V2.75a.75.75 0 0 0-1.5 0V4h-8V2.75ZM22 9.5H2V18.25A1.75 1.75 0 0 0 3.75 20h16.5A1.75 1.75 0 0 0 22 18.25V9.5Z"/></svg>
-          <span class="i18n" data-key="calc_day_label">День недели</span>
+          <label class="i18n" data-key="calc_day_label" for="dayType">День недели</label>
           <span class="hint i18n-attr" tabindex="0" aria-label="Коэффициент" data-key="calc_day_hint" data-i18n-attr="aria-label">
             <span class="i">i</span>
-            <span class="tip i18n" data-key="calc_day_hint">Выходной/праздник: +25%</span>
+            <span id="dayTypeHelp" class="tip i18n" data-key="calc_day_hint">Выходной/праздник: +25%</span>
           </span>
         </div>
-        <select id="dayType" class="input">
+        <select id="dayType" class="input" aria-describedby="dayTypeHelp">
           <option value="weekday" selected class="i18n" data-key="calc_day_weekday">Будни</option>
           <option value="weekend" class="i18n" data-key="calc_day_weekend">Выходной/праздник</option>
         </select>
@@ -707,13 +708,10 @@
 
     <!-- Пресеты -->
     <div class="presets i18n-attr" aria-label="Быстрый выбор" data-key="calc_presets_aria" data-i18n-attr="aria-label">
-      <button class="tag i18n" id="p2h" data-key="p2h">2 ч</button>
-      <button class="tag i18n" id="p3h" data-key="p3h">3 ч</button>
-      <button class="tag i18n" id="p4h" data-key="p4h">4 ч</button>
-      <button class="tag i18n" id="p5h" data-key="p5h">5 ч</button>
-      <button class="tag i18n" id="pWeekday" data-key="pWeekday">Будни</button>
-      <button class="tag i18n" id="pWeekend" data-key="pWeekend">Выходной</button>
-      <button class="tag i18n" id="pKids2" data-key="pKids2">Два ребёнка</button>
+      <button type="button" class="tag i18n" id="p2h" data-hours="2" data-key="p2h">2 ч</button>
+      <button type="button" class="tag i18n" id="p3h" data-hours="3" data-key="p3h">3 ч</button>
+      <button type="button" class="tag i18n" id="p4h" data-hours="4" data-key="p4h">4 ч</button>
+      <button type="button" class="tag i18n" id="p5h" data-hours="5" data-key="p5h">5 ч</button>
     </div>
 
     <!-- Результат -->

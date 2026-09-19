@@ -166,14 +166,15 @@ document.addEventListener('copy', function (e) {
       calc_hours_label:'Часы (кол-во за визит)',
       calc_hours_hint:'Минимум от 2-х часов',
       calc_hours_err:'Минимум 2 часа за визит',
+      calc_hours_err_max:'Максимум 10 часов за визит',
       calc_optA:'Сделать лёгкий перекус для ребёнка', calc_optA_add:'+300',
-      calc_kids_label:'Дети', calc_kids_hint:'2 детей: +25% • если один < 2 лет: +50%',
+      calc_kids_label:'Дети', calc_kids_hint:'2 детей: +25% • если один < 2 лет: +50% • 3 детей: +75%',
       calc_k1:'1 ребёнок', calc_k2:'2 ребёнка', calc_k2inf:'2 ребёнка (если один младше 2-х лет)', calc_k3:'3 ребёнка',
       calc_optB:'Сделать уборку в детской комнате',   calc_optB_add:'+300',
       calc_day_label:'День недели', calc_day_hint:'Выходной/праздник: +25%',
       calc_day_weekday:'Будни', calc_day_weekend:'Выходной/праздник',
       calc_optC:'Провести фитнес-занятие на 30 мин',  calc_optC_add:'+600', // как в HTML
-      calc_presets_aria:'Быстрый выбор', p2h:'2 ч', p3h:'3 ч', p4h:'4 ч', p5h:'5 ч', pWeekday:'Будни', pWeekend:'Выходной', pKids2:'Два ребёнка',
+      calc_presets_aria:'Быстрый выбор', p2h:'2 ч', p3h:'3 ч', p4h:'4 ч', p5h:'5 ч',
       calc_notice:'Минимальный расчёт ведётся от 2 часов.',
       calc_total:'Итог: {sum} дин',
       calc_share:'Поделиться',
@@ -343,14 +344,15 @@ document.addEventListener('copy', function (e) {
       /* CALC */
       calc_title:'Kalkulator cene (Novi Sad)',
       calc_hours_label:'Sati (po poseti)',   calc_hours_hint:'Minimum 2 sata', calc_hours_err:'Minimum 2 sata po poseti',
+      calc_hours_err_max:'Maksimum 10 sati po poseti',
       calc_optA:'Pripremiti laganu užinu za dete', calc_optA_add:'+300',
-      calc_kids_label:'Deca', calc_kids_hint:'2 dece: +25% • ako je jedno < 2 god: +50%',
+      calc_kids_label:'Deca', calc_kids_hint:'2 dece: +25% • ako je jedno < 2 god: +50% • 3 dece: +75%',
       calc_k1:'1 dete', calc_k2:'2 deteta', calc_k2inf:'2 deteta (ako je jedno mlađe od 2 god)', calc_k3:'3 deteta',
       calc_optB:'Očistiti dečiju sobu', calc_optB_add:'+300',
       calc_day_label:'Dan u nedelji', calc_day_hint:'Vikend/praznik: +25%',
       calc_day_weekday:'Radni dan', calc_day_weekend:'Vikend/praznik',
       calc_optC:'Održati fitnes-trening 30 min', calc_optC_add:'+600',
-      calc_presets_aria:'Brzi izbor', p2h:'2 č', p3h:'3 č', p4h:'4 č', p5h:'5 č', pWeekday:'Radni dan', pWeekend:'Vikend', pKids2:'Dvoje dece',
+      calc_presets_aria:'Brzi izbor', p2h:'2 č', p3h:'3 č', p4h:'4 č', p5h:'5 č',
       calc_notice:'Minimalni obračun od 2 sata.',
       calc_total:'Ukupno: {sum} RSD',
       calc_share:'Podeli',
@@ -824,28 +826,79 @@ const SlotBusinessTime = (() => {
   const EUR_RATE=117, BASE=900, WEEKEND=1.25, TWO=1.25, THREE=1.75, INFANT=1.5, OPT=300, OPT_FIT=600, MIN=2, HOURS_MAX=10;
   const $ = id => document.getElementById(id);
   const money = v => { try { return v.toLocaleString('ru-RS'); } catch(_) { return String(v); } };
+  let lastValidHours = 4;
 
   // ---------- helpers ----------
-  function normalizeHours(commit){
-  const h   = $('hours');
-  const err = $('hoursErr');
-  const raw = h?.value ?? '';
-  let v = parseFloat(String(raw).replace(',', '.'));
+  function parseHoursValue(raw){
+    const valueText = String(raw ?? '').trim();
+    if (!valueText) return { state:'empty', value:null };
 
-  const emptyOrNaN = !Number.isFinite(v) || raw === '';
-  if (emptyOrNaN) v = MIN;
-
-  v = Math.max(MIN, Math.min(HOURS_MAX, v));
-
-  // округляем к ближайшему шагу 0.5
-  v = Math.round(v * 2) / 2; // 2.3 → 2.5, 3.7 → 3.5
-  if (commit && h) {
-    h.value = String(v);
+    const value = Number(valueText.replace(',', '.'));
+    if (!Number.isFinite(value)) return { state:'empty', value:null };
+    if (value < MIN) return { state:'min', value };
+    if (value > HOURS_MAX) return { state:'max', value };
+    return { state:'valid', value };
   }
-  if (h)   h.classList.toggle('error', v < MIN);
-  if (err) err.style.display = (v < MIN) ? 'block' : 'none';
-  return v;
-}
+
+  function normalizeHoursValue(value){
+    return Math.round(value * 2) / 2;
+  }
+
+  function setHoursValidation(state){
+    const h = $('hours');
+    const minErr = $('hoursErrMin');
+    const maxErr = $('hoursErrMax');
+    const invalid = state === 'min' || state === 'max';
+
+    if (h) {
+      h.classList.toggle('error', invalid);
+      h.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+    }
+    if (minErr) minErr.hidden = state !== 'min';
+    if (maxErr) maxErr.hidden = state !== 'max';
+  }
+
+  function initializeHours(){
+    const h = $('hours');
+    if (!h) return;
+
+    const parsed = parseHoursValue(h.value);
+    const value = parsed.state === 'valid'
+      ? normalizeHoursValue(parsed.value)
+      : MIN;
+
+    h.value = String(value);
+    lastValidHours = value;
+    setHoursValidation('valid');
+  }
+
+  function commitHours(){
+    const h = $('hours');
+    if (!h) return false;
+
+    const parsed = parseHoursValue(h.value);
+
+    if (parsed.state === 'empty') {
+      h.value = String(lastValidHours);
+      setHoursValidation('valid');
+      return true;
+    }
+
+    if (parsed.state !== 'valid') {
+      setHoursValidation(parsed.state);
+      return false;
+    }
+
+    const value = normalizeHoursValue(parsed.value);
+    const changed = value !== lastValidHours;
+
+    h.value = String(value);
+    lastValidHours = value;
+    setHoursValidation('valid');
+
+    if (changed) recalc();
+    return true;
+  }
 
   function hourlyRate(){
     let r=BASE;
@@ -858,7 +911,7 @@ const SlotBusinessTime = (() => {
 
   function collectParams(){
     const sp = new URLSearchParams();
-    sp.set('h',   $('hours')?.value || '');
+    sp.set('h',   String(lastValidHours));
     sp.set('k',   $('kids')?.value  || '');
     sp.set('d',   $('dayType')?.value || '');
     sp.set('a',   $('optA')?.checked ? '1' : '0');
@@ -902,8 +955,8 @@ const SlotBusinessTime = (() => {
   };
 
   // ---------- core calc ----------
-  function recalc(commit=true){
-    const h = normalizeHours(commit);
+  function recalc(){
+    const h = lastValidHours;
     const rate=hourlyRate();
     const add=( $('optA')?.checked?OPT:0 )+( $('optB')?.checked?OPT:0 )+( $('optC')?.checked?OPT_FIT:0 );
     const total=rate*h+add; animate(total);
@@ -974,8 +1027,9 @@ const SlotBusinessTime = (() => {
     if (h.startsWith('#calc')) {
       const sp = parseParamsFromLocation();
       if (sp.size > 0) applyParams(sp);
+      initializeHours();
       scrollToCalc(true);
-      recalc(true);
+      recalc();
     }
   });
 
@@ -983,42 +1037,48 @@ const SlotBusinessTime = (() => {
   function bind(){
     const hoursEl = $('hours');
     if (hoursEl) {
-      hoursEl.addEventListener('input', () => { normalizeHours(false); recalc(false); });
-      ['change','blur'].forEach(ev => hoursEl.addEventListener(ev, () => { normalizeHours(true); recalc(true); }));
+      hoursEl.addEventListener('input', () => setHoursValidation('valid'));
+      ['change','blur'].forEach(eventName => {
+        hoursEl.addEventListener(eventName, commitHours);
+      });
+      hoursEl.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        commitHours();
+      });
+      hoursEl.addEventListener('paste', (event) => {
+        const pasted = event.clipboardData?.getData('text')?.trim() || '';
+        if (!/^\d+(?:,\d+)$/.test(pasted)) return;
+        event.preventDefault();
+        hoursEl.value = pasted.replace(',', '.');
+        setHoursValidation('valid');
+      });
     }
 
     ['kids','dayType','optA','optB','optC','eurToggle'].forEach(id=>{
       const el=$(id); if(!el) return;
-      ['input','change'].forEach(e=> el.addEventListener(e,recalc));
+      el.addEventListener('change', recalc);
     });
 
-    const setH=n=>{ const h=$('hours'); if(h){ h.value=String(n); h.focus(); recalc(true); }};
-    [['p2h',2],['p3h',3],['p4h',4],['p5h',5]].forEach(([id,val])=>{
-      const b=$(id); if(b) b.addEventListener('click',()=>setH(val));
+    document.querySelectorAll('#calc .presets [data-hours]').forEach(button => {
+      button.addEventListener('click', () => {
+        const value = Number(button.dataset.hours);
+        const h = $('hours');
+        if (!h || !Number.isFinite(value)) return;
+        h.value = String(value);
+        h.focus();
+        commitHours();
+      });
     });
-    $('pWeekday')?.addEventListener('click', ()=>{ const d=$('dayType'); if(d){ d.value='weekday'; recalc(); }});
-    $('pWeekend')?.addEventListener('click',()=>{ const d=$('dayType'); if(d){ d.value='weekend'; recalc(); }});
-    $('pKids2')?.addEventListener('click',()=>{ const k=$('kids'); if(k){ k.value='2'; recalc(); }});
-
-    // делегирование на чипы
-    document.addEventListener('click',(ev)=>{
-      const chip=ev.target.closest?.('.tag'); if(!chip) return;
-      const txt=(chip.textContent||'').toLowerCase();
-      if(txt.includes('2 ч')) return setH(2);
-      if(txt.includes('3 ч')) return setH(3);
-      if(txt.includes('4 ч')) return setH(4);
-      if(txt.includes('выходной')){ const d=$('dayType'); if(d){ d.value='weekend'; recalc(); } return; }
-      if(txt.includes('два ребёнка')||txt.includes('два ребенка')){ const k=$('kids'); if(k){ k.value='2'; recalc(); } return; }
-    }, true);
 
     // share
     $('shareLink')?.addEventListener('click', (e)=>{ e.preventDefault(); shareCalcState(); });
 
-    window.calcRecompute = () => recalc(true);
+    window.calcRecompute = () => recalc();
   }
 
   // ---------- boot ----------
-  const boot = ()=>{ bind(); initCalcURLState(); recalc(true); };
+  const boot = ()=>{ bind(); initCalcURLState(); initializeHours(); recalc(); };
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
