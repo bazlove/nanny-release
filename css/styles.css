@@ -2208,9 +2208,6 @@ body.lightbox-open{
   #contact .contact-form .col-fields{ gap:8px; }
 }
 
-/* кнопки-ссылки целиком кликабельные (у тебя уже есть .cbtn) */
-.cbtn{ min-height:56px; }
-
 /* поля/лейблы/ошибки — чуть легче и крупнее */
 .contact-form .lbl{ font-weight:600; margin-bottom:6px; }
 .contact-form .req{ color:#E11D48; margin-left:4px; }
