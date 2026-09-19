@@ -229,6 +229,19 @@ document.addEventListener('copy', function (e) {
       xp4_h:'Няня и бебиситтер',
       xp4_p:'Частная практика с семьями: повседневный уход и регулярный присмотр с учётом возраста, режима ребёнка и договорённостей с родителями.',
       
+      /* PROCESS */
+      process_title:'Как всё происходит?',
+      process_intro:'До первого визита созваниваемся и обязательно знакомимся лично.',
+      process_list_aria:'Процесс первого заказа в четырёх шагах',
+      process_step1_title:'Отправляете запрос',
+      process_step1_text:'Пишете удобную дату и время, возраст ребёнка и коротко — какая помощь нужна.',
+      process_step2_title:'Короткий созвон',
+      process_step2_text:'Созваниваемся на 10–15 минут: обсуждаем режим ребёнка, особенности, ваши ожидания и важные правила семьи.',
+      process_step3_title:'Личное знакомство',
+      process_step3_text:'До первого заказа обязательно встречаемся на 30–40 минут: знакомимся с ребёнком, обсуждаем детали и проверяем, комфортно ли нам друг с другом.',
+      process_step4_title:'Первый визит',
+      process_step4_text:'Подтверждаем время и договорённости. Во время визита придерживаюсь привычного режима ребёнка и правил вашей семьи.',
+      
       /* REVIEWS */
       reviews_title:'Отзывы родителей',
       review1_author:'Екатерина',
@@ -305,7 +318,7 @@ document.addEventListener('copy', function (e) {
       faq_title:'Ответы на частые вопросы',
       faq_q_meet:'Как происходит знакомство?',
       faq_a_meet_1:'Проводим короткий созвон на 10–15 минут.',
-      faq_a_meet_2:'По возможности делаем совместную встречу-знакомство на 30–40 минут.',
+      faq_a_meet_2:'До первого заказа обязательно встречаемся лично на 30–40 минут.',
       faq_a_meet_3:'Дополнительно обсуждаем ваш режим, договорённости, особенности ребёнка, цели и нюансы.',
       faq_q_price:'Сколько стоит услуга?',
       // как в HTML: от 900 дин/час
@@ -437,6 +450,19 @@ document.addEventListener('copy', function (e) {
       xp4_h:'Dadilja i bebisiterka',
       xp4_p:'Privatna praksa sa porodicama: svakodnevna briga i redovno čuvanje uz uvažavanje uzrasta, rutine deteta i dogovora sa roditeljima.',
       
+      /* PROCESS */
+      process_title:'Kako sve izgleda?',
+      process_intro:'Pre prve posete se čujemo i obavezno upoznajemo uživo.',
+      process_list_aria:'Proces prvog angažmana u četiri koraka',
+      process_step1_title:'Šaljete upit',
+      process_step1_text:'Pišete termin koji vam odgovara, uzrast deteta i ukratko — kakva vam je pomoć potrebna.',
+      process_step2_title:'Kratak poziv',
+      process_step2_text:'Čujemo se 10–15 minuta: razgovaramo o rutini deteta, njegovim osobenostima, vašim očekivanjima i važnim porodičnim pravilima.',
+      process_step3_title:'Lično upoznavanje',
+      process_step3_text:'Pre prvog angažmana se obavezno sastajemo na 30–40 minuta: upoznajem dete, dogovaramo detalje i proveravamo da li nam je svima prijatno zajedno.',
+      process_step4_title:'Prva poseta',
+      process_step4_text:'Potvrđujemo vreme i dogovor. Tokom posete se držim uobičajene rutine deteta i pravila vaše porodice.',
+      
       /* REVIEWS */
       reviews_title:'Utisci roditelja',
       review1_author:'Ekaterina',
@@ -511,7 +537,7 @@ document.addEventListener('copy', function (e) {
       faq_title:'Odgovori na česta pitanja',
       faq_q_meet:'Kako izgleda upoznavanje?',
       faq_a_meet_1:'Kratak poziv 10–15 minuta.',
-      faq_a_meet_2:'Po mogućnosti zajednički susret-upoznavanje 30-40 minuta.',
+      faq_a_meet_2:'Pre prvog angažmana se obavezno sastajemo uživo na 30–40 minuta.',
       faq_a_meet_3:'Dodatno prolazimo vašu rutinu, dogovore, osobine deteta, ciljeve i nijanse.',
       faq_q_price:'Koliko košta usluga?',
       faq_a_price_1:'Osnovna cena u Novom Sadu: od 900 RSD/sat preko dana. Ne radim kasno uveče i noću.',
