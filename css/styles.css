@@ -1549,6 +1549,7 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
 /* ============ PROCESS / Как всё происходит ============ */
 #process.process{
   --process-marker-size: 44px;
+  --process-step-gap: var(--space-6);
   background: var(--color-surface);
 }
 
@@ -1572,7 +1573,7 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-6);
+  gap: var(--process-step-gap);
   margin: var(--space-10) 0 0;
   padding: 0;
   list-style: none;
@@ -1593,7 +1594,7 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
   z-index: 0;
   top: calc(var(--process-marker-size) / 2 - 1px);
   left: calc(var(--process-marker-size) / 2);
-  width: calc(100% + var(--space-6));
+  width: calc(100% + var(--process-step-gap));
   height: 2px;
   border-radius: var(--radius-pill);
   background: var(--color-border);
@@ -1640,25 +1641,15 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
 @media (max-width: 900px){
   #process .process-steps{
     grid-template-columns: 1fr;
-    gap: var(--space-6);
     margin-top: var(--space-8);
   }
 
-  #process .process-steps::before{
-    content: "";
-    position: absolute;
-    z-index: 0;
+  #process .process-step:not(:last-child)::after{
     display: block;
     top: calc(var(--process-marker-size) / 2);
-    bottom: calc(var(--process-marker-size) / 2);
     left: calc(var(--process-marker-size) / 2 - 1px);
     width: 2px;
-    border-radius: var(--radius-pill);
-    background: var(--color-border);
-  }
-
-  #process .process-step:not(:last-child)::after{
-    display: none;
+    height: calc(100% + var(--process-step-gap));
   }
 
   #process .process-step{
@@ -1684,6 +1675,7 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
 @media (max-width: 640px){
   #process.process{
     --process-marker-size: 40px;
+    --process-step-gap: var(--space-5);
   }
 
   #process .process-intro{
@@ -1691,7 +1683,6 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
   }
 
   #process .process-steps{
-    gap: var(--space-5);
     margin-top: var(--space-6);
   }
 
