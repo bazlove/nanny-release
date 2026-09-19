@@ -1546,6 +1546,169 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
   .site-header .tz-tip.info{ display:none; }
 }
 
+/* ============ PROCESS / Как всё происходит ============ */
+#process.process{
+  --process-marker-size: 44px;
+  background: var(--color-surface);
+}
+
+#process .process-head{
+  max-width: 760px;
+}
+
+#process .process-head .section-title{
+  margin: 0;
+}
+
+#process .process-intro{
+  margin: var(--space-3) 0 0;
+  max-width: 62ch;
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  line-height: 1.55;
+}
+
+#process .process-steps{
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin: var(--space-10) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+#process .process-steps::before{
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--process-marker-size) / 2 - 1px);
+  left: calc(var(--process-marker-size) / 2);
+  right: calc(var(--process-marker-size) / 2);
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+}
+
+#process .process-step{
+  position: relative;
+  min-width: 0;
+}
+
+#process .process-step__number{
+  position: relative;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  width: var(--process-marker-size);
+  height: var(--process-marker-size);
+  border: 1px solid #B9E0D1;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 6px var(--color-surface);
+  color: var(--color-action-primary-hover);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .05em;
+}
+
+#process .process-step__body{
+  margin-top: var(--space-5);
+  padding-right: var(--space-2);
+}
+
+#process .process-step h3{
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-strong);
+  font-size: var(--text-lg);
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+#process .process-step p{
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px){
+  #process .process-steps{
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  #process .process-steps::before{
+    top: calc(var(--process-marker-size) / 2);
+    bottom: calc(var(--process-marker-size) / 2);
+    left: calc(var(--process-marker-size) / 2 - 1px);
+    right: auto;
+    width: 2px;
+    height: auto;
+  }
+
+  #process .process-step{
+    display: grid;
+    grid-template-columns: var(--process-marker-size) minmax(0, 1fr);
+    column-gap: var(--space-4);
+    align-items: start;
+  }
+
+  #process .process-step__number{
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #process .process-step__body{
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: 0;
+    padding: 2px 0 var(--space-2);
+  }
+}
+
+@media (max-width: 640px){
+  #process.process{
+    --process-marker-size: 40px;
+  }
+
+  #process .process-intro{
+    font-size: var(--text-sm);
+  }
+
+  #process .process-steps{
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+  }
+
+  #process .process-step{
+    column-gap: var(--space-3);
+  }
+
+  #process .process-step__number{
+    box-shadow: 0 0 0 5px var(--color-surface);
+    font-size: var(--text-xs);
+  }
+
+  #process .process-step h3{
+    font-size: 17px;
+  }
+
+  #process .process-step p{
+    font-size: 13.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  #process *,
+  #process *::before,
+  #process *::after{
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ===== Reviews: text-first cards ====================================== */
 .rv-reviews{
   margin: 48px 0;
