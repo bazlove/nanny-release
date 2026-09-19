@@ -1357,6 +1357,16 @@ const SlotBusinessTime = (() => {
     return sp;
   }
 
+  const CALC_QUERY_KEYS = ['h', 'k', 'd', 'a', 'b', 'c', 'eur'];
+
+  function pickCalculatorParams(params){
+    const picked = new URLSearchParams();
+    CALC_QUERY_KEYS.forEach(key => {
+      if (params.has(key)) picked.set(key, params.get(key));
+    });
+    return picked;
+  }
+
   function applyParams(sp){
     try{
       if (sp.has('h')   && $('hours'))   $('hours').value   = sp.get('h');
@@ -1528,7 +1538,7 @@ const SlotBusinessTime = (() => {
     } else if (location.search.startsWith('?')) {
       raw = location.search.slice(1); // запасной вариант
     }
-    return new URLSearchParams(raw);
+    return pickCalculatorParams(new URLSearchParams(raw));
   }
 
   function initCalcURLState(){
@@ -1543,9 +1553,22 @@ const SlotBusinessTime = (() => {
       requestAnimationFrame(()=> scrollToCalc(true));
     }
 
-    // чистим ?query, если был
+    // Legacy calculator query params are removed after restore; unrelated params (for example UTM) stay intact.
     if (location.search) {
-      try { history.replaceState(null, "", location.pathname + location.hash); } catch(_){}
+      try {
+        const url = new URL(location.href);
+        let changed = false;
+        CALC_QUERY_KEYS.forEach(key => {
+          if (url.searchParams.has(key)) {
+            url.searchParams.delete(key);
+            changed = true;
+          }
+        });
+        if (changed) {
+          const rest = url.searchParams.toString();
+          history.replaceState(null, "", location.pathname + (rest ? `?${rest}` : '') + location.hash);
+        }
+      } catch(_){}
     }
   }
 
