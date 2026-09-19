@@ -838,8 +838,12 @@ const SlotBusinessTime = (() => {
       return;
     }
     if (loadState === 'loaded' && Array.isArray(window.__freeSlots)) {
-      renderBadge(window.__freeSlots);
-      renderGrid(window.__freeSlots);
+      // Re-evaluate the requestability rule on every render so a cached slot
+      // cannot remain visible after its start time has passed.
+      const futureSlots = normalizeFutureSlots(window.__freeSlots);
+      window.__freeSlots = futureSlots;
+      renderBadge(futureSlots);
+      renderGrid(futureSlots);
     }
   }
 
