@@ -415,6 +415,12 @@ section{padding:64px 0}
   color:#0f172a;
   display:flex; align-items:center; gap:8px;
 }
+@media (min-width: 641px){
+  #why.panel--list .why-title--nowrap{
+    white-space: nowrap;
+  }
+}
+
 #why.panel--list .why-title::after{
   content:""; width:14px; height:14px; flex:0 0 14px; opacity:0;
   background:center/100% 100% no-repeat

@@ -213,7 +213,7 @@ document.addEventListener('copy', function (e) {
       why_title:'Почему я',
       why1_t:'Забота и безопасность прежде всего',         why1_d:'Учитываю аллергии и особенности ребёнка, заранее согласовываю действия на случай ЧП. Есть сертификаты CPR / First Aid.',
       why2_t:'Педагогическая подготовка',     why2_d:'Высшее педагогическое образование по направлению «Дефектология» и опыт работы воспитателем.',
-      why3_t:'Опыт с детьми с 2013 года',     why3_d:'Детский сад, детский фитнес и частная практика: опыт работы с детьми разных возрастов и в разных форматах.',
+      why3_t:'Работаю с детьми с 2013 года',     why3_d:'Детский сад, детский фитнес и частная практика: опыт работы с детьми разных возрастов и в разных форматах.',
       why4_t:'Соблюдаю режим и правила семьи',          why4_d:'Придерживаюсь привычного распорядка ребёнка и договорённостей по питанию, прогулкам, занятиям и ограничениям.',
 
       /* EXPERIENCE */
@@ -434,7 +434,7 @@ document.addEventListener('copy', function (e) {
       why_title:'Zašto ja',
       why1_t:'Briga i bezbednost pre svega',          why1_d:'Vodim računa o alergijama i osobenostima deteta; unapred dogovaramo postupanje u hitnim situacijama. Imam CPR / First Aid sertifikate.',
       why2_t:'Pedagoška stručnost',          why2_d:'Visoko pedagoško obrazovanje iz oblasti defektologije i iskustvo rada kao vaspitač.',
-      why3_t:'Iskustvo sa decom od 2013.',   why3_d:'Vrtić, dečji fitnes i privatna praksa: iskustvo rada sa decom različitog uzrasta i u različitim formatima.',
+      why3_t:'Radim sa decom od 2013.',   why3_d:'Vrtić, dečji fitnes i privatna praksa: iskustvo rada sa decom različitog uzrasta i u različitim formatima.',
       why4_t:'Poštujem rutinu i pravila porodice',     why4_d:'Pratim uobičajeni raspored deteta i dogovore o ishrani, šetnjama, aktivnostima i ograničenjima.',
 
       /* EXPERIENCE */
