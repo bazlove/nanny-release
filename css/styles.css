@@ -4,7 +4,7 @@
 .section-title{ margin:0 0 var(--space-3); }
 
 *{box-sizing:border-box}
-h1,h2,h3{font-family:'Poppins',sans-serif;margin:0 0 .5rem}
+h1,h2,h3{font-family:var(--font-heading);margin:0 0 .5rem}
 section{padding:64px 0}
 
 /* Лого в шапке: ссылка без подчёркивания и белая «плашка» */
@@ -1180,7 +1180,7 @@ select:focus{
 
 .section{ padding-block: 64px; }                /* вертикальные отступы секций */
 .section-head{ margin-bottom: 24px; }
-.section-title{ font: 700 28px/1.25 'Poppins', system-ui, sans-serif; }
+.section-title{ font: 700 28px/1.25 var(--font-heading); }
 .section-kicker{ color:#8a8a8a; font-size:14px; margin:0 0 6px; }
 
 
@@ -2332,9 +2332,12 @@ body.lightbox-open{
 
 /* === Contact: единая типографика инпутов/textarea === */
 #contact{
-  --inp-font: var(--font-sans);
-  --inp-size: 16px;
-  --inp-line: 1.45;
+  --inp-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+              "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
+  --inp-size: 13px;
+  --inp-line: 1.35;
+  --inp-color: var(--color-text-secondary);
+  --inp-focus-color: var(--color-text-primary);
   --err-size: 12px;
   --ph-color: var(--color-text-muted);
   --err-color: #B91C1C;
@@ -2343,9 +2346,13 @@ body.lightbox-open{
 #contact .fld .input,
 #contact .fld textarea{
   font-family: var(--inp-font);
-  font-size:   var(--inp-size);
+  font-size: var(--inp-size);
   line-height: var(--inp-line);
-  color:#111;
+  color: var(--inp-color);
+}
+#contact .fld .input:focus,
+#contact .fld textarea:focus{
+  color: var(--inp-focus-color);
 }
 
 /* одинаковые плейсхолдеры */
@@ -2357,9 +2364,9 @@ body.lightbox-open{
 
 /* подписи-ошибки под полями — тем же кеглем */
 #contact .fld .err{
-  font-family: var(--inp-font);
-  font-size:   var(--inp-size);
-  line-height: var(--inp-line);
+  font-family: var(--font-sans);
+  font-size: var(--err-size);
+  line-height: 1.3;
   color: var(--err-color);
 }
 
@@ -2377,9 +2384,9 @@ body.lightbox-open{
 }
 
 #contact .agree-err{
-  font-family: var(--inp-font);
+  font-family: var(--font-sans);
   font-size: var(--err-size, 12px);
-  line-height: var(--inp-line);
+  line-height: 1.3;
   color: var(--err-color);
 }
 /* Валидация имени/контакта: сообщение внутри поля без изменения высоты. */
@@ -2485,7 +2492,7 @@ body.lightbox-open{
   padding:0 !important;
   margin:0;
   border-radius:8px;
-  font-size:14px;
+  font-size: 12px;
   line-height:1.35;
 }
 #contact .agree > span{ display:block; line-height:1.35; }
@@ -2610,7 +2617,7 @@ body.lightbox-open{
   padding: 0; border: 0;
   background: #ECEFF3;
   color: #6B7280;
-  font: 600 12px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font: 600 12px/1 var(--font-sans);
 }
 #calc .label-row .hint .tip{ white-space:nowrap; }
 
