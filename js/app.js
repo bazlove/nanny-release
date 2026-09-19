@@ -196,6 +196,20 @@ document.addEventListener('copy', function (e) {
       hero_quote_3:'«всегда на связи, фото после визита»',
       hero_quote_4:'«мягкая адаптация, поддержание распорядка»',
 
+      /* SITUATIONS / PARENT JTBD */
+      situations_title:'Когда могу помочь',
+      situations_list_aria:'Ситуации, когда помощь няни освобождает время родителя',
+      situation_work_title:'Спокойно поработать',
+      situation_work_text:'Нужны несколько часов без постоянных отвлечений, пока ребёнок остаётся дома в привычной обстановке.',
+      situation_errands_title:'Решить свои дела',
+      situation_errands_text:'Врач, документы, покупки, встреча или другие дела, куда неудобно брать ребёнка.',
+      situation_free_time_title:'Получить несколько свободных часов',
+      situation_free_time_text:'Регулярный или разовый слот на отдых, спорт, обучение или просто время для себя.',
+      situation_couple_title:'Провести время вдвоём',
+      situation_couple_text:'Несколько спокойных часов для родителей без необходимости менять привычный режим ребёнка.',
+      situation_pickup_title:'Забрать или сопроводить ребёнка',
+      situation_pickup_text:'Сад, школа, кружок или секция, если родитель не успевает сделать это самостоятельно.',
+
       /* SERVICES */
       services_title:'Услуги',
       services_hint:'Дополнительные услуги учитываются в калькуляторе через чекбокс.',
@@ -416,6 +430,20 @@ document.addEventListener('copy', function (e) {
       hero_quote_2:'«bez ekrana, bezbednost i disciplina»',
       hero_quote_3:'«uvek na vezi, fotografije posle posete»',
       hero_quote_4:'«blaga adaptacija, održavanje rutine»',
+
+      /* SITUATIONS / PARENT JTBD */
+      situations_title:'Kada mogu da pomognem',
+      situations_list_aria:'Situacije u kojima pomoć dadilje oslobađa vreme roditelja',
+      situation_work_title:'Mirno raditi',
+      situation_work_text:'Treba vam nekoliko sati bez stalnih prekida, dok dete ostaje kod kuće u poznatom okruženju.',
+      situation_errands_title:'Završiti svoje obaveze',
+      situation_errands_text:'Lekar, dokumenta, kupovina, sastanak ili druge obaveze na koje nije praktično voditi dete.',
+      situation_free_time_title:'Dobiti nekoliko slobodnih sati',
+      situation_free_time_text:'Povremeno ili redovno vreme za odmor, trening, učenje ili jednostavno vreme za sebe.',
+      situation_couple_title:'Provesti vreme udvoje',
+      situation_couple_text:'Nekoliko mirnih sati za roditelje bez potrebe da se menja uobičajeni ritam deteta.',
+      situation_pickup_title:'Preuzeti ili otpratiti dete',
+      situation_pickup_text:'Vrtić, škola, kurs ili trening kada roditelj ne stiže da to uradi sam.',
 
       /* SERVICES */
       services_title:'Usluge',
@@ -1538,8 +1566,8 @@ const SlotBusinessTime = (() => {
     experience: 'services',
     reviews: 'reviews',
     calc: 'calc',
-    faq: 'faq',
     slots: 'slots',
+    faq: 'faq',
     contact: 'contact'
   };
 

@@ -324,6 +324,85 @@
 </section>
 
   
+<!-- SITUATIONS / PARENT JTBD -->
+<section id="situations" class="situations section" aria-labelledby="situations-title">
+  <div class="container">
+    <h2 id="situations-title" class="section-title i18n" data-key="situations_title">Когда могу помочь</h2>
+
+    <div
+      class="situations-grid i18n-attr"
+      role="list"
+      aria-label="Ситуации, когда помощь няни освобождает время родителя"
+      data-key="situations_list_aria"
+      data-i18n-attr="aria-label"
+    >
+      <article class="situation-card" role="listitem">
+        <span class="situation-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M9 7V5.75A1.75 1.75 0 0 1 10.75 4h2.5A1.75 1.75 0 0 1 15 5.75V7M4.75 7h14.5A1.75 1.75 0 0 1 21 8.75v8.5A1.75 1.75 0 0 1 19.25 19H4.75A1.75 1.75 0 0 1 3 17.25v-8.5A1.75 1.75 0 0 1 4.75 7Z"/>
+            <path d="M3 11.5c2.8 1.4 5.8 2.1 9 2.1s6.2-.7 9-2.1M10 13.5h4"/>
+          </svg>
+        </span>
+        <div>
+          <h3 class="situation-title i18n" data-key="situation_work_title">Спокойно поработать</h3>
+          <p class="situation-text i18n" data-key="situation_work_text">Нужны несколько часов без постоянных отвлечений, пока ребёнок остаётся дома в привычной обстановке.</p>
+        </div>
+      </article>
+
+      <article class="situation-card" role="listitem">
+        <span class="situation-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M8 5h8M8 9h8M8 13h5M6 3.5h12A1.5 1.5 0 0 1 19.5 5v14A1.5 1.5 0 0 1 18 20.5H6A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5Z"/>
+            <path d="m14.5 17 1.5 1.5 3-3"/>
+          </svg>
+        </span>
+        <div>
+          <h3 class="situation-title i18n" data-key="situation_errands_title">Решить свои дела</h3>
+          <p class="situation-text i18n" data-key="situation_errands_text">Врач, документы, покупки, встреча или другие дела, куда неудобно брать ребёнка.</p>
+        </div>
+      </article>
+
+      <article class="situation-card" role="listitem">
+        <span class="situation-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <circle cx="12" cy="12" r="8.5"/>
+            <path d="M12 7.5V12l3 2M8 3.5 6 5M16 3.5 18 5"/>
+          </svg>
+        </span>
+        <div>
+          <h3 class="situation-title i18n" data-key="situation_free_time_title">Получить несколько свободных часов</h3>
+          <p class="situation-text i18n" data-key="situation_free_time_text">Регулярный или разовый слот на отдых, спорт, обучение или просто время для себя.</p>
+        </div>
+      </article>
+
+      <article class="situation-card" role="listitem">
+        <span class="situation-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M12 20s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 10c0 5.65-7 10-7 10Z"/>
+          </svg>
+        </span>
+        <div>
+          <h3 class="situation-title i18n" data-key="situation_couple_title">Провести время вдвоём</h3>
+          <p class="situation-text i18n" data-key="situation_couple_text">Несколько спокойных часов для родителей без необходимости менять привычный режим ребёнка.</p>
+        </div>
+      </article>
+
+      <article class="situation-card" role="listitem">
+        <span class="situation-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M12 21s6-5.35 6-11a6 6 0 1 0-12 0c0 5.65 6 11 6 11Z"/>
+            <circle cx="12" cy="10" r="2"/>
+          </svg>
+        </span>
+        <div>
+          <h3 class="situation-title i18n" data-key="situation_pickup_title">Забрать или сопроводить ребёнка</h3>
+          <p class="situation-text i18n" data-key="situation_pickup_text">Сад, школа, кружок или секция, если родитель не успевает сделать это самостоятельно.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
 <!-- SERVICES -->
 <section id="services" class="services section">
   <div class="container">
@@ -807,6 +886,13 @@
   </div>
 </section>
 
+<section id="slots" class="slots">
+  <div class="container">
+    <h2 class="section-title i18n" data-key="slots_title">Ближайшие свободные слоты</h2>
+    <div id="slotsList" class="slots-grid"></div>
+  </div>
+</section>
+
 <!-- FAQ -->
 <section id="faq" class="faq" aria-labelledby="faq-title">
   <div class="container">
@@ -1002,12 +1088,7 @@
   </div>
 </section>
 	     
-    <section id="slots" class="slots">
-  <div class="container">
-    <h2 class="section-title i18n" data-key="slots_title">Ближайшие свободные слоты</h2>
-    <div id="slotsList" class="slots-grid"></div>
-  </div>
-</section>
+    
 	
 <!-- CONTACT -->
 <section id="contact" class="section">
