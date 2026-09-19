@@ -287,6 +287,26 @@ document.addEventListener('copy', function (e) {
       slots_btn_request:'Запросить',
       slots_error:'Слоты временно недоступны. Попробуйте обновить страницу.',
       slots_prefill_available:'{date} · доступно {time}',
+      regular_entry_title:'Нужна няня регулярно?',
+      regular_card_text:'Можно обсудить постоянные дни и часы.',
+      regular_discuss:'Обсудить',
+      regular_modal_title:'Регулярная помощь',
+      regular_modal_desc:'Расскажите, какой график вам нужен. Я свяжусь с вами и проверю, получится ли совместить его с моим расписанием.',
+      regular_modal_close:'Закрыть форму',
+      regular_schedule_label:'Какой график нужен?',
+      regular_schedule_ph:'Например: Пн, Ср и Пт с 15:00 до 19:00, примерно на 2–3 месяца',
+      regular_schedule_err:'Опишите желаемые дни и часы',
+      regular_submit:'Отправить запрос',
+      regular_sending:'Отправляю…',
+      regular_success:'✅ Запрос принят. Я отвечу в ближайшее время.',
+      regular_failure:'❌ Отправка не подтверждена. Пожалуйста, напишите мне в Telegram.',
+      regular_source_slots:'Ближайшие слоты',
+      regular_source_calculator:'Калькулятор',
+      regular_message_type:'Тип запроса: Регулярная помощь',
+      regular_message_source:'Источник: {source}',
+      regular_message_name:'Имя: {name}',
+      regular_message_contact:'Контакт: {contact}',
+      regular_message_schedule:'График: {schedule}',
 
       /* CALC */
       calc_title:'Калькулятор стоимости (Нови-Сад)',
@@ -522,6 +542,26 @@ document.addEventListener('copy', function (e) {
       slots_btn_request:'Zatraži',
       slots_error:'Termini trenutno nisu dostupni. Pišite mi.',
       slots_prefill_available:'{date} · dostupno {time}',
+      regular_entry_title:'Da li vam je dadilja potrebna redovno?',
+      regular_card_text:'Možemo da dogovorimo stalne dane i termine.',
+      regular_discuss:'Dogovoriti se',
+      regular_modal_title:'Redovna pomoć',
+      regular_modal_desc:'Napišite kakav raspored vam je potreban. Javiću vam se i proveriti da li možemo da ga uklopimo sa mojim rasporedom.',
+      regular_modal_close:'Zatvori formu',
+      regular_schedule_label:'Kakav raspored vam je potreban?',
+      regular_schedule_ph:'Na primer: pon, sre i pet od 15:00 do 19:00, tokom 2–3 meseca',
+      regular_schedule_err:'Opišite željene dane i vreme',
+      regular_submit:'Pošalji zahtev',
+      regular_sending:'Šaljem…',
+      regular_success:'✅ Zahtev je primljen. Odgovoriću vam uskoro.',
+      regular_failure:'❌ Zahtev nije potvrđen. Molim vas, pišite mi na Telegram.',
+      regular_source_slots:'Najbliži termini',
+      regular_source_calculator:'Kalkulator',
+      regular_message_type:'Tip zahteva: Redovna pomoć',
+      regular_message_source:'Izvor: {source}',
+      regular_message_name:'Ime: {name}',
+      regular_message_contact:'Kontakt: {contact}',
+      regular_message_schedule:'Raspored: {schedule}',
 
       /* CALC */
       calc_title:'Kalkulator cene (Novi Sad)',
@@ -950,15 +990,27 @@ const SlotBusinessTime = (() => {
       <a class="btn btn-outline slot-cta" href="#contact">${t('slots_btn_request')}</a>
     </article>
   `;
+  const regularCardHTML = () => `
+    <article class="slot-card regular-slot-card">
+      <div class="regular-slot-copy">
+        <h3 class="regular-slot-title">${t('regular_entry_title')}</h3>
+        <p class="regular-slot-text">${t('regular_card_text')}</p>
+      </div>
+      <button
+        type="button"
+        class="btn btn-outline regular-slot-cta js-regular-request"
+        data-regular-source="slots"
+        aria-haspopup="dialog"
+        aria-controls="regularRequestModal"
+      >${t('regular_discuss')}</button>
+    </article>
+  `;
 
   function renderGrid(list){
     if (!wrap) return;
-    if (!list.length){
-      wrap.innerHTML = `<p class="muted">${t('slots_badge_none')}</p>`;
-      return;
-    }
     const groups = groupByDate(list);
-    wrap.innerHTML = groups.map(g => cardHTML(g.date, g.items)).join('');
+    const emptyState = groups.length ? '' : `<p class="muted slots-empty">${t('slots_badge_none')}</p>`;
+    wrap.innerHTML = emptyState + groups.map(g => cardHTML(g.date, g.items)).join('') + regularCardHTML();
   }
 
   function renderBadge(list){
@@ -1003,7 +1055,7 @@ const SlotBusinessTime = (() => {
       return;
     }
     if (loadState === 'error') {
-      if (wrap) wrap.innerHTML = `<p class="error">${t('slots_error')}</p>`;
+      if (wrap) wrap.innerHTML = `<p class="error slots-empty">${t('slots_error')}</p>` + regularCardHTML();
       setBadge(t('slots_badge_none'), ['is-none']);
       return;
     }
@@ -1055,6 +1107,102 @@ const SlotBusinessTime = (() => {
     document.addEventListener('DOMContentLoaded', fetchAndRender);
   else
     fetchAndRender();
+})();
+
+// ===== Regular schedule request modal =====
+(function initRegularScheduleRequest(){
+  const modal = document.getElementById('regularRequestModal');
+  const panel = modal?.querySelector('.regular-request-panel');
+  const closeBtn = document.getElementById('regularRequestClose');
+  const nameInput = document.getElementById('regularName');
+  const sourceInput = document.getElementById('regularRequestSource');
+  if (!modal || !panel || !closeBtn || !sourceInput) return;
+
+  const FOCUSABLE = [
+    'button:not([disabled])',
+    'a[href]',
+    'input:not([disabled]):not([type="hidden"])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])'
+  ].join(',');
+
+  let opener = null;
+
+  const focusables = () => Array.from(panel.querySelectorAll(FOCUSABLE))
+    .filter(el => !el.hidden && el.getAttribute('aria-hidden') !== 'true');
+
+  function openModal(trigger){
+    const source = trigger?.dataset.regularSource;
+    if (source !== 'slots' && source !== 'calculator') return;
+
+    opener = trigger;
+    sourceInput.value = source;
+    modal.hidden = false;
+    document.body.classList.add('regular-modal-open');
+
+    window.dispatchEvent(new CustomEvent('regular-request:open', { detail: { source } }));
+    window.gtag?.('event', 'regular_schedule_open', { source });
+
+    requestAnimationFrame(() => {
+      const target = nameInput || focusables()[0] || panel;
+      try { target.focus({ preventScroll:true }); } catch(_) { target.focus(); }
+    });
+  }
+
+  function closeModal(){
+    if (modal.hidden) return;
+    modal.hidden = true;
+    document.body.classList.remove('regular-modal-open');
+
+    const target = opener;
+    opener = null;
+    if (target?.isConnected) {
+      try { target.focus({ preventScroll:true }); } catch(_) { target.focus(); }
+    }
+  }
+
+  document.addEventListener('click', event => {
+    const trigger = event.target.closest('.js-regular-request[data-regular-source]');
+    if (!trigger) return;
+    event.preventDefault();
+    openModal(trigger);
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', event => {
+    if (event.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (modal.hidden) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+
+    const items = focusables();
+    if (!items.length) {
+      event.preventDefault();
+      panel.focus();
+      return;
+    }
+
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && (active === first || !panel.contains(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !panel.contains(active))) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
 })();
 
 // ===== Calculator — clean URL + #calc anchor + state sharing =====
