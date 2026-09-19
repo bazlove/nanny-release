@@ -1411,13 +1411,8 @@ select:focus{
 .slot-date{ color:#6b7280; font-size:.9rem; margin-bottom:4px; text-transform:lowercase; }
 .slot-time{ font-weight:700; margin-bottom:8px; }
 .slot-cta{
-  display:inline-block;
-  padding:8px 10px;
-  border-radius:10px;
-  border:1px solid #9EC5E8;
-  text-decoration:none;
+  width:100%;
 }
-.slot-cta:hover{ background:#eef6ff; }
 
 /* === Корректный якорный скролл под фикс-хедер ======================= */
 :root{ --header-h: 64px; }          /* поправьте, если у шапки другая высота */
@@ -1989,20 +1984,6 @@ body.lightbox-open{
 
 /* === ЛЕВАЯ: крупные кликабельные кнопки === */
 .contact-actions{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
-.cbtn{
-  display:flex; align-items:center; gap:10px;
-  width:100%;
-  padding:14px 16px;
-  border-radius:12px;
-  border:1px solid #e2e6ea;
-  background:#fff;
-  color:#111; text-decoration:none;
-  box-shadow:0 1px 0 rgba(0,0,0,.03);
-  transition:background .15s, border-color .15s, box-shadow .15s, transform .05s;
-}
-.cbtn .dot{ width:8px; height:8px; border-radius:999px; background:#22c55e; }
-.cbtn:hover{ background:#f2faf6; border-color:#b9e0d1; box-shadow:0 6px 18px rgba(0,0,0,.06); }
-.cbtn:active{ transform:translateY(1px); }
 
 /* === ПРАВАЯ: поля одной колонкой + высокая textarea === */
 .contact-form{ display:grid; grid-template-columns: 1fr; gap:12px; }
@@ -2275,35 +2256,6 @@ body.lightbox-open{
   margin-top: 28px;         /* подберите 24–32px по факту вашего кегля лейблов */
 }
 
-/* Вид кнопок контактов: светло-серый фон, чтобы было понятно, что это кликабельно */
-#contact .c-btn{
-  display:flex; align-items:center; gap:10px;
-  padding:12px 14px;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  background:#f5f7fa;                  /* статичный светло-серый фон */
-  color:#111; text-decoration:none;
-  transition:background .15s ease, box-shadow .15s ease, transform .02s ease;
-}
-#contact .c-btn .txt{
-  font-weight:600;                     /* обычное */
-}
-#contact .c-btn:hover{
-  background:#eef6f3;                  /* зелёный оттенок под hover */
-  box-shadow:0 1px 0 rgba(0,0,0,.04);
-}
-#contact .c-btn:hover .txt{
-  font-weight:700;                     /* делаем текст чуть жирнее при hover */
-  color:#146c43;
-}
-#contact .c-btn:active{ transform: translateY(1px); }
-
-/* маленький зелёный индикатор «онлайн» слева (если используете) */
-#contact .c-btn .dot{
-  width:8px; height:8px; border-radius:50%;
-  background:#22c55e; display:inline-block;
-}
-
 /* Чек-бокс и текст согласия — делаем компактнее, чтобы влезало в одну строку */
 #contact .c-agree{                      /* контейнер строки согласия */
   font-size: 13px;                      /* было крупнее */
@@ -2333,20 +2285,6 @@ body.lightbox-open{
 /* выравниваем верх первой кнопки с верхом полей ввода справа */
 .contact-grid .contact-actions{ margin-top: 32px !important; } /* подберите 24–32px под свой кегль */
 
-/* 2) Кнопки контактов: светло-серый фон + полужирный на hover */
-.cbtn{
-  background:#f5f7fa;        /* был #fff — теперь «кнопочно» */
-  border:1px solid #e5e7eb;
-  transition: background .15s, border-color .15s, box-shadow .15s, transform .02s, font-weight .05s;
-}
-.cbtn:hover{
-  background:#eef6f3;        /* мягкий зелёный оттенок */
-  font-weight:700;           /* делаем внутренний текст плотнее */
-}
-
-/* если внутри есть точка-индикатор .dot — не даём ей «толстеть» от font-weight */
-.cbtn .dot{ font-weight:400; }
-
 /* 3) Текст чекбокса делаем компактнее, чтобы влезал в строку */
 .agree{
   font-size: 13px;
@@ -2372,23 +2310,6 @@ body.lightbox-open{
   color:#374151;
   margin: 0 0 8px;
 }
-
-/* Кнопки контактов — всегда светло-серые, целиком кликабельные */
-#contact .cbtn{
-  display:flex; align-items:center; gap:10px;
-  min-height:56px;
-  padding:12px 14px;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  background:#f5f7fa;                      /* статичный серый фон */
-  color:#111; text-decoration:none;
-  transition:background .15s, box-shadow .15s, transform .02s, font-weight .05s;
-}
-#contact .cbtn:hover{
-  background:#eef6f3;                      /* мягкий зелёный оттенок */
-  font-weight:700;                         /* жирнее текст при hover */
-}
-#contact .cbtn .dot{ width:8px; height:8px; border-radius:50%; background:#22c55e; }
 
 /* Контактная форма: высота текстового поля = 2 инпута + зазор */
 .contact .col-message .fld textarea#cmsg{
@@ -2432,43 +2353,32 @@ body.lightbox-open{
   gap:10px;
 }
 
-/* плитка-канал: большая кликабельная область */
+/* Каналы связи используют ту же геометрию .btn; здесь только neutral-variant. */
 #contact .c-btn{
-  display:flex; align-items:center; gap:10px;
-  min-height:52px;
-  padding:12px 14px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#f9fafb;                 /* лёгкий серый фон — явно «кнопка» */
-  color:#111; text-decoration:none;
+  --btn-bg:#f9fafb;
+  --btn-brd:var(--neutral-300);
+  --btn-ink:var(--color-text-primary);
+  width:100%;
+  justify-content:flex-start;
+  font-weight:600;
   box-shadow:0 1px 0 rgba(0,0,0,.02);
-  transition:background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .04s ease;
 }
 
-/* hover/focus — как на всём лендинге (нежно-зелёный) + жирнее текст */
 #contact .c-btn:hover,
 #contact .c-btn:focus-visible{
-  background:#eefaf4;
-  border-color:#b9e0d1;
+  --btn-bg:var(--color-action-primary-soft);
+  --btn-brd:#b9e0d1;
+  --btn-ink:var(--color-action-primary-hover);
   box-shadow:0 8px 24px rgba(0,0,0,.06);
-}
-#contact .c-btn:hover .txt,
-#contact .c-btn:focus-visible .txt{
-  font-weight:600;
 }
 
 /* маленькая «онлайн-точка» */
 #contact .c-btn .dot{
-  width:10px; height:10px; border-radius:999px;
+  width:10px;
+  height:10px;
+  border-radius:999px;
   background:#10b981;
   box-shadow:0 0 0 3px rgba(16,185,129,.15);
-}
-
-/* мобильная плотность */
-@media (max-width: 640px){
-  #contact .c-btn{
-    min-height:48px; padding:10px 12px;
-  }
 }
 
 /* — необязательно, но полезно: чуть увеличим отступ «режим работы» → «контакты» */
