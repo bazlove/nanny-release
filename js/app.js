@@ -177,7 +177,15 @@ document.addEventListener('copy', function (e) {
       calc_presets_aria:'Быстрый выбор', p2h:'2 ч', p3h:'3 ч', p4h:'4 ч', p5h:'5 ч',
       calc_notice:'Минимальный расчёт ведётся от 2 часов.',
       calc_total:'Итог: {sum} дин',
+      calc_rate:'Ставка: {rate} дин/ч × {hours} ч',
+      calc_extra:'Дополнительно: +{sum} дин',
+      calc_badge_two_kids:'+25% двое детей',
+      calc_badge_two_kids_infant:'+50% один ребёнок младше 2 лет',
+      calc_badge_three_kids:'+75% трое детей',
+      calc_badge_weekend:'+25% выходной/праздник',
+      calc_eur_value:'(≈ €{sum})',
       calc_share:'Поделиться',
+      calc_share_copied:'Ссылка скопирована',
       calc_eur_toggle:'Показать результат в евро (курс {rate} дин/€)',
       calc_cta:'Уточнить стоимость',
 
@@ -355,7 +363,15 @@ document.addEventListener('copy', function (e) {
       calc_presets_aria:'Brzi izbor', p2h:'2 č', p3h:'3 č', p4h:'4 č', p5h:'5 č',
       calc_notice:'Minimalni obračun od 2 sata.',
       calc_total:'Ukupno: {sum} RSD',
+      calc_rate:'Cena po satu: {rate} RSD/h × {hours} h',
+      calc_extra:'Dodatno: +{sum} RSD',
+      calc_badge_two_kids:'+25% dvoje dece',
+      calc_badge_two_kids_infant:'+50% jedno dete mlađe od 2 god.',
+      calc_badge_three_kids:'+75% troje dece',
+      calc_badge_weekend:'+25% vikend/praznik',
+      calc_eur_value:'(≈ €{sum})',
       calc_share:'Podeli',
+      calc_share_copied:'Link je kopiran',
       calc_eur_toggle:'Prikaz u evrima (kurs {rate} RSD/€)',
       calc_cta:'Precizirati cenu',
 
@@ -825,8 +841,16 @@ const SlotBusinessTime = (() => {
 (function(){
   const EUR_RATE=117, BASE=900, WEEKEND=1.25, TWO=1.25, THREE=1.75, INFANT=1.5, OPT=300, OPT_FIT=600, MIN=2, HOURS_MAX=10;
   const $ = id => document.getElementById(id);
-  const money = v => { try { return v.toLocaleString('ru-RS'); } catch(_) { return String(v); } };
+  const locale = () => window.i18n?.locale || 'ru-RU';
+  const t = (key, params) => window.i18n?.t?.(key, params) ?? key;
+  const formatNumber = (value, options) => {
+    try { return new Intl.NumberFormat(locale(), options).format(value); }
+    catch(_) { return String(value); }
+  };
+  const money = value => formatNumber(value, { maximumFractionDigits: 0 });
+  const hoursText = value => formatNumber(value, { minimumFractionDigits: 0, maximumFractionDigits: 1 });
   let lastValidHours = 4;
+  let shareFeedbackTimer = 0;
 
   // ---------- helpers ----------
   function parseHoursValue(raw){
@@ -942,8 +966,10 @@ const SlotBusinessTime = (() => {
   let last=0;
   const render = (sum)=>{
     const eur = $('eurToggle')?.checked;
-    let s = `Итог: ${money(sum)} дин`;
-    if (eur) s += ` <span class="eur">(≈ €${Math.round(sum/EUR_RATE)})</span>`;
+    let s = t('calc_total', { sum: money(sum) });
+    if (eur) {
+      s += ` <span class="eur">${t('calc_eur_value', { sum: money(Math.round(sum/EUR_RATE)) })}</span>`;
+    }
     const el = $('result'); if (el) el.innerHTML = s;
   };
 
@@ -962,18 +988,24 @@ const SlotBusinessTime = (() => {
     const total=rate*h+add; animate(total);
 
     const br=$('breakdown');
-    if(br) br.textContent=`Ставка: ${rate} дин/ч × ${h} ч${add?` | Дополнительно: +${add} дин`:''}`;
+    if(br){
+      const parts=[t('calc_rate', { rate: money(rate), hours: hoursText(h) })];
+      if(add) parts.push(t('calc_extra', { sum: money(add) }));
+      br.textContent=parts.join(' | ');
+    }
 
     const badges=$('badges');
     if(badges){
-      const b=[]; const kids=$('kids')?.value, day=$('dayType')?.value;
-      if(kids==='2') b.push('+25% двое детей');
-      if(kids==='2_infant') b.push('+50% малыш <2 лет');
-      if(kids==='3') b.push('+75% трое детей');
-      if(day==='weekend') b.push('+25% выходной день');
-      if($('eurToggle')?.checked) b.push('€');
-      badges.innerHTML=b.map(t=>`<span class="badge">${t}</span>`).join('');
+      const keys=[]; const kids=$('kids')?.value, day=$('dayType')?.value;
+      if(kids==='2') keys.push('calc_badge_two_kids');
+      if(kids==='2_infant') keys.push('calc_badge_two_kids_infant');
+      if(kids==='3') keys.push('calc_badge_three_kids');
+      if(day==='weekend') keys.push('calc_badge_weekend');
+      badges.innerHTML=keys.map(key=>`<span class="badge">${t(key)}</span>`).join('');
     }
+
+    const eurLabel=$('eurLabel');
+    if(eurLabel) eurLabel.textContent=t('calc_eur_toggle', { rate: money(EUR_RATE) });
     // адресную строку не трогаем (никаких ?query)
   }
 
@@ -986,8 +1018,15 @@ const SlotBusinessTime = (() => {
     try { if (navigator.share){ await navigator.share({ url: link }); return; } } catch(_){}
     try {
       await navigator.clipboard.writeText(link);
-      $('shareLink')?.classList.add('copied');
-      setTimeout(()=>$('shareLink')?.classList.remove('copied'),1200);
+      const share=$('shareLink');
+      const label=share?.querySelector('.txt');
+      share?.classList.add('copied');
+      if(label) label.textContent=t('calc_share_copied');
+      clearTimeout(shareFeedbackTimer);
+      shareFeedbackTimer=setTimeout(()=>{
+        share?.classList.remove('copied');
+        if(label) label.textContent=t('calc_share');
+      },1200);
     } catch(_){}
   }
 
@@ -1073,6 +1112,13 @@ const SlotBusinessTime = (() => {
 
     // share
     $('shareLink')?.addEventListener('click', (e)=>{ e.preventDefault(); shareCalcState(); });
+
+    window.addEventListener('langchange', ()=>{
+      const share=$('shareLink');
+      const label=share?.querySelector('.txt');
+      if(label) label.textContent=t(share?.classList.contains('copied') ? 'calc_share_copied' : 'calc_share');
+      recalc();
+    });
 
     window.calcRecompute = () => recalc();
   }
