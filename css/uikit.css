@@ -19,12 +19,7 @@
   --info-bg:      #EEF6FF;  /* голубые «инфо»-плашки */
   --info-brd:     #9EC5E8;
   --info-ink:     #0B4870;
-
-  --success:      #16A34A;
-  --warning:      #F59E0B;
-  --danger:       #DC2626;
-
-  /* — Радиусы */
+/* — Радиусы */
   --r-sm: 10px; --r-md: 12px; --r-lg: 14px; --r-xl: 16px;
 
   /* — Тени */
@@ -45,13 +40,53 @@
 
   /* — Отступы (шкала 4px) */
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
-  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-9: 36px; --space-10: 40px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
   --space-12: 48px; --space-16: 64px;
 
 
   /* — Анимации */
   --trans-1: .12s ease;
   --trans-2: .18s ease;
+
+  /* — Semantic foundations
+     Canonical API for new styles. Short legacy tokens above stay as compatibility
+     aliases until the controlled migration batch. */
+  --color-text-strong:    var(--neutral-900);
+  --color-text-primary:   var(--neutral-800);
+  --color-text-secondary: var(--neutral-600);
+  --color-text-muted:     var(--neutral-500);
+
+  --color-surface-page: #FFF5E9;
+  --color-surface:      var(--white);
+  --color-border:       var(--neutral-300);
+
+  --color-action-primary:       var(--primary);
+  --color-action-primary-hover: var(--primary-700);
+  --color-action-primary-soft:  var(--primary-50);
+  --color-link:                 var(--brand);
+  --color-focus-outline:        #78C6A7;
+
+  --text-xs:   12px;
+  --text-sm:   14px;
+  --text-base: 16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   var(--r-xl);
+  --radius-pill: 999px;
+
+  --shadow-sm: var(--elev-1);
+  --shadow-md: var(--elev-2);
+  --shadow-lg: var(--elev-3);
+
+  --motion-fast: var(--trans-1);
+  --motion-base: var(--trans-2);
+
+  --layout-container: var(--container);
+  --layout-gutter:    var(--gutter);
 }
 
 /* Breakpoints (используем в медиа) */
@@ -62,26 +97,26 @@
 html{ font-size: var(--fz-base); }
 body{
   font-family: var(--font-sans);
-  color: var(--neutral-800);
+  color: var(--color-text-primary);
   line-height: var(--lh-base);
-  background: #FFF5E9; /* общий теплый фон — подложка страницы */
+  background: var(--color-surface-page); /* общий теплый фон — подложка страницы */
   margin: 0;
 }
 
 /* Контейнер/секция (общие, не блок-специфичные) */
 .container{
-  max-width: var(--container);
+  max-width: var(--layout-container);
   margin: 0 auto;
-  padding-inline: var(--gutter);
+  padding-inline: var(--layout-gutter);
   box-sizing: border-box;
 }
 .section{
   padding-block: var(--space-16);
 }
 .section--white{
-  background: var(--white);
+  background: var(--color-surface);
   margin-inline: calc(50% - 50vw);
-  padding-inline: calc(50vw - 50% + var(--gutter));
+  padding-inline: calc(50vw - 50% + var(--layout-gutter));
 }
 
 /* ===================== Типографика ===================== */
@@ -89,21 +124,20 @@ body{
 h1, .h1{
   max-width: 22ch;   
   font-weight: 700;
-  color: var(--neutral-900);
+  color: var(--color-text-strong);
     letter-spacing: -0.015em; 
   line-height: 1.08;
   margin: 0 0 var(--space-8);
   font-size: clamp(40px, 4.4vw, 64px);
 }
 h2, .h2{
-  font-weight: 800; color: var(--neutral-900);
+  font-weight: 800; color: var(--color-text-strong);
   font-size: clamp(22px, 2.6vw, 28px);
   line-height: 1.22;
   margin-top: var(--space-12);
-  margin-bottom: var(--h2-gap); 
 }
 h3, .h3{
-  font-weight: 700; color: var(--neutral-900);
+  font-weight: 700; color: var(--color-text-strong);
   font-size: clamp(18px, 2vw, 20px);
   line-height: 1.25;
   margin: var(--space-6) 0 var(--space-3);
@@ -111,25 +145,25 @@ h3, .h3{
 
 /* Параграф, мелкий текст */
 p{ margin: 0 0 var(--space-4); }
-.small{ font-size: .875rem; color: var(--neutral-600); }
+.small{ font-size: .875rem; color: var(--color-text-secondary); }
 
 
 /* ===================== Ссылки ===================== */
 a{
-  color: var(--brand);
+  color: var(--color-link);
   text-decoration: underline dotted;
   text-underline-offset: 2px;
   transition: color var(--trans-1), text-decoration-color var(--trans-1);
 }
 a:hover{
-  color: var(--primary-700);
+  color: var(--color-action-primary-hover);
   text-decoration-style: solid;
 }
 a:focus-visible{
   outline: 3px solid rgba(21,128,61,.28);
   outline-offset: 2px;
 }
-a[disabled], .link--muted{ color: var(--neutral-500); pointer-events:none; }
+a[disabled], .link--muted{ color: var(--color-text-muted); pointer-events:none; }
 
 
 /* ===================== Кнопки (UI Kit — чистовая версия) ===================== */
@@ -176,7 +210,7 @@ a[disabled], .link--muted{ color: var(--neutral-500); pointer-events:none; }
   --btn-brd: var(--primary-700);
   --btn-ink: var(--primary-700);
   background: transparent;
-  color: var(--primary-700);
+  color: var(--color-action-primary-hover);
 }
 
 .btn-outline{
@@ -191,7 +225,7 @@ a[disabled], .link--muted{ color: var(--neutral-500); pointer-events:none; }
   --btn-bg:  var(--primary);
   --btn-brd: var(--primary);
   --btn-ink: #fff;
-  background: var(--primary);
+  background: var(--color-action-primary);
   color:#fff;
 }
 
@@ -262,14 +296,14 @@ input[type="checkbox"], input[type="radio"]{
 /* ===================== Бейджи / Чипы ===================== */
 .badge{
   display:inline-block; font-size:12px; line-height:1;
-  padding:4px 8px; border-radius:999px;
-  background: var(--primary-50);
-  border:1px solid #B9E0D1; color: var(--primary-700);
+  padding:4px 8px; border-radius:var(--radius-pill);
+  background: var(--color-action-primary-soft);
+  border:1px solid #B9E0D1; color: var(--color-action-primary-hover);
 }
 .tag{
   display:inline-block; font-size:14px; padding:6px 12px;
   border:1px solid var(--neutral-300);
-  border-radius: 999px; background:#fff; color: var(--neutral-800);
+  border-radius: var(--radius-pill); background:#fff; color: var(--neutral-800);
   transition: transform var(--trans-1), border-color var(--trans-1), background var(--trans-1);
 }
 .tag:hover{ transform: translateY(-1px); background: var(--neutral-100); }
@@ -283,7 +317,11 @@ input[type="checkbox"], input[type="radio"]{
 
 /* ===================== Доступность / motion ===================== */
 @media (prefers-reduced-motion: reduce){
-  *, *::before, *::after{ transition: none !important; }
+  *, *::before, *::after{
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 .sr-only{
   position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
@@ -293,35 +331,6 @@ input[type="checkbox"], input[type="radio"]{
 
 
 
-
-/* Плавность смены цвета текста тоже анимируем */
-.btn{
-  transition:
-    background var(--trans-2),
-    border-color var(--trans-2),
-    color var(--trans-2),
-    transform .05s;
-}
-
-/* 1) PRIMARY (зелёная заливка) → hover как outline: прозрачный фон + зелёный текст/бордер */
-.btn-primary:hover,
-.btn-primary:focus-visible{
-  --btn-bg:  transparent;
-  --btn-brd: var(--primary-700);
-  --btn-ink: var(--primary-700);
-  background: transparent;           /* на случай локальных переопределений */
-  color: var(--primary-700);
-}
-
-/* 2) OUTLINE (прозрачная) → hover как filled: зелёная заливка + белый текст */
-.btn-outline:hover,
-.btn-outline:focus-visible{
-  --btn-bg:  var(--primary);
-  --btn-brd: var(--primary);
-  --btn-ink: #fff;
-  background: var(--primary);
-  color: #fff;
-}
 
 /* Без «прыжка» при тапе */
 .btn-primary:active,
@@ -429,14 +438,11 @@ input[type="checkbox"], input[type="radio"]{
 /* === SERVICES: отступы ================================ */
 
 #services{
-  
-  --srv-title-hint: 12px;   
   --srv-hint-cards: 32px;   
 }
 
 @media (min-width: 1024px){
   #services{
-    --srv-title-hint: 14px;
     --srv-hint-cards: 40px;
   }
 }
@@ -508,7 +514,7 @@ input[type="checkbox"], input[type="radio"]{
   height: 30px;
   padding: 0 10px;
   border: 1px solid #d9dee6;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: #fff;
   font: 500 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
   color: #0f172a;
@@ -754,10 +760,15 @@ input[type="checkbox"], input[type="radio"]{
 }
 
 
-/* ===== CANON Final: Header + Burger + Overlay (desktop/tablet/mobile) ===== */
+/* ===== CANON Final: Header + Burger + Overlay (desktop/tablet/mobile) =====
+   Responsive contract:
+   640px  — mobile
+   768px  — content/tablet
+   980px  — navigation
+   1024px — desktop layout
+   Other thresholds are component/content breakpoints, not global foundations.
+   CSS custom properties are intentionally not used as @media breakpoints. */
 :root{
-  --bp-mobile: 640px;
-  --bp-tablet: 980px;
   --z-header: 1000;     /* шапка поверх оверлея */
   --z-mnav: 900;        /* оверлей ниже шапки, чтобы шапку было видно */
 }

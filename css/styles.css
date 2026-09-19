@@ -1,41 +1,11 @@
-:root{
-  --bg:#F6E8D5; --text:#222; --text-2:#555; --primary:#9EC5E8;
-  --card:#fff; --muted:#EFEAE3; --shadow:0 10px 24px rgba(0,0,0,.06);
-  --radius:16px; --container:1100px; --accent:#1d4ed8; --success:#22c55e; --line:#e6e2dc;
-  --blue:#0EA5E9; --green:#22c55e; --chip:#f4f6fb;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --section-y: 72px;         /* desktop */
-}
+/* Global foundations and generic UI primitives are owned by uikit.css.
+   styles.css starts with site/component rules only. */
 
-@media (max-width:1024px){ :root{ --section-y: 56px; } }
-@media (max-width:640px) { :root{ --section-y: 40px; } }
-
-/* Общая рекомендация по секциям */
-.section{ padding-block: var(--section-y); }
 .section-title{ margin:0 0 var(--space-3); }
 
 *{box-sizing:border-box}
-body{margin:0;font-family:'Nunito',sans-serif;color:var(--text);background:var(--bg)}
 h1,h2,h3{font-family:'Poppins',sans-serif;margin:0 0 .5rem}
-.container{max-width:var(--container);margin:0 auto;padding:0 20px}
 section{padding:64px 0}
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
-
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:14px 20px;border-radius:12px;font-weight:700;text-decoration:none;border:2px solid transparent;cursor:pointer}
-.btn-primary{background:var(--primary)}
-.btn-outline{border-color:var(--primary);color:var(--text)}
-.btn:hover{transform:translateY(-1px);transition:.2s ease}
 
 /* Лого в шапке: ссылка без подчёркивания и белая «плашка» */
 .site-header .brand .logo {
@@ -63,7 +33,7 @@ section{padding:64px 0}
 
 /* доступный фокус (если лого — ссылка) */
 .site-header .brand .logo:focus-visible {
-  outline: 2px solid #78c6a7;
+  outline: 2px solid var(--color-focus-outline);
   outline-offset: 2px;
 }
 
@@ -214,13 +184,6 @@ section{padding:64px 0}
   width:100%;
   height:100%;
 }
-#top .hero-photo img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
 /* === Рейтинг + цитата: стабильная строка без рефлоу === */
 #top .hero-visual .hero-social{
   margin-top:14px;
@@ -234,32 +197,10 @@ section{padding:64px 0}
 
 #top .hero-visual .hero-social a{ white-space:nowrap; flex:0 0 auto; }
 
-/* фиксируем геометрию цитаты с двухслойным кросс-фейдом */
-#top .hero-visual .hero-social .quote-wrap{
-  position:relative;
-  margin-left:auto;
-  flex:1 1 auto; min-width:0;
-  height:1.35em; line-height:1.35em;
-  text-align:right;
-}
-#top .hero-visual .hero-social .quote-wrap .quote{
-  position:absolute; inset:0;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  color:#374151; font-style:italic;
-  opacity:0; transition:opacity .25s ease;
-}
-#top .hero-visual .hero-social .quote-wrap .quote.is-active{ opacity:.9; }
-
 /* === Адаптив === */
 @media (max-width:1024px){
   #top .hero-visual{ justify-self:stretch; }
   #top .hero-visual .hero-social{ margin-top:16px; flex-wrap:wrap; }
-  #top .hero-visual .hero-social .quote-wrap{
-    text-align:left; margin-left:0; height:auto; line-height:inherit;
-  }
-  #top .hero-visual .hero-social .quote-wrap .quote{
-    position:static; opacity:.9;
-  }
 }
 
 /* === HERO: гибрид для отступа CTA === */
@@ -575,9 +516,7 @@ section{padding:64px 0}
 
 #why.panel--list{
   background:#fff;
-  margin-inline: calc(-1 * var(--page-pad));
-  padding-inline: var(--page-pad);
-  border-radius: 0;
+  border-radius:0;
 }
 #why.panel--list .why-card{ border-left:0 !important; }
 
@@ -664,14 +603,8 @@ section{padding:64px 0}
 
 
 /* ============ EXPERIENCE (Рельса + карточки) ============ */
-:root{
-  /* spacing tokens */
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-
+/* Component tokens stay local; spacing comes from the global foundation scale. */
+#experience{
   /* colors */
   --c-accent: #15803D;        /* зелёный акцент */
   --c-rail:   #E5E7EB;        /* цвет рельсы */
@@ -852,9 +785,7 @@ section{padding:64px 0}
 /* ====== EXPERIENCE: белая подложка на всю ширину, как у WHY ====== */
 #experience.section{
   background:#fff;
-  margin-inline: calc(-1 * var(--page-pad));
-  padding-inline: var(--page-pad);
-  border-radius: 0;
+  border-radius:0;
 }
 
 /* палитра для карточек опыта */
@@ -906,7 +837,7 @@ section{padding:64px 0}
 .presets .tag.active .txt { color: #4B5563; }
 
 /* Result card */
-.result-card{margin-top:20px;padding:18px 18px 28px;background:#fff;border-radius:12px;box-shadow:var(--shadow);position:relative;overflow:visible}
+.result-card{margin-top:20px;padding:18px 18px 28px;background:#fff;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.06);position:relative;overflow:visible}
 .result-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--primary);border-top-left-radius:12px;border-bottom-left-radius:12px}
 .result-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .res-sep{height:1px;background:#EEE8E1;margin:12px 0}
@@ -915,8 +846,6 @@ section{padding:64px 0}
 
 /* Error state */
 .field-error{color:#B42318;font-size:12px;margin-top:4px}
-.input.error{border-color:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.15)}
-
 /* Tooltip */
 .hint{position:relative;display:inline-block;width:16px;height:16px}
 .hint .i{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:999px;background:#E9EDF7;color:#334;font-size:12px;font-weight:600}
@@ -1297,7 +1226,7 @@ select:focus{
   box-shadow:0 8px 24px rgba(0,0,0,.07);
 }
 .faq-q:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
 }
 
@@ -1339,7 +1268,7 @@ select:focus{
 <path d='M10 13a5 5 0 0 0 7.07 0l2.12-2.12a5 5 0 1 0-7.07-7.07L10 5'/><path d='M14 11a5 5 0 0 0-7.07 0L4.81 13.12a5 5 0 1 0 7.07 7.07L14 19'/></svg>");
 }
 .faq-q__copy:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
   opacity:1;
 }
@@ -1490,17 +1419,6 @@ select:focus{
 }
 .slot-cta:hover{ background:#eef6ff; }
 
-/* если .brand уже display:flex; просто увеличиваем gap между элементами */
-.header-bar .brand{
-  display: flex;              /* на случай, если не задано */
-  align-items: center;
-  gap: 16px;                  /* было, например, 8–10px */
-}
-
-@media (min-width: 1024px){
-  .header-bar .brand{ gap: 20px; }
-}
-
 /* === Корректный якорный скролл под фикс-хедер ======================= */
 :root{ --header-h: 64px; }          /* поправьте, если у шапки другая высота */
 html { scroll-behavior: smooth; }   /* плавный скролл по якорям */
@@ -1521,7 +1439,7 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
 /* чёткие focus-стили для ссылок/кнопок в шапке */
 .header-nav a, .lang-btn { outline: none; }
 .header-nav a:focus-visible, .lang-btn:focus-visible, .slot-cta:focus-visible, .faq-q:focus-visible, .faq-q__copy:focus-visible{
-  outline:2px solid #78c6a7; outline-offset:2px; border-radius:8px;
+  outline:2px solid var(--color-focus-outline); outline-offset:2px; border-radius:8px;
 }
 
 /* активный пункт меню при прокрутке */
@@ -1960,33 +1878,6 @@ body.lightbox-open{
   .contact-grid{ grid-template-columns: 1fr; }
 }
 
-/* Блок согласия: увеличим зону клика аккуратно */
-#contact .agree{
-  display: flex;
-  align-items: center;
-  gap: 10px;                 /* чуть больше воздуха между боксом и текстом */
-  padding: 6px 8px;          /* увеличивает hit-area всей строки */
-  border-radius: 8px;
-}
-
-/* Чекбокс — делаем немного крупнее и ровнее по вертикали */
-#contact .agree input[type="checkbox"]{
-  transform: scale(1.25);    /* визуально крупнее */
-  margin: 2px 6px 0 2px;     /* точная подгонка по вертикали/горизонтали */
-  accent-color: #15803D;     /* ваш зелёный цвет */
-  cursor: pointer;
-}
-
-/* На тач-устройствах ещё крупнее — легче попасть пальцем */
-@media (pointer: coarse){
-  #contact .agree input[type="checkbox"]{
-    transform: scale(1.5);
-  }
-  #contact .agree{
-    padding: 8px 10px;       /* чуть больше зона клика всей строки */
-  }
-}
-
 /* Доступность: подсветка всей строки, когда чекбокс в фокусе с клавиатуры */
 #contact .agree:focus-within{
   box-shadow: 0 0 0 3px rgba(120,198,167,.18);
@@ -2069,10 +1960,10 @@ body.lightbox-open{
   color: #374151;
 }
 
-:root{ --icon-brown: #C8A77C; }
 .foot-loc{
-  width: 18px; height: 18px;
-  background-color: var(--icon-brown);
+  width:18px;
+  height:18px;
+  background-color:#C8A77C;
   -webkit-mask: url('../img/icons/location.svg') no-repeat center / contain;
           mask: url('../img/icons/location.svg') no-repeat center / contain;
 }
@@ -2341,17 +2232,10 @@ body.lightbox-open{
 }
 #contact .cbtn .dot{ width:8px; height:8px; border-radius:50%; background:#22c55e; }
 
-/* Текст согласия — чтобы помещался в одну строку */
-#contact .agree{
-  font-size:11px;
-  line-height:1.3;
-}
-
 /* Контактная форма: высота текстового поля = 2 инпута + зазор */
 .contact .col-message .fld textarea#cmsg{
   /* базовая высота обычного инпута на сайте (под ваши текущие стили) */
-  --input-h: 44px;
-  --gap: 16px;
+--gap: 16px;
   min-height: 124px;
   resize: vertical;         /* можно растянуть вручную при желании */
 }
@@ -2447,11 +2331,12 @@ body.lightbox-open{
 #contact .fld.has-error{ margin-bottom:10px; }
 
 /* === Contact: единая типографика инпутов/textarea === */
-:root{
-  --inp-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --inp-size: 15px;
+#contact{
+  --inp-font: var(--font-sans);
+  --inp-size: 16px;
   --inp-line: 1.45;
-  --ph-color: #6B7280;   /* как плейсхолдер у "Сообщение" */
+  --err-size: 12px;
+  --ph-color: var(--color-text-muted);
   --err-color: #B91C1C;
 }
 
@@ -2478,25 +2363,12 @@ body.lightbox-open{
   color: var(--err-color);
 }
 
-:root{
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
-}
-
-#contact .fld .input,
-#contact .fld textarea,
-#contact .fld .input::placeholder,
-#contact .fld textarea::placeholder{
-  font-family: var(--mono);
+/* Для даты/времени сохраняем ровный ритм цифр без отдельной monospace-гарнитуры. */
+#contact #ctime{
   font-variant-numeric: tabular-nums;
 }
 
-/* === Contact: компактнее кегль в полях и у ошибок ====================== */
-#contact{
-  --inp-size: 13px;    /* единый размер шрифта во всех input/textarea */
-  --inp-line: 1.35;    /* чуть плотнее */
-  --err-size: 12px;    /* размер текста ошибок (внутри и под полями) */
-}
+/* Размер полей и ошибок задаётся локальными токенами #contact. */
 
 /* подписи-ошибки под полем (если где-то ещё показываются) */
 #contact .fld .err{
@@ -2579,8 +2451,8 @@ body.lightbox-open{
 }
 @media (max-width: 640px){
   #contact{
-    --inp-size: 12px;
-    --err-size: 11px;
+    --inp-size: 16px;
+    --err-size: 12px;
   }
 }
 
@@ -2588,7 +2460,7 @@ body.lightbox-open{
 
 /* обычный цвет галочки */
 #contact input[type="checkbox"] {
-  accent-color: #15803D;          /* зелёная галочка (поддерживается в современных браузерах) */
+  accent-color: var(--color-action-primary);          /* зелёная галочка (поддерживается в современных браузерах) */
 }
 
 /* ошибка — подсвечаем именно сам чекбокс */
@@ -2600,70 +2472,30 @@ body.lightbox-open{
   accent-color: #EF4444;           /* если чекбокс всё же отмечен — галочка будет красной */
 }
 
-/* === Contact: ровная высота строки согласия + без красной рамки по умолчанию === */
-
-/* высота контролов формы = высоте инпутов .input (у тебя min-height: 52px) */
-#contact{ --control-h: 52px; }
-
-/* сама строка согласия: по центру по вертикали, без лишних внутренних отступов */
-#contact .agree{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: var(--control-h);
-  padding: 0 !important;      /* перебиваем старое padding: 6px 8px; */
-  margin: 0;                   /* чтобы зазор сверху/снизу давал только grid-gap */
-  line-height: 1.35;
-}
-
-/* текст как блок (многострочие не «тянет» низ), чекбокс без маргинов */
-#contact .agree > span{ display:block; line-height:1.35; }
-#contact .agree input[type="checkbox"]{
-  margin: 0;
-  transform: none;             /* если раньше увеличивали scale — убираем для ровной базовой линии */
-  accent-color: #15803D;       /* зелёная галочка в обычном состоянии */
-}
-
-/* убираем всегда-включённую красную рамку от :invalid */
-#contact .agree input[type="checkbox"]:invalid{
-  outline: none !important;
-}
-
-/* показываем ошибку ТОЛЬКО после попытки отправки формы */
-#contactForm.was-validated .agree input[type="checkbox"]:invalid{
-  outline: 1px solid #ef4444;                 /* тонкая линия по контуру */
-  outline-offset: 1px;                        /* чуть отнесём от чекбокса */
-  box-shadow: 0 0 0 3px rgba(239,68,68,.18);  /* мягкий ореол */
-  border-radius: 4px;                         /* скругление углов, чтобы ореол был аккуратный */
-  accent-color: #EF4444;                      /* (опц.) красный цвет галочки на системных чекбоксах */
-}
-
-#contact .agree input[type="checkbox"].is-error{
-  outline: 1px solid #ef4444;
-  outline-offset: 1px;
-  box-shadow: 0 0 0 3px rgba(239,68,68,.18);
-  border-radius: 4px;
-  accent-color: #EF4444;
-}
-
 /* равные отступы вокруг строки согласия: убираем локальный margin у textarea-блока */
 .contact .col-message .fld{ margin-bottom: 0 !important; }
 
 /* сама строка согласия — высота как у инпутов, без внутренних паддингов */
 #contact{ --control-h: 52px; }
 #contact .agree{
-  display:flex; align-items:center; gap:10px;
-  min-height: var(--control-h);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:var(--control-h);
   padding:0 !important;
-  margin:0;                 /* отступы даёт только flex-gap колонки */
+  margin:0;
+  border-radius:8px;
+  font-size:14px;
   line-height:1.35;
 }
 #contact .agree > span{ display:block; line-height:1.35; }
 
 /* обычная галочка — зелёная (как и было) */
 #contact .agree input[type="checkbox"]{
-  margin:0; transform:none;
-  accent-color:#15803D;
+  margin:0;
+  transform:none;
+  accent-color:var(--color-action-primary);
+  cursor:pointer;
 }
 
 /* браузерный :invalid не подсвечиваем постоянно */
@@ -2837,7 +2669,7 @@ body.lightbox-open{
 }
 #calc .presets .tag:hover{ transform:translateY(-1px); border-color:#B9E0D1; background:#F2FAF6; color:#146C43; }
 #calc .presets .tag:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
   border-color:#B9E0D1;
 }
@@ -2915,7 +2747,7 @@ body.lightbox-open{
 #calc .cta-bottom-wrap{ margin-top:18px; }
 #calc .share-link{ flex:0 0 auto; }
 #calc .share-link:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:3px;
   border-radius:6px;
 }
@@ -2964,10 +2796,10 @@ body.lightbox-open{
 }
 #calc input[type="checkbox"]{
   appearance:auto !important; -webkit-appearance:auto !important; -moz-appearance:auto !important;
-  width:14px; height:14px; accent-color:#15803D; cursor:pointer;
+  width:14px; height:14px; accent-color:var(--color-action-primary); cursor:pointer;
 }
 #calc input[type="checkbox"]:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
 }
 #calc .subcheck:has(input:checked),
@@ -2985,16 +2817,21 @@ body.lightbox-open{
 
 /* 2) Цвет SVG-иконок — как у боковой линии «Итог» (var(--primary)) */
 #calc .label-row > svg{
-  fill: var(--primary) !important;
-  stroke: var(--primary) !important;    /* на случай, если иконка прорисована через stroke */
+  fill: var(--color-action-primary) !important;
+  stroke: var(--color-action-primary) !important;
 }
 
 /* 3) Чипы «доп. занятия»: текст меньше + отступ перед ценой */
-#calc .subcheck{ font-size:14px; line-height:1.3; font-weight: 300; }
+#calc .subcheck{
+  font-size:14px;
+  line-height:1.3;
+  font-weight:400;
+  color:var(--color-text-secondary);
+}
 #calc .subcheck .subnote{
   font-size:12px;
-  margin-left:6px;                      /* зазор между текстом и «+300/+500 дин» */
-  color:#8a94a6;
+  margin-left:6px;                      /* зазор между текстом и ценой */
+  color:var(--color-text-muted);
 }
 
 
