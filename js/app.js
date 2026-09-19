@@ -998,6 +998,7 @@ const SlotBusinessTime = (() => {
   let lastValidHours = 4;
   let shareFeedbackTimer = 0;
   let animationFrame = 0;
+  let dayTypeTouched = false;
 
   // ---------- helpers ----------
   function parseHoursValue(raw){
@@ -1043,7 +1044,7 @@ const SlotBusinessTime = (() => {
     setHoursValidation('valid');
   }
 
-  function commitHours(){
+  function commitHours({ source = 'hours', forceUsed = false } = {}){
     const h = $('hours');
     if (!h) return false;
 
@@ -1067,7 +1068,9 @@ const SlotBusinessTime = (() => {
     lastValidHours = value;
     setHoursValidation('valid');
 
-    if (changed) recalc();
+    if (changed || forceUsed) {
+      recalc({ markUsed: changed || forceUsed, source });
+    }
     return true;
   }
 
@@ -1158,12 +1161,55 @@ const SlotBusinessTime = (() => {
     animationFrame=requestAnimationFrame(step);
   };
 
+  // ---------- request state publication ----------
+  function publishCalculatorState({ h, rate, add, total, markUsed = false, source = 'recalc' }){
+    const requestState = window.RequestState;
+    if (!requestState) return;
+
+    const currentUsed = requestState.get()?.calculator?.used === true;
+    const kids = $('kids')?.value || null;
+    const dayType = $('dayType')?.value || null;
+
+    requestState.patch({
+      calculator: {
+        used: markUsed ? true : currentUsed,
+        hours: h,
+        kids,
+        dayType,
+        extras: {
+          food: Boolean($('optA')?.checked),
+          cleaning: Boolean($('optB')?.checked),
+          fitness: Boolean($('optC')?.checked)
+        }
+      },
+      pricing: {
+        hourlyRate: rate,
+        extrasTotal: add,
+        estimatedTotal: total
+      }
+    }, {
+      source: 'calculator',
+      reason: source
+    });
+  }
+
+  function inferDayType(dateKey){
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateKey || ''));
+    if (!match) return null;
+
+    const day = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))).getUTCDay();
+    return day === 0 || day === 6 ? 'weekend' : 'weekday';
+  }
+
   // ---------- core calc ----------
-  function recalc(){
+  function recalc({ markUsed = false, source = 'recalc' } = {}){
     const h = lastValidHours;
     const rate=hourlyRate();
     const add=( $('optA')?.checked?OPT:0 )+( $('optB')?.checked?OPT:0 )+( $('optC')?.checked?OPT_FIT:0 );
-    const total=rate*h+add; animate(total);
+    const total=rate*h+add;
+
+    publishCalculatorState({ h, rate, add, total, markUsed, source });
+    animate(total);
 
     const br=$('breakdown');
     if(br){
@@ -1246,8 +1292,19 @@ const SlotBusinessTime = (() => {
       if (sp.size > 0) applyParams(sp);
       initializeHours();
       scrollToCalc(true);
-      recalc();
+      recalc({ source: 'hash-restore' });
     }
+  });
+
+  window.RequestState?.subscribe((state, detail) => {
+    if (detail.source !== 'slot-select' || dayTypeTouched) return;
+
+    const inferred = inferDayType(state?.availability?.date);
+    const dayType = $('dayType');
+    if (!inferred || !dayType || dayType.value === inferred) return;
+
+    dayType.value = inferred;
+    recalc({ source: 'slot-day-inference' });
   });
 
   // ---------- bindings ----------
@@ -1256,12 +1313,12 @@ const SlotBusinessTime = (() => {
     if (hoursEl) {
       hoursEl.addEventListener('input', () => setHoursValidation('valid'));
       ['change','blur'].forEach(eventName => {
-        hoursEl.addEventListener(eventName, commitHours);
+        hoursEl.addEventListener(eventName, () => commitHours({ source: 'hours' }));
       });
       hoursEl.addEventListener('keydown', (event) => {
         if (event.key !== 'Enter') return;
         event.preventDefault();
-        commitHours();
+        commitHours({ source: 'hours' });
       });
       hoursEl.addEventListener('paste', (event) => {
         const pasted = event.clipboardData?.getData('text')?.trim() || '';
@@ -1274,7 +1331,13 @@ const SlotBusinessTime = (() => {
 
     ['kids','dayType','optA','optB','optC','eurToggle'].forEach(id=>{
       const el=$(id); if(!el) return;
-      el.addEventListener('change', recalc);
+      el.addEventListener('change', () => {
+        if (id === 'dayType') dayTypeTouched = true;
+        recalc({
+          markUsed: id !== 'eurToggle',
+          source: id
+        });
+      });
     });
 
     document.querySelectorAll('#calc .presets [data-hours]').forEach(button => {
@@ -1284,8 +1347,12 @@ const SlotBusinessTime = (() => {
         if (!h || !Number.isFinite(value)) return;
         h.value = String(value);
         h.focus();
-        commitHours();
+        commitHours({ source: 'preset', forceUsed: true });
       });
+    });
+
+    $('ctaForm')?.addEventListener('click', () => {
+      recalc({ markUsed: true, source: 'calculator-cta' });
     });
 
     // share
@@ -1295,14 +1362,14 @@ const SlotBusinessTime = (() => {
       const share=$('shareLink');
       const label=share?.querySelector('.txt');
       if(label) label.textContent=t(share?.classList.contains('copied') ? 'calc_share_copied' : 'calc_share');
-      recalc();
+      recalc({ source: 'langchange' });
     });
 
-    window.calcRecompute = () => recalc();
+    window.calcRecompute = () => recalc({ source: 'external-recompute' });
   }
 
   // ---------- boot ----------
-  const boot = ()=>{ bind(); initCalcURLState(); initializeHours(); recalc(); };
+  const boot = ()=>{ bind(); initCalcURLState(); initializeHours(); recalc({ source: 'initial' }); };
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
