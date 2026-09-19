@@ -22,7 +22,6 @@ jobs:
           response="$(
             curl --fail-with-body --silent --show-error --location \
               --max-time 45 \
-              --request POST "$endpoint" \
               --data-urlencode "name=TEST — ChatGPT regular request" \
               --data-urlencode "contact=@test_do_not_contact" \
               --data-urlencode "schedule=TEST: Пн и Ср 15:00–19:00, 2 месяца. Не связываться — проверка production формы." \
