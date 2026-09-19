@@ -45,7 +45,7 @@
 
   /* — Отступы (шкала 4px) */
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
-  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-9: 36px; --space-10: 40px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
   --space-12: 48px; --space-16: 64px;
 
 
@@ -140,7 +140,6 @@ h2, .h2{
   font-size: clamp(22px, 2.6vw, 28px);
   line-height: 1.22;
   margin-top: var(--space-12);
-  margin-bottom: var(--h2-gap); 
 }
 h3, .h3{
   font-weight: 700; color: var(--color-text-strong);
@@ -338,35 +337,6 @@ input[type="checkbox"], input[type="radio"]{
 
 
 
-/* Плавность смены цвета текста тоже анимируем */
-.btn{
-  transition:
-    background var(--trans-2),
-    border-color var(--trans-2),
-    color var(--trans-2),
-    transform .05s;
-}
-
-/* 1) PRIMARY (зелёная заливка) → hover как outline: прозрачный фон + зелёный текст/бордер */
-.btn-primary:hover,
-.btn-primary:focus-visible{
-  --btn-bg:  transparent;
-  --btn-brd: var(--primary-700);
-  --btn-ink: var(--primary-700);
-  background: transparent;           /* на случай локальных переопределений */
-  color: var(--color-action-primary-hover);
-}
-
-/* 2) OUTLINE (прозрачная) → hover как filled: зелёная заливка + белый текст */
-.btn-outline:hover,
-.btn-outline:focus-visible{
-  --btn-bg:  var(--primary);
-  --btn-brd: var(--primary);
-  --btn-ink: #fff;
-  background: var(--color-action-primary);
-  color: #fff;
-}
-
 /* Без «прыжка» при тапе */
 .btn-primary:active,
 .btn-outline:active{ transform: translateY(0); }
@@ -473,14 +443,11 @@ input[type="checkbox"], input[type="radio"]{
 /* === SERVICES: отступы ================================ */
 
 #services{
-  
-  --srv-title-hint: 12px;   
   --srv-hint-cards: 32px;   
 }
 
 @media (min-width: 1024px){
   #services{
-    --srv-title-hint: 14px;
     --srv-hint-cards: 40px;
   }
 }
