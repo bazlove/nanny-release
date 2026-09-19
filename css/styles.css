@@ -211,8 +211,6 @@ section{padding:64px 0}
   color:#374151; font-style:italic;
   opacity:0; transition:opacity .25s ease;
 }
-#top .hero-visual .hero-social .quote-wrap .quote.is-active{ opacity:.9; }
-
 /* === Адаптив === */
 @media (max-width:1024px){
   #top .hero-visual{ justify-self:stretch; }
@@ -1900,33 +1898,6 @@ body.lightbox-open{
   .contact-grid{ grid-template-columns: 1fr; }
 }
 
-/* Блок согласия: увеличим зону клика аккуратно */
-#contact .agree{
-  display: flex;
-  align-items: center;
-  gap: 10px;                 /* чуть больше воздуха между боксом и текстом */
-  padding: 6px 8px;          /* увеличивает hit-area всей строки */
-  border-radius: 8px;
-}
-
-/* Чекбокс — делаем немного крупнее и ровнее по вертикали */
-#contact .agree input[type="checkbox"]{
-  transform: scale(1.25);    /* визуально крупнее */
-  margin: 2px 6px 0 2px;     /* точная подгонка по вертикали/горизонтали */
-  accent-color: var(--color-action-primary);     /* ваш зелёный цвет */
-  cursor: pointer;
-}
-
-/* На тач-устройствах ещё крупнее — легче попасть пальцем */
-@media (pointer: coarse){
-  #contact .agree input[type="checkbox"]{
-    transform: scale(1.5);
-  }
-  #contact .agree{
-    padding: 8px 10px;       /* чуть больше зона клика всей строки */
-  }
-}
-
 /* Доступность: подсветка всей строки, когда чекбокс в фокусе с клавиатуры */
 #contact .agree:focus-within{
   box-shadow: 0 0 0 3px rgba(120,198,167,.18);
@@ -2009,10 +1980,10 @@ body.lightbox-open{
   color: #374151;
 }
 
-:root{ --icon-brown: #C8A77C; }
 .foot-loc{
-  width: 18px; height: 18px;
-  background-color: var(--icon-brown);
+  width:18px;
+  height:18px;
+  background-color:#C8A77C;
   -webkit-mask: url('../img/icons/location.svg') no-repeat center / contain;
           mask: url('../img/icons/location.svg') no-repeat center / contain;
 }
@@ -2281,12 +2252,6 @@ body.lightbox-open{
 }
 #contact .cbtn .dot{ width:8px; height:8px; border-radius:50%; background:#22c55e; }
 
-/* Текст согласия: читаемый supporting text; перенос допустим. */
-#contact .agree{
-  font-size:14px;
-  line-height:1.4;
-}
-
 /* Контактная форма: высота текстового поля = 2 инпута + зазор */
 .contact .col-message .fld textarea#cmsg{
   /* базовая высота обычного инпута на сайте (под ваши текущие стили) */
@@ -2533,18 +2498,24 @@ body.lightbox-open{
 /* сама строка согласия — высота как у инпутов, без внутренних паддингов */
 #contact{ --control-h: 52px; }
 #contact .agree{
-  display:flex; align-items:center; gap:10px;
-  min-height: var(--control-h);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:var(--control-h);
   padding:0 !important;
-  margin:0;                 /* отступы даёт только flex-gap колонки */
+  margin:0;
+  border-radius:8px;
+  font-size:14px;
   line-height:1.35;
 }
 #contact .agree > span{ display:block; line-height:1.35; }
 
 /* обычная галочка — зелёная (как и было) */
 #contact .agree input[type="checkbox"]{
-  margin:0; transform:none;
+  margin:0;
+  transform:none;
   accent-color:var(--color-action-primary);
+  cursor:pointer;
 }
 
 /* браузерный :invalid не подсвечиваем постоянно */
