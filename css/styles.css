@@ -1579,20 +1579,24 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
 }
 
 #process .process-steps::before{
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: calc(var(--process-marker-size) / 2 - 1px);
-  left: calc(var(--process-marker-size) / 2);
-  right: calc(var(--process-marker-size) / 2);
-  height: 2px;
-  border-radius: var(--radius-pill);
-  background: var(--color-border);
+  display: none;
 }
 
 #process .process-step{
   position: relative;
   min-width: 0;
+}
+
+#process .process-step:not(:last-child)::after{
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--process-marker-size) / 2 - 1px);
+  left: calc(var(--process-marker-size) / 2);
+  width: calc(100% + var(--space-6));
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
 }
 
 #process .process-step__number{
@@ -1641,12 +1645,20 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
   }
 
   #process .process-steps::before{
+    content: "";
+    position: absolute;
+    z-index: 0;
+    display: block;
     top: calc(var(--process-marker-size) / 2);
     bottom: calc(var(--process-marker-size) / 2);
     left: calc(var(--process-marker-size) / 2 - 1px);
-    right: auto;
     width: 2px;
-    height: auto;
+    border-radius: var(--radius-pill);
+    background: var(--color-border);
+  }
+
+  #process .process-step:not(:last-child)::after{
+    display: none;
   }
 
   #process .process-step{
