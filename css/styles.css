@@ -1701,14 +1701,6 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
   }
 }
 
-@media (prefers-reduced-motion: reduce){
-  #process *,
-  #process *::before,
-  #process *::after{
-    scroll-behavior: auto !important;
-  }
-}
-
 /* ===== Reviews: text-first cards ====================================== */
 .rv-reviews{
   margin: 48px 0;
