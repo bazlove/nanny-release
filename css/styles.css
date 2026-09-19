@@ -657,14 +657,8 @@ section{padding:64px 0}
 
 
 /* ============ EXPERIENCE (Рельса + карточки) ============ */
-:root{
-  /* spacing tokens */
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-
+/* Component tokens stay local; spacing comes from the global foundation scale. */
+#experience{
   /* colors */
   --c-accent: #15803D;        /* зелёный акцент */
   --c-rail:   #E5E7EB;        /* цвет рельсы */
