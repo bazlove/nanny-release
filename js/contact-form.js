@@ -177,6 +177,7 @@
 
       if (note) note.textContent = text('success');
       form.reset();
+      window.RequestState?.reset({ source: 'contact-submit-success' });
       validationActive = false;
       renderValidation({}, false);
 
