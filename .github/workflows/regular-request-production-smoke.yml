@@ -1,9 +1,9 @@
 name: Regular request production smoke
 
 on:
-  push:
+  pull_request:
     branches:
-      - feat/regular-nanny-request-mvp
+      - main
     paths:
       - .github/workflows/regular-request-production-smoke.yml
 
