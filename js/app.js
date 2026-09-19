@@ -228,6 +228,7 @@ document.addEventListener('copy', function (e) {
       faq_a_cancel_2:'Отмена менее чем за 1 час - полная стоимость от предполагаемого времени заказа.',
       faq_a_cancel_3:'Если по инициативе родителей заказ заканчивается раньше - стоимость заказа не уменьшается.',
       faq_copy_link_title:'Скопировать ссылку на вопрос',
+      faq_copy_copied:'Ссылка на вопрос скопирована',
 
       /* CONTACT */
       contact_title:'Свяжитесь со мной',
@@ -417,6 +418,7 @@ document.addEventListener('copy', function (e) {
       faq_a_cancel_2:'Otkaz manje od 1 sata — puna cena planiranog termina.',
       faq_a_cancel_3:'Ako po inicijativi roditelja narudžbina se završi ranije - cena se ne umanjuje.',
       faq_copy_link_title:'Kopirati link na pitanje',
+      faq_copy_copied:'Link ka pitanju je kopiran',
 
       /* CONTACT */
       contact_title:'Kontaktirajte me',
@@ -1211,7 +1213,8 @@ const SlotBusinessTime = (() => {
   const list = document.querySelector('.faq-list');
   if (!list) return;
 
-  const HEADER_OFFSET = 80; // ваш фикс-хедер (px). при необходимости поправьте
+  const status = document.getElementById('faq-copy-status');
+  const t = key => window.i18n?.t?.(key) ?? window.I18N?.ru?.[key] ?? key;
 
   function openItem(item, withScroll) {
     const btn   = item.querySelector('.faq-q');
@@ -1231,11 +1234,8 @@ const SlotBusinessTime = (() => {
     const target = inner ? inner.scrollHeight : panel.scrollHeight;
     panel.style.height = target + 'px';
 
-    // скроллим так, чтобы шапка вопроса была под фикс-хедером
-    if (withScroll) {
-      const y = item.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET - 6;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    // scroll-margin-top uses the live --header-h value set by the header module.
+    if (withScroll) item.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
   function closeItem(item) {
@@ -1273,23 +1273,17 @@ const SlotBusinessTime = (() => {
       if (btn.id) history.replaceState(null, '', '#' + btn.id);
     });
 
-    // клавиатура (Space / Enter)
-    btn.addEventListener('keydown', e => {
-      if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
-        e.preventDefault();
-        btn.click();
-      }
-    });
+    // Native <button> already handles Enter/Space.
 
     // копирование ссылки
-    copy?.addEventListener('click', e => {
-      e.stopPropagation();
+    copy?.addEventListener('click', () => {
       const hash = btn.id || item.id || '';
       const url  = location.origin + location.pathname + (hash ? '#' + hash : '');
       navigator.clipboard.writeText(url).then(() => {
         copy.classList.add('copied');
+        if (status) status.textContent = t('faq_copy_copied');
         setTimeout(() => copy.classList.remove('copied'), 1200);
-      });
+      }).catch(err => console.warn('FAQ link copy failed:', err));
     });
   });
 
@@ -1799,11 +1793,15 @@ const SlotBusinessTime = (() => {
   );
 
   // Утилиты
-  const firstFocusable = () =>
-    mnav.querySelector('a,button,[tabindex]:not([tabindex="-1"])');
+  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const focusables = () => Array.from(mnav.querySelectorAll(FOCUSABLE))
+    .filter(el => el.tabIndex >= 0 && el.getAttribute('aria-hidden') !== 'true');
+  const initialFocusable = () => mnav.querySelector('.nav-links a') || focusables()[0] || null;
   const isOpen = () => mnav.classList.contains('is-open');
+  let menuOpener = null;
 
   function openMenu(){
+    menuOpener = document.activeElement instanceof HTMLElement ? document.activeElement : burger;
     setHeaderHeightVar();              // на всякий случай перед открытием
     mnav.hidden = false;
     mnav.setAttribute('aria-hidden','false');
@@ -1812,20 +1810,27 @@ const SlotBusinessTime = (() => {
     burger.classList.add('is-open');
     burger.setAttribute('aria-expanded','true');
 
-    const f = firstFocusable();
+    const f = initialFocusable();
     if (f) { try { f.focus({preventScroll:true}); } catch(_){} }
   }
 
-  function closeMenu(){
+  function closeMenu({ restoreFocus = true } = {}){
     mnav.classList.remove('is-open');
     document.body.classList.remove('nav-open');
     burger.classList.remove('is-open');
     burger.setAttribute('aria-expanded','false');
 
+    let tidied = false;
     const tidy = () => {
+      if (tidied || isOpen()) return;
+      tidied = true;
       mnav.hidden = true;
       mnav.setAttribute('aria-hidden','true');
       mnav.removeEventListener('transitionend', tidy);
+      if (restoreFocus && menuOpener?.isConnected) {
+        try { menuOpener.focus({preventScroll:true}); } catch(_){}
+      }
+      menuOpener = null;
     };
     mnav.addEventListener('transitionend', tidy);
     setTimeout(tidy, TRANSITION_MS + 50); // fallback
@@ -1844,12 +1849,34 @@ const SlotBusinessTime = (() => {
   // Закрыть по ссылке внутри панели
   const links = mnav.querySelector('.nav-links');
   if (links) links.addEventListener('click', (e) => {
-    if (e.target.closest('a')) closeMenu();
+    if (e.target.closest('a')) closeMenu({ restoreFocus:false });
   });
 
-  // ESC
+  // ESC + basic focus trap
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) closeMenu();
+    if (!isOpen()) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeMenu();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+
+    const items = focusables();
+    if (!items.length) {
+      e.preventDefault();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === first || !mnav.contains(active))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (active === last || !mnav.contains(active))) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   // Автозакрытие при расширении экрана > tablet (возврат к десктоп-меню)
@@ -1858,7 +1885,7 @@ const SlotBusinessTime = (() => {
     const w = innerWidth;
     if (w !== lastW){
       lastW = w;
-      if (w > TABLET_BP && isOpen()) closeMenu();
+      if (w > TABLET_BP && isOpen()) closeMenu({ restoreFocus:false });
       setHeaderHeightVar();
     }
   });
@@ -2095,26 +2122,54 @@ const SlotBusinessTime = (() => {
   }
 
   // UI control
+  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  let modalOpener = null;
+  let restoreBannerOnClose = false;
+
+  const modalFocusables = () => Array.from(els.modal?.querySelectorAll(FOCUSABLE) || [])
+    .filter(el => el.tabIndex >= 0 && el.getAttribute('aria-hidden') !== 'true');
+  const canRestoreFocus = el => !!(el?.isConnected && !el.closest('[hidden]'));
+
   function openModal(){
+    modalOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    restoreBannerOnClose = !!(els.banner && !els.banner.hidden);
     els.modal.hidden = false;
     els.banner.hidden = true;
     const saved = read()||{};
     if (els.ana) els.ana.checked = !!saved.analytics;
     if (els.mkt) els.mkt.checked = !!saved.marketing;
+    const first = els.btnClose || modalFocusables()[0];
+    if (first) { try { first.focus({preventScroll:true}); } catch(_){} }
   }
-  function closeModal(){ els.modal.hidden = true; }
+
+  function closeModal({ restoreFocus = true, restoreBanner = true, fallback = null } = {}){
+    if (els.modal.hidden) return;
+    els.modal.hidden = true;
+    if (restoreBanner && restoreBannerOnClose && els.banner) els.banner.hidden = false;
+    if (restoreFocus) {
+      const target = canRestoreFocus(modalOpener) ? modalOpener : (canRestoreFocus(fallback) ? fallback : null);
+      if (target) { try { target.focus({preventScroll:true}); } catch(_){} }
+    }
+    modalOpener = null;
+    restoreBannerOnClose = false;
+  }
 
   function acceptAll(){
+    const modalWasOpen = !els.modal.hidden;
     write({ necessary:true, analytics:true, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
+    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:els.manage });
   }
   function onlyNecessary(){
+    const modalWasOpen = !els.modal.hidden;
     write({ necessary:true, analytics:false, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
+    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:els.manage });
   }
   function saveSelection(){
     write({ necessary:true, analytics: !!els.ana?.checked, marketing:false });
-    closeModal(); els.banner.hidden = true; els.manage.hidden = false;
+    els.banner.hidden = true; els.manage.hidden = false;
+    closeModal({ restoreBanner:false, fallback:els.manage });
   }
 
   // Events
@@ -2128,12 +2183,34 @@ const SlotBusinessTime = (() => {
   els.btnSaveNec?.addEventListener('click', onlyNecessary);
   els.manage?.addEventListener('click', openModal);
 
-  // Закрытие кликом по фону и по Esc
+  // Закрытие кликом по фону, Esc и basic focus trap
   els.modal?.addEventListener('click', (e)=>{
     if (e.target === els.modal) closeModal();
   });
   document.addEventListener('keydown', (e)=>{
-    if (e.key === 'Escape' && !els.modal.hidden) closeModal();
+    if (els.modal.hidden) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModal();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+
+    const items = modalFocusables();
+    if (!items.length) {
+      e.preventDefault();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === first || !els.modal.contains(active))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (active === last || !els.modal.contains(active))) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   // Первичная инициализация UI
