@@ -203,9 +203,9 @@ document.addEventListener('copy', function (e) {
       svc_base1_t:'Распорядок дня',      svc_base1_d:'Бодрствование, присмотр, сон, гигиена и привычный распорядок ребёнка.',
       svc_base2_t:'Занятия и игры',       svc_base2_d:'Рисование, лепка, творчество, моторика и игры без экранов — с учётом возраста.',
       svc_base3_t:'Прогулки',             svc_base3_d:'Прогулки и активные игры на свежем воздухе в привычном для семьи формате.',
-      svc_base4_t:'Сопровождение',        svc_base4_d:'Отвести или забрать из сада, школы, кружка или секции.',
+      svc_base4_t:'Сопровождение',        svc_base4_d:'Отвести в сад, школу, кружок или секцию — или забрать оттуда.',
       svc_base5_t:'Укладывание',          svc_base5_d:'Подготовка ко сну и укладывание по привычному ритуалу ребёнка.',
-      svc_extra1_t:'Питание',             svc_extra1_d:'Простой перекус или приём пищи по заранее согласованному меню.',
+      svc_extra1_t:'Питание',             svc_extra1_d:'Простой перекус для ребёнка по заранее согласованному меню.',
       svc_extra2_t:'Уборка детской',      svc_extra2_d:'Лёгкая уборка и наведение порядка в детской комнате.',
       svc_extra3_t:'Тренировка',          svc_extra3_d:'Индивидуальное занятие фитнесом или гимнастикой — 30 минут.',
 
@@ -411,9 +411,9 @@ document.addEventListener('copy', function (e) {
       svc_base1_t:'Raspored dana',          svc_base1_d:'Budnost, nadzor, san, higijena i uobičajena dnevna rutina deteta.',
       svc_base2_t:'Aktivnosti i igre',       svc_base2_d:'Crtanje, plastelin, kreativne aktivnosti, motorika i igre bez ekrana — u skladu sa uzrastom.',
       svc_base3_t:'Šetnje',                  svc_base3_d:'Šetnje i aktivne igre na svežem vazduhu, u skladu sa porodičnim navikama.',
-      svc_base4_t:'Pratnja',                 svc_base4_d:'Odvesti ili preuzeti dete iz vrtića, škole, sa sekcije ili aktivnosti.',
+      svc_base4_t:'Pratnja',                 svc_base4_d:'Odvesti dete u vrtić, školu ili na aktivnost — ili ga preuzeti odatle.',
       svc_base5_t:'Uspavljivanje',           svc_base5_d:'Priprema za spavanje i uspavljivanje prema uobičajenom ritualu deteta.',
-      svc_extra1_t:'Ishrana',                svc_extra1_d:'Jednostavna užina ili obrok prema unapred dogovorenom meniju.',
+      svc_extra1_t:'Ishrana',                svc_extra1_d:'Jednostavna užina za dete prema unapred dogovorenom meniju.',
       svc_extra2_t:'Čišćenje dečje sobe',    svc_extra2_d:'Lagano čišćenje i sređivanje dečje sobe.',
       svc_extra3_t:'Trening',                svc_extra3_d:'Individualni čas fitnesa ili gimnastike — 30 minuta.',
 
