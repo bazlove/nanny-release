@@ -56,7 +56,7 @@ section{padding:64px 0}
 
 /* доступный фокус (если лого — ссылка) */
 .site-header .brand .logo:focus-visible {
-  outline: 2px solid #78c6a7;
+  outline: 2px solid var(--color-focus-outline);
   outline-offset: 2px;
 }
 
@@ -1284,7 +1284,7 @@ select:focus{
   box-shadow:0 8px 24px rgba(0,0,0,.07);
 }
 .faq-q:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
 }
 
@@ -1326,7 +1326,7 @@ select:focus{
 <path d='M10 13a5 5 0 0 0 7.07 0l2.12-2.12a5 5 0 1 0-7.07-7.07L10 5'/><path d='M14 11a5 5 0 0 0-7.07 0L4.81 13.12a5 5 0 1 0 7.07 7.07L14 19'/></svg>");
 }
 .faq-q__copy:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
   opacity:1;
 }
@@ -1508,7 +1508,7 @@ section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
 /* чёткие focus-стили для ссылок/кнопок в шапке */
 .header-nav a, .lang-btn { outline: none; }
 .header-nav a:focus-visible, .lang-btn:focus-visible, .slot-cta:focus-visible, .faq-q:focus-visible, .faq-q__copy:focus-visible{
-  outline:2px solid #78c6a7; outline-offset:2px; border-radius:8px;
+  outline:2px solid var(--color-focus-outline); outline-offset:2px; border-radius:8px;
 }
 
 /* активный пункт меню при прокрутке */
@@ -1960,7 +1960,7 @@ body.lightbox-open{
 #contact .agree input[type="checkbox"]{
   transform: scale(1.25);    /* визуально крупнее */
   margin: 2px 6px 0 2px;     /* точная подгонка по вертикали/горизонтали */
-  accent-color: #15803D;     /* ваш зелёный цвет */
+  accent-color: var(--color-action-primary);     /* ваш зелёный цвет */
   cursor: pointer;
 }
 
@@ -2575,7 +2575,7 @@ body.lightbox-open{
 
 /* обычный цвет галочки */
 #contact input[type="checkbox"] {
-  accent-color: #15803D;          /* зелёная галочка (поддерживается в современных браузерах) */
+  accent-color: var(--color-action-primary);          /* зелёная галочка (поддерживается в современных браузерах) */
 }
 
 /* ошибка — подсвечаем именно сам чекбокс */
@@ -2608,7 +2608,7 @@ body.lightbox-open{
 #contact .agree input[type="checkbox"]{
   margin: 0;
   transform: none;             /* если раньше увеличивали scale — убираем для ровной базовой линии */
-  accent-color: #15803D;       /* зелёная галочка в обычном состоянии */
+  accent-color: var(--color-action-primary);       /* зелёная галочка в обычном состоянии */
 }
 
 /* убираем всегда-включённую красную рамку от :invalid */
@@ -2650,7 +2650,7 @@ body.lightbox-open{
 /* обычная галочка — зелёная (как и было) */
 #contact .agree input[type="checkbox"]{
   margin:0; transform:none;
-  accent-color:#15803D;
+  accent-color:var(--color-action-primary);
 }
 
 /* браузерный :invalid не подсвечиваем постоянно */
@@ -2824,7 +2824,7 @@ body.lightbox-open{
 }
 #calc .presets .tag:hover{ transform:translateY(-1px); border-color:#B9E0D1; background:#F2FAF6; color:#146C43; }
 #calc .presets .tag:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
   border-color:#B9E0D1;
 }
@@ -2902,7 +2902,7 @@ body.lightbox-open{
 #calc .cta-bottom-wrap{ margin-top:18px; }
 #calc .share-link{ flex:0 0 auto; }
 #calc .share-link:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:3px;
   border-radius:6px;
 }
@@ -2951,10 +2951,10 @@ body.lightbox-open{
 }
 #calc input[type="checkbox"]{
   appearance:auto !important; -webkit-appearance:auto !important; -moz-appearance:auto !important;
-  width:14px; height:14px; accent-color:#15803D; cursor:pointer;
+  width:14px; height:14px; accent-color:var(--color-action-primary); cursor:pointer;
 }
 #calc input[type="checkbox"]:focus-visible{
-  outline:2px solid #78c6a7;
+  outline:2px solid var(--color-focus-outline);
   outline-offset:2px;
 }
 #calc .subcheck:has(input:checked),
