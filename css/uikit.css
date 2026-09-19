@@ -129,21 +129,21 @@ body{
 h1, .h1{
   max-width: 22ch;   
   font-weight: 700;
-  color: var(--neutral-900);
+  color: var(--color-text-strong);
     letter-spacing: -0.015em; 
   line-height: 1.08;
   margin: 0 0 var(--space-8);
   font-size: clamp(40px, 4.4vw, 64px);
 }
 h2, .h2{
-  font-weight: 800; color: var(--neutral-900);
+  font-weight: 800; color: var(--color-text-strong);
   font-size: clamp(22px, 2.6vw, 28px);
   line-height: 1.22;
   margin-top: var(--space-12);
   margin-bottom: var(--h2-gap); 
 }
 h3, .h3{
-  font-weight: 700; color: var(--neutral-900);
+  font-weight: 700; color: var(--color-text-strong);
   font-size: clamp(18px, 2vw, 20px);
   line-height: 1.25;
   margin: var(--space-6) 0 var(--space-3);
@@ -151,25 +151,25 @@ h3, .h3{
 
 /* Параграф, мелкий текст */
 p{ margin: 0 0 var(--space-4); }
-.small{ font-size: .875rem; color: var(--neutral-600); }
+.small{ font-size: .875rem; color: var(--color-text-secondary); }
 
 
 /* ===================== Ссылки ===================== */
 a{
-  color: var(--brand);
+  color: var(--color-link);
   text-decoration: underline dotted;
   text-underline-offset: 2px;
   transition: color var(--trans-1), text-decoration-color var(--trans-1);
 }
 a:hover{
-  color: var(--primary-700);
+  color: var(--color-action-primary-hover);
   text-decoration-style: solid;
 }
 a:focus-visible{
   outline: 3px solid rgba(21,128,61,.28);
   outline-offset: 2px;
 }
-a[disabled], .link--muted{ color: var(--neutral-500); pointer-events:none; }
+a[disabled], .link--muted{ color: var(--color-text-muted); pointer-events:none; }
 
 
 /* ===================== Кнопки (UI Kit — чистовая версия) ===================== */
@@ -216,7 +216,7 @@ a[disabled], .link--muted{ color: var(--neutral-500); pointer-events:none; }
   --btn-brd: var(--primary-700);
   --btn-ink: var(--primary-700);
   background: transparent;
-  color: var(--primary-700);
+  color: var(--color-action-primary-hover);
 }
 
 .btn-outline{
@@ -231,7 +231,7 @@ a[disabled], .link--muted{ color: var(--neutral-500); pointer-events:none; }
   --btn-bg:  var(--primary);
   --btn-brd: var(--primary);
   --btn-ink: #fff;
-  background: var(--primary);
+  background: var(--color-action-primary);
   color:#fff;
 }
 
@@ -302,14 +302,14 @@ input[type="checkbox"], input[type="radio"]{
 /* ===================== Бейджи / Чипы ===================== */
 .badge{
   display:inline-block; font-size:12px; line-height:1;
-  padding:4px 8px; border-radius:999px;
-  background: var(--primary-50);
-  border:1px solid #B9E0D1; color: var(--primary-700);
+  padding:4px 8px; border-radius:var(--radius-pill);
+  background: var(--color-action-primary-soft);
+  border:1px solid #B9E0D1; color: var(--color-action-primary-hover);
 }
 .tag{
   display:inline-block; font-size:14px; padding:6px 12px;
   border:1px solid var(--neutral-300);
-  border-radius: 999px; background:#fff; color: var(--neutral-800);
+  border-radius: var(--radius-pill); background:#fff; color: var(--neutral-800);
   transition: transform var(--trans-1), border-color var(--trans-1), background var(--trans-1);
 }
 .tag:hover{ transform: translateY(-1px); background: var(--neutral-100); }
@@ -354,7 +354,7 @@ input[type="checkbox"], input[type="radio"]{
   --btn-brd: var(--primary-700);
   --btn-ink: var(--primary-700);
   background: transparent;           /* на случай локальных переопределений */
-  color: var(--primary-700);
+  color: var(--color-action-primary-hover);
 }
 
 /* 2) OUTLINE (прозрачная) → hover как filled: зелёная заливка + белый текст */
@@ -363,7 +363,7 @@ input[type="checkbox"], input[type="radio"]{
   --btn-bg:  var(--primary);
   --btn-brd: var(--primary);
   --btn-ink: #fff;
-  background: var(--primary);
+  background: var(--color-action-primary);
   color: #fff;
 }
 
@@ -552,7 +552,7 @@ input[type="checkbox"], input[type="radio"]{
   height: 30px;
   padding: 0 10px;
   border: 1px solid #d9dee6;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: #fff;
   font: 500 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
   color: #0f172a;
