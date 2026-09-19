@@ -516,7 +516,7 @@ input[type="checkbox"], input[type="radio"]{
   border: 1px solid #d9dee6;
   border-radius: var(--radius-pill);
   background: #fff;
-  font: 500 14px/1.2 var(--font-sans);
+  font: 500 13px/1.2 var(--font-sans);
   color: #0f172a;
   white-space: nowrap;       /* внутри чипа не переносим строки */
   text-align: center;

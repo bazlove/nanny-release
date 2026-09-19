@@ -143,7 +143,7 @@ section{padding:64px 0}
 /* === Типографика и бейджи === */
 #top .hero-copy h1{
   margin:0 0 8px;
-  font-size:clamp(32px,3.6vw,52px);
+  font-size:clamp(32px,3.6vw,50px);
   line-height:1.08; letter-spacing:-0.01em;
   max-inline-size:26ch; text-wrap:balance; hyphens:auto;
 }
@@ -154,7 +154,7 @@ section{padding:64px 0}
 #top .hero-tags li{
   display:inline-flex; align-items:center; height:30px; gap:8px; margin:0;
   padding:0 10px; border:1px solid #d9dee6; border-radius:999px; background:#fff;
-  font-weight:500; font-size:14px; color:#0f172a;
+  font-weight:500; font-size:13px; color:#0f172a;
 }
 #top .hero-tags li::before{ content:attr(data-emoji); line-height:1; }
 
