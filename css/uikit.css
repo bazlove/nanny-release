@@ -462,9 +462,9 @@ input[type="checkbox"], input[type="radio"]{
       чтобы держаться в 2 строки; добавляем фикс-зазор перед CTA */
 @media (min-width: 1280px) and (max-width: 1600px){
   #top .hero-copy h1{
-    /* меньше кегль + шире измеритель строки → чаще 2 строки */
-    font-size: clamp(36px, 2.8vw, 52px);
-    max-inline-size: 30ch;
+    /* Onest шире прежнего шрифта: держим две сбалансированные строки. */
+    font-size: clamp(36px, 2.8vw, 48px);
+    max-inline-size: 32ch;
     line-height: 1.1;
   }
   /* небольшой предзазор от бейджей, даже если margin-top:auto не сработал */
@@ -474,9 +474,9 @@ input[type="checkbox"], input[type="radio"]{
 /* 2) Широкие десктопы ≥1600px: держим аккуратные 2 строки и не даём гигантского "провала" */
 @media (min-width: 1600.98px){
   #top .hero-copy h1{
-    /* чуть уже колонка текста — заголовок чаще балансируется в 2 строки */
-    max-inline-size: 24ch;
-    font-size: clamp(36px, 3.2vw, 52px);
+    /* На широком desktop сохраняем две строки без чрезмерного кегля. */
+    max-inline-size: 32ch;
+    font-size: clamp(36px, 3vw, 48px);
   }
   /* авто-прижим к низу уже есть, но ограничим верхний зазор, чтобы не «проваливалось» */
   #top .hero-copy .cta{ margin-top: clamp(16px, 2.5vh, 32px); }

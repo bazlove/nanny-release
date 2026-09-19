@@ -143,7 +143,7 @@ section{padding:64px 0}
 /* === Типографика и бейджи === */
 #top .hero-copy h1{
   margin:0 0 8px;
-  font-size:clamp(32px,3.6vw,50px);
+  font-size:clamp(32px,3.6vw,48px);
   line-height:1.08; letter-spacing:-0.01em;
   max-inline-size:26ch; text-wrap:balance; hyphens:auto;
 }
@@ -1355,7 +1355,7 @@ select:focus{
   display:inline-flex; align-items:center; gap:6px;
   padding:6px 10px; border-radius:999px;
   background:#eaf7f0; color:#1f5a47; border:1px solid #b7dbc9;
-  font-size:.9rem; line-height:1; position:relative; overflow:visible;
+  font-size:13px; line-height:1; position:relative; overflow:visible;
   text-decoration:none;
 }
 .avail-badge:hover{ background:#def2e7; }
