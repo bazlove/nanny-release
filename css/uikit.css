@@ -1037,24 +1037,19 @@ input[type="checkbox"], input[type="radio"]{
     overflow: hidden;
   }
 
-  /* 4) Сам ротатор — два слоя поверх друг друга, а не в потоке */
-  #top .hero-visual .hero-social #quoteRotator{
-    position: relative;
-    display: block;
-    height: 1.4em;             /* фиксируем «этаж» */
-    overflow: hidden;
-  }
-  #top .hero-visual .hero-social #quoteRotator > *{
-    position: absolute !important;  /* перекрываем position:static */
+  /* 4) Два quote-слоя управляются единым JS-ротатором */
+  #top .hero-visual .hero-social .quote-wrap .quote{
+    position: absolute !important;
     inset: 0;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;        /* обрезка с троеточием */
-  }
-
-  #top .hero-visual .hero-social #quoteRotator .quote{
-    animation: none !important;           /* на всякий случай */
+    text-overflow: ellipsis;
+    opacity: 0;
+    animation: none !important;
     transition: opacity 240ms ease 0s !important;
+  }
+  #top .hero-visual .hero-social .quote-wrap .quote.is-active{
+    opacity: .9;
   }
   
   /* 5) Если под строкой есть дублирующий параграф — спрячем (дать ему класс .hero-usp) */

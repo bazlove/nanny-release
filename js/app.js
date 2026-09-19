@@ -1,7 +1,6 @@
 /* ===== Legacy stubs ===== */
 window.initSlots        = window.initSlots        || function(){ /* no-op: slots стартуют сами */ };
 window.initHeroSlider   = window.initHeroSlider   || function(){ /* no-op: слайдер убрали */ };
-window.initQuoteRotator = window.initQuoteRotator || function(){ /* no-op: ротатор работает IIFE */ };
 
 // helpers
 const $  = (sel, root=document) => root.querySelector(sel);
@@ -97,6 +96,10 @@ document.addEventListener('copy', function (e) {
       btn_slots:'Проверить свободные слоты',
       hero_calc:'Рассчитать цену за 1 минуту',
       hero_read_reviews:'Читать отзывы родителей',
+      hero_quote_1:'«всегда вовремя, ребёнок спокоен»',
+      hero_quote_2:'«без экранов, безопасность и дисциплина»',
+      hero_quote_3:'«всегда на связи, фото после визита»',
+      hero_quote_4:'«мягкая адаптация, поддержание распорядка»',
 
       /* SERVICES */
       services_title:'Услуги',
@@ -160,6 +163,8 @@ document.addEventListener('copy', function (e) {
       slots_badge_next:'Ближайший слот: {date} | {t1}–{t2}',
       slots_badge_none:'Свободно: по запросу',
       slots_btn_request:'Запросить',
+      slots_error:'Слоты временно недоступны. Напишите мне.',
+      slots_prefill_available:'{date} · доступно {time}',
 
       /* CALC */
       calc_title:'Калькулятор стоимости (Нови-Сад)',
@@ -226,6 +231,7 @@ document.addEventListener('copy', function (e) {
       faq_a_cancel_2:'Отмена менее чем за 1 час - полная стоимость от предполагаемого времени заказа.',
       faq_a_cancel_3:'Если по инициативе родителей заказ заканчивается раньше - стоимость заказа не уменьшается.',
       faq_copy_link_title:'Скопировать ссылку на вопрос',
+      faq_copy_copied:'Ссылка на вопрос скопирована',
 
       /* CONTACT */
       contact_title:'Свяжитесь со мной',
@@ -288,6 +294,10 @@ document.addEventListener('copy', function (e) {
       btn_slots:'Proverite slobodne termine',
       hero_calc:'Izračunajte cenu za 1 minut',
       hero_read_reviews:'Pročitajte utiske roditelja',
+      hero_quote_1:'«uvek na vreme, dete je spokojno»',
+      hero_quote_2:'«bez ekrana, bezbednost i disciplina»',
+      hero_quote_3:'«uvek na vezi, fotografije posle posete»',
+      hero_quote_4:'«blaga adaptacija, održavanje rutine»',
 
       /* SERVICES */
       services_title:'Usluge',
@@ -350,6 +360,8 @@ document.addEventListener('copy', function (e) {
       slots_badge_next:'Najbliži termin: {date} | {t1}–{t2}',
       slots_badge_none:'Slobodno: na upit',
       slots_btn_request:'Zatraži',
+      slots_error:'Termini trenutno nisu dostupni. Pišite mi.',
+      slots_prefill_available:'{date} · dostupno {time}',
 
       /* CALC */
       calc_title:'Kalkulator cene (Novi Sad)',
@@ -413,6 +425,7 @@ document.addEventListener('copy', function (e) {
       faq_a_cancel_2:'Otkaz manje od 1 sata — puna cena planiranog termina.',
       faq_a_cancel_3:'Ako po inicijativi roditelja narudžbina se završi ranije - cena se ne umanjuje.',
       faq_copy_link_title:'Kopirati link na pitanje',
+      faq_copy_copied:'Link ka pitanju je kopiran',
 
       /* CONTACT */
       contact_title:'Kontaktirajte me',
@@ -704,6 +717,19 @@ const SlotBusinessTime = (() => {
   }
   const timeLabel  = s => `${safeStart(s)}–${safeEnd(s)}`;
 
+  // Availability rule: a slot is requestable only before it starts.
+  // Keep one normalized source of truth for grid, badge and contact autofill.
+  function normalizeFutureSlots(slots, now = Date.now()){
+    return (Array.isArray(slots) ? slots : [])
+      .filter(slot => {
+        const startTs = getStartTs(slot);
+        return Number.isFinite(startTs) && startTs > now;
+      })
+      .sort((a,b)=> getStartTs(a) - getStartTs(b));
+  }
+
+  let loadState = 'idle';
+
   /* ---------- badge helpers ---------- */
   const BADGE_SHORT_BP = '(max-width: 420px)';
   function normalizeBadgeText(fullText){
@@ -773,8 +799,7 @@ const SlotBusinessTime = (() => {
     const todayYMD = SlotBusinessTime.getBusinessTodayKey(now);
     const tomorrowYMD = SlotBusinessTime.getBusinessTomorrowKey(now);
 
-    const byStart = arr => arr.slice().sort((a,b)=> getStartTs(a)-getStartTs(b));
-    const future = byStart(list.filter(s => getStartTs(s) > now));
+    const future = list;
 
     const today = future.find(s => getSlotDateKey(s) === todayYMD);
     if (today){
@@ -799,39 +824,60 @@ const SlotBusinessTime = (() => {
   }
 
   // Для обратной совместимости — старые вызовы window.updateBadge(raw)
-  window.updateBadge = renderBadge;
+  window.updateBadge = raw => renderBadge(normalizeFutureSlots(raw));
 
   /* ---------- fetch ---------- */
+  function renderLoadState(){
+    if (loadState === 'loading') {
+      setBadge(t('hdr_badge_checking'), ['is-live']);
+      return;
+    }
+    if (loadState === 'error') {
+      if (wrap) wrap.innerHTML = `<p class="error">${t('slots_error')}</p>`;
+      setBadge(t('slots_badge_none'), ['is-none']);
+      return;
+    }
+    if (loadState === 'loaded' && Array.isArray(window.__freeSlots)) {
+      // Re-evaluate the requestability rule on every render so a cached slot
+      // cannot remain visible after its start time has passed.
+      const futureSlots = normalizeFutureSlots(window.__freeSlots);
+      window.__freeSlots = futureSlots;
+      renderBadge(futureSlots);
+      renderGrid(futureSlots);
+    }
+  }
+
   function fetchAndRender(){
-    const badge = document.querySelector('#headerFreeBadge');
-    const badgeText = badge?.querySelector('.avail-text');
-    if (badge && badgeText) setBadge(t('hdr_badge_checking'), ['is-live']);
+    loadState = 'loading';
+    renderLoadState();
 
     fetch(API_SLOTS_URL + '?t=' + Date.now(), { cache:'no-store', mode:'cors' })
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`Slots API HTTP ${r.status}`);
+        return r.json();
+      })
       .then(data => {
-        const list = Array.isArray(data?.slots) ? data.slots :
-                     Array.isArray(data) ? data : [];
-        window.__freeSlots = list;
-        renderBadge(list);
-        renderGrid(list);
+        const rawSlots = Array.isArray(data?.slots) ? data.slots :
+                         Array.isArray(data) ? data : [];
+        const futureSlots = normalizeFutureSlots(rawSlots);
+        window.__freeSlots = futureSlots;
+        loadState = 'loaded';
+        renderLoadState();
+        window.dispatchEvent(new CustomEvent('slots:loaded', {
+          detail: { slots: futureSlots }
+        }));
       })
       .catch(err => {
         console.warn('Slots API error:', err);
-        if (wrap) wrap.innerHTML = `<p class="error">Слоты временно недоступны. Напишите мне.</p>`;
-        setBadge(t('slots_badge_none'), ['is-none']);
+        window.__freeSlots = [];
+        loadState = 'error';
+        renderLoadState();
       });
   }
 
   /* ---------- react to i18n and resize ---------- */
-  window.addEventListener('i18nready', ()=>{
-    rerenderBadgeShort();
-    if (window.__freeSlots){ renderBadge(window.__freeSlots); renderGrid(window.__freeSlots); }
-  });
-  window.addEventListener('langchange', ()=>{
-    rerenderBadgeShort();
-    if (window.__freeSlots){ renderBadge(window.__freeSlots); renderGrid(window.__freeSlots); }
-  });
+  window.addEventListener('i18nready', renderLoadState);
+  window.addEventListener('langchange', renderLoadState);
   window.addEventListener('resize', rerenderBadgeShort);
 
   /* ---------- boot ---------- */
@@ -1178,7 +1224,8 @@ const SlotBusinessTime = (() => {
   const list = document.querySelector('.faq-list');
   if (!list) return;
 
-  const HEADER_OFFSET = 80; // ваш фикс-хедер (px). при необходимости поправьте
+  const status = document.getElementById('faq-copy-status');
+  const t = key => window.i18n?.t?.(key) ?? window.I18N?.ru?.[key] ?? key;
 
   function openItem(item, withScroll) {
     const btn   = item.querySelector('.faq-q');
@@ -1198,11 +1245,8 @@ const SlotBusinessTime = (() => {
     const target = inner ? inner.scrollHeight : panel.scrollHeight;
     panel.style.height = target + 'px';
 
-    // скроллим так, чтобы шапка вопроса была под фикс-хедером
-    if (withScroll) {
-      const y = item.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET - 6;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    // scroll-margin-top uses the live --header-h value set by the header module.
+    if (withScroll) item.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
   function closeItem(item) {
@@ -1240,23 +1284,17 @@ const SlotBusinessTime = (() => {
       if (btn.id) history.replaceState(null, '', '#' + btn.id);
     });
 
-    // клавиатура (Space / Enter)
-    btn.addEventListener('keydown', e => {
-      if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
-        e.preventDefault();
-        btn.click();
-      }
-    });
+    // Native <button> already handles Enter/Space.
 
     // копирование ссылки
-    copy?.addEventListener('click', e => {
-      e.stopPropagation();
+    copy?.addEventListener('click', () => {
       const hash = btn.id || item.id || '';
       const url  = location.origin + location.pathname + (hash ? '#' + hash : '');
       navigator.clipboard.writeText(url).then(() => {
         copy.classList.add('copied');
+        if (status) status.textContent = t('faq_copy_copied');
         setTimeout(() => copy.classList.remove('copied'), 1200);
-      });
+      }).catch(err => console.warn('FAQ link copy failed:', err));
     });
   });
 
@@ -1552,63 +1590,47 @@ const SlotBusinessTime = (() => {
     getContactLocale(),
     { weekday:'short', day:'2-digit', month:'2-digit' }
   );
+  const contactT = (key, params) => {
+    if (window.i18n?.t) return window.i18n.t(key, params);
+    const dict = window.I18N?.ru || {};
+    return String(dict[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => params?.[k] ?? '');
+  };
 
-  function getNearestSlotFromGlobal(){
-    // если на странице уже есть модуль слотов и он положил слоты глобально
-    const arr = Array.isArray(window.__freeSlots) ? window.__freeSlots : null;
-    if (!arr || !arr.length) return null;
-    const now = Date.now();
-    const sorted = arr
-      .filter(s => SlotBusinessTime.getStartTs(s) > now)
-      .sort((a,b)=> SlotBusinessTime.getStartTs(a) - SlotBusinessTime.getStartTs(b));
-    const s = sorted[0];
-    if (!s) return null;
-
-    const labelDay = formatSlotDay(SlotBusinessTime.getSlotDateKey(s));
-    const startText = s.startLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getStartTs(s), getContactLocale());
-    const endText = s.endLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getEndTs(s), getContactLocale());
-    return `${labelDay} · ${startText}–${endText}`;
+  function formatAvailabilityValue(slot){
+    if (!slot) return null;
+    const date = formatSlotDay(SlotBusinessTime.getSlotDateKey(slot));
+    const startText = slot.startLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getStartTs(slot), getContactLocale());
+    const endText = slot.endLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getEndTs(slot), getContactLocale());
+    if (!date || !startText || !endText) return null;
+    return contactT('slots_prefill_available', { date, time: `${startText}–${endText}` });
   }
 
-  function getNearestSlotFromBadge(){
-    const b = document.querySelector('#headerFreeBadge');
-    if (!b) return null;
-    const t = b.textContent.toLowerCase().trim();
-    // варианты:
-    // «Свободно сегодня 09:00–16:00»
-    // «Свободно завтра 09:00–16:00»
-    // «Ближайший слот: вт, 14.10 • 09:00–16:00»
-    const timeRange = (t.match(/\b(\d{2}:\d{2}–\d{2}:\d{2})\b/)||[])[1];
-
-    if (t.includes('сегодня') && timeRange){
-      return `${formatSlotDay(SlotBusinessTime.getBusinessTodayKey())} · ${timeRange}`;
+  function autofillPreferredTime(slots = window.__freeSlots){
+    if (!timeInput || timeInput.value.trim()) return; // не перезаписываем ввод пользователя
+    const arr = Array.isArray(slots) ? slots : [];
+    const nearest = arr[0]; // slots module already normalizes and sorts the shared state
+    const label = formatAvailabilityValue(nearest);
+    if (label) {
+      timeInput.value = label;
+      timeInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
-    if (t.includes('завтра') && timeRange){
-      return `${formatSlotDay(SlotBusinessTime.getBusinessTomorrowKey())} · ${timeRange}`;
-    }
-    // «вт, 14.10 • 09:00–16:00»
-    const day = (t.match(/([а-я]{2},?\s*\d{1,2}\.\d{1,2})/)||[])[1];
-    if (day && timeRange){
-      // приводим «вт, 14.10» → «вт, 14.10»
-      return `${day.replace(/\s+/g,' ')} · ${timeRange}`;
-    }
-    return null;
   }
 
-  function autofillPreferredTime(){
-    if (!timeInput || timeInput.value.trim()) return; // уже заполнено вручную
-    let label = getNearestSlotFromGlobal();
-    if (!label) label = getNearestSlotFromBadge();
-    if (label) timeInput.value = label;
-  }
-
-  // пробуем сразу и после макро-тика (на случай, если модуль слотов подложит данные асинхронно)
+  // Если данные уже есть — используем их сразу. Для async load ждём явное событие.
   autofillPreferredTime();
-  setTimeout(autofillPreferredTime, 600);
+  window.addEventListener('slots:loaded', (event) => {
+    autofillPreferredTime(event.detail?.slots);
+  });
 })();
 
 // === Клик по "Запросить" в карточке слота → заполнить форму и проскроллить к ней
 (function attachSlotPrefill(){
+  const t = (key, params) => {
+    if (window.i18n?.t) return window.i18n.t(key, params);
+    const dict = window.I18N?.ru || {};
+    return String(dict[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => params?.[k] ?? '');
+  };
+
   document.addEventListener('click', (ev) => {
     const btn = ev.target.closest('.slot-cta');
     if (!btn) return;
@@ -1621,8 +1643,10 @@ const SlotBusinessTime = (() => {
     const timeTxt = (card.querySelector('.slot-time')?.textContent || '').trim();
     if (!dateTxt && !timeTxt) return;
 
-    // Строка для поля
-    const wishValue = [dateTxt, timeTxt].filter(Boolean).join(' • ');
+    // Availability range, not a request for the whole interval.
+    const wishValue = dateTxt && timeTxt
+      ? t('slots_prefill_available', { date: dateTxt, time: timeTxt })
+      : [dateTxt, timeTxt].filter(Boolean).join(' · ');
 
     // Находим поле «Желаемая дата/время»
     const wishInput =
@@ -1654,24 +1678,16 @@ const SlotBusinessTime = (() => {
 
 // ===== Hero: ротатор без рефлоу (двухслойный кросс-фейд) =====
 
-(function normalizeHeroQuote(){
-  const r = document.getElementById('quoteRotator');
-  if (!r) return;
-  r.innerHTML = r.innerHTML.replace(/\s*<br\s*\/?>\s*/gi, ' ');
-})();
-
-(function initQuoteRotator(){
+(function initHeroQuoteRotator(){
   const el = document.getElementById('quoteRotator');
   if (!el) return;
 
-  const quotes = [
-    '«всегда вовремя, ребёнок спокоен»',
-    '«без экранов, безопасность и дисциплина»',
-    '«всегда на связи, фото после визита»',
-    '«мягкая адаптация, поддержание распорядка»'
-  ];
+  const quoteKeys = ['hero_quote_1','hero_quote_2','hero_quote_3','hero_quote_4'];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const INTERVAL_MS = 7000;
+  const t = key => window.i18n?.t?.(key) ?? window.I18N?.ru?.[key] ?? key;
 
-  // Гарантируем обёртку фиксированной высоты
+  // Keep the existing two-layer cross-fade, but with one owner and one timer.
   let wrap = el.closest('.quote-wrap');
   if (!wrap) {
     wrap = document.createElement('span');
@@ -1680,10 +1696,9 @@ const SlotBusinessTime = (() => {
     wrap.appendChild(el);
   }
 
-  // Два слоя: видимый + скрытый
   const a = el;
+  a.innerHTML = a.innerHTML.replace(/\s*<br\s*\/?>\s*/gi, ' ');
   a.classList.add('quote', 'is-active');
-  a.textContent = quotes[0];
 
   const b = a.cloneNode(true);
   b.removeAttribute('id');
@@ -1691,14 +1706,70 @@ const SlotBusinessTime = (() => {
   b.setAttribute('aria-hidden','true');
   wrap.appendChild(b);
 
-  let i = 0, visible = a, hidden = b;
-  setInterval(() => {
-    i = (i + 1) % quotes.length;
-    hidden.textContent = quotes[i];
+  let index = 0;
+  let visible = a;
+  let hidden = b;
+  let timer = null;
+
+  function renderCurrent(){
+    visible.textContent = t(quoteKeys[index]);
+    hidden.textContent = t(quoteKeys[(index + 1) % quoteKeys.length]);
+  }
+
+  function showStableFirst(){
+    index = 0;
+    visible = a;
+    hidden = b;
+    a.textContent = t(quoteKeys[0]);
+    b.textContent = t(quoteKeys[1]);
+    a.classList.add('is-active');
+    b.classList.remove('is-active');
+  }
+
+  function advance(){
+    index = (index + 1) % quoteKeys.length;
+    hidden.textContent = t(quoteKeys[index]);
     visible.classList.remove('is-active');
     hidden.classList.add('is-active');
     [visible, hidden] = [hidden, visible];
-  }, 7000);
+    hidden.textContent = t(quoteKeys[(index + 1) % quoteKeys.length]);
+  }
+
+  function stopTimer(){
+    if (timer !== null) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function startTimer(){
+    if (timer !== null || reduceMotion.matches || document.visibilityState === 'hidden') return;
+    timer = setInterval(advance, INTERVAL_MS);
+  }
+
+  function syncMotion(){
+    stopTimer();
+    if (reduceMotion.matches) {
+      showStableFirst();
+      return;
+    }
+    renderCurrent();
+    startTimer();
+  }
+
+  window.addEventListener('langchange', () => {
+    if (reduceMotion.matches) showStableFirst();
+    else renderCurrent();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') stopTimer();
+    else startTimer();
+  });
+  if (typeof reduceMotion.addEventListener === 'function') reduceMotion.addEventListener('change', syncMotion);
+  else if (typeof reduceMotion.addListener === 'function') reduceMotion.addListener(syncMotion);
+
+  showStableFirst();
+  startTimer();
 })();
 
 (function fixHeroSocialSep(){
@@ -1780,11 +1851,15 @@ const SlotBusinessTime = (() => {
   );
 
   // Утилиты
-  const firstFocusable = () =>
-    mnav.querySelector('a,button,[tabindex]:not([tabindex="-1"])');
+  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const focusables = () => Array.from(mnav.querySelectorAll(FOCUSABLE))
+    .filter(el => el.tabIndex >= 0 && el.getAttribute('aria-hidden') !== 'true');
+  const initialFocusable = () => mnav.querySelector('.nav-links a') || focusables()[0] || null;
   const isOpen = () => mnav.classList.contains('is-open');
+  let menuOpener = null;
 
   function openMenu(){
+    menuOpener = document.activeElement instanceof HTMLElement ? document.activeElement : burger;
     setHeaderHeightVar();              // на всякий случай перед открытием
     mnav.hidden = false;
     mnav.setAttribute('aria-hidden','false');
@@ -1793,20 +1868,27 @@ const SlotBusinessTime = (() => {
     burger.classList.add('is-open');
     burger.setAttribute('aria-expanded','true');
 
-    const f = firstFocusable();
+    const f = initialFocusable();
     if (f) { try { f.focus({preventScroll:true}); } catch(_){} }
   }
 
-  function closeMenu(){
+  function closeMenu({ restoreFocus = true } = {}){
     mnav.classList.remove('is-open');
     document.body.classList.remove('nav-open');
     burger.classList.remove('is-open');
     burger.setAttribute('aria-expanded','false');
 
+    let tidied = false;
     const tidy = () => {
+      if (tidied || isOpen()) return;
+      tidied = true;
       mnav.hidden = true;
       mnav.setAttribute('aria-hidden','true');
       mnav.removeEventListener('transitionend', tidy);
+      if (restoreFocus && menuOpener?.isConnected) {
+        try { menuOpener.focus({preventScroll:true}); } catch(_){}
+      }
+      menuOpener = null;
     };
     mnav.addEventListener('transitionend', tidy);
     setTimeout(tidy, TRANSITION_MS + 50); // fallback
@@ -1825,12 +1907,34 @@ const SlotBusinessTime = (() => {
   // Закрыть по ссылке внутри панели
   const links = mnav.querySelector('.nav-links');
   if (links) links.addEventListener('click', (e) => {
-    if (e.target.closest('a')) closeMenu();
+    if (e.target.closest('a')) closeMenu({ restoreFocus:false });
   });
 
-  // ESC
+  // ESC + basic focus trap
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) closeMenu();
+    if (!isOpen()) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeMenu();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+
+    const items = focusables();
+    if (!items.length) {
+      e.preventDefault();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === first || !mnav.contains(active))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (active === last || !mnav.contains(active))) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   // Автозакрытие при расширении экрана > tablet (возврат к десктоп-меню)
@@ -1839,7 +1943,7 @@ const SlotBusinessTime = (() => {
     const w = innerWidth;
     if (w !== lastW){
       lastW = w;
-      if (w > TABLET_BP && isOpen()) closeMenu();
+      if (w > TABLET_BP && isOpen()) closeMenu({ restoreFocus:false });
       setHeaderHeightVar();
     }
   });
@@ -1921,89 +2025,6 @@ const SlotBusinessTime = (() => {
 
 
 
-/* === HERO: tablet quote rotator v3 (rAF clock, precise 3.5s) === */
-(function tabletQuoteRotatorV3() {
-  const host = document.querySelector('#top .hero-visual .hero-social #quoteRotator');
-  if (!host) return;
-
-  const mq = window.matchMedia('(min-width: 641px) and (max-width: 1024px)');
-  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const INTERVAL = REDUCED ? 7000 : 3500; // целевой интервал
-
-  // 1) Собираем фразы
-  function collect() {
-    let list = Array.from(host.querySelectorAll('.quote,[data-quote]'))
-      .map(el => el.textContent.trim()).filter(Boolean);
-    if (list.length <= 1) {
-      const backup = document.querySelectorAll('#top .hero-visual .hero-usp em, #top .hero-visual .hero-usp i');
-      list = Array.from(backup).map(el => el.textContent.trim()).filter(Boolean);
-    }
-    return Array.from(new Set(list));
-  }
-  const phrases = collect();
-  if (phrases.length <= 1) return;
-
-  // 2) Перестраиваем контейнер под один слой
-  host.textContent = '';
-  const node = document.createElement('span');
-  node.className = 'quote';
-  host.appendChild(node);
-
-  // срезаем любые унаследованные анимации
-  host.style.animation = 'none';
-  node.style.animation = 'none';
-  Object.assign(node.style, {
-    display: 'inline-block',
-    opacity: '0',
-    transition: 'opacity 240ms ease 0s'
-  });
-
-  // 3) Тик на rAF
-  let idx = 0, raf = null, running = false, nextAt = 0;
-
-  function render(i) {
-    node.style.opacity = '0';
-    void node.offsetWidth;              // рефлоу
-    node.textContent = phrases[i];
-    node.style.opacity = '1';
-  }
-
-  function tick(now) {
-    if (!running) return;
-    if (now >= nextAt) {
-      idx = (idx + 1) % phrases.length;
-      render(idx);
-      nextAt += INTERVAL;
-    }
-    raf = requestAnimationFrame(tick);
-  }
-
-  function start() {
-    if (running || !mq.matches) return;
-    running = true;
-    render(idx);
-    nextAt = performance.now() + INTERVAL;
-    raf = requestAnimationFrame(tick);
-  }
-
-  function stop() {
-    running = false;
-    if (raf) { cancelAnimationFrame(raf); raf = null; }
-  }
-
-  // Пауза вне экрана / при смене брейкпоинта / при скрытии вкладки
-  const io = new IntersectionObserver(es => (es[0]?.isIntersecting ? start() : stop()), {threshold: 0.01});
-  io.observe(host);
-  document.addEventListener('visibilitychange', () => (document.visibilityState === 'visible' ? start() : stop()));
-  mq.addEventListener('change', () => { stop(); start(); });
-
-  // Нормализуем случайные <br> внутри цитат
-  host.innerHTML = host.innerHTML.replace(/\s*<br\s*\/?>\s*/gi, ' ');
-})();
-
-
-
-
 /* ===== Cookie Banner logic (Consent Mode v2 ready) ===== */
 (function(){
   const LS_KEY = 'cookieConsent:v1';
@@ -2076,30 +2097,68 @@ const SlotBusinessTime = (() => {
   }
 
   // UI control
+  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  let modalOpener = null;
+  let restoreBannerOnClose = false;
+
+  const modalFocusables = () => Array.from(els.modal?.querySelectorAll(FOCUSABLE) || [])
+    .filter(el => el.tabIndex >= 0 && el.getAttribute('aria-hidden') !== 'true');
+  const canRestoreFocus = el => {
+    if (!el?.isConnected || el.closest('[hidden]')) return false;
+    const style = getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden' && el.getClientRects().length > 0;
+  };
+  const getPersistentCookieTrigger = () => document.querySelector('.js-cookie-open');
+
   function openModal(){
+    if (!els.modal?.hidden) return; // avoid double-open from overlapping click handlers
+    modalOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    restoreBannerOnClose = !!(els.banner && !els.banner.hidden);
     els.modal.hidden = false;
     els.banner.hidden = true;
     const saved = read()||{};
     if (els.ana) els.ana.checked = !!saved.analytics;
     if (els.mkt) els.mkt.checked = !!saved.marketing;
+    const first = els.btnClose || modalFocusables()[0];
+    if (first) { try { first.focus({preventScroll:true}); } catch(_){} }
   }
-  function closeModal(){ els.modal.hidden = true; }
+
+  function closeModal({ restoreFocus = true, restoreBanner = true, fallback = null } = {}){
+    if (els.modal.hidden) return;
+    els.modal.hidden = true;
+    if (restoreBanner && restoreBannerOnClose && els.banner) els.banner.hidden = false;
+    if (restoreFocus) {
+      const target = canRestoreFocus(modalOpener) ? modalOpener : (canRestoreFocus(fallback) ? fallback : null);
+      if (target) { try { target.focus({preventScroll:true}); } catch(_){} }
+    }
+    modalOpener = null;
+    restoreBannerOnClose = false;
+  }
 
   function acceptAll(){
+    const modalWasOpen = !els.modal.hidden;
     write({ necessary:true, analytics:true, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
+    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:getPersistentCookieTrigger() });
   }
   function onlyNecessary(){
+    const modalWasOpen = !els.modal.hidden;
     write({ necessary:true, analytics:false, marketing:false });
     els.banner.hidden = true; els.manage.hidden = false;
+    if (modalWasOpen) closeModal({ restoreBanner:false, fallback:getPersistentCookieTrigger() });
   }
   function saveSelection(){
     write({ necessary:true, analytics: !!els.ana?.checked, marketing:false });
-    closeModal(); els.banner.hidden = true; els.manage.hidden = false;
+    els.banner.hidden = true; els.manage.hidden = false;
+    closeModal({ restoreBanner:false, fallback:getPersistentCookieTrigger() });
   }
 
   // Events
-  els.btnSettings?.addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
+  els.btnSettings?.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    openModal();
+  });
   els.btnNecessary?.addEventListener('click', onlyNecessary);
   els.btnAccept?.addEventListener('click', acceptAll);
 
@@ -2109,12 +2168,34 @@ const SlotBusinessTime = (() => {
   els.btnSaveNec?.addEventListener('click', onlyNecessary);
   els.manage?.addEventListener('click', openModal);
 
-  // Закрытие кликом по фону и по Esc
+  // Закрытие кликом по фону, Esc и basic focus trap
   els.modal?.addEventListener('click', (e)=>{
     if (e.target === els.modal) closeModal();
   });
   document.addEventListener('keydown', (e)=>{
-    if (e.key === 'Escape' && !els.modal.hidden) closeModal();
+    if (els.modal.hidden) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModal();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+
+    const items = modalFocusables();
+    if (!items.length) {
+      e.preventDefault();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === first || !els.modal.contains(active))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (active === last || !els.modal.contains(active))) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   // Первичная инициализация UI

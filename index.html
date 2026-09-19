@@ -149,8 +149,6 @@
 
 	<body>
   
-	<a class="skip-link" href="#main">Пропустить меню и перейти к содержанию</a>
-	
 <header class="site-header">
   <a class="skip-link i18n" data-key="hdr_skip_link" href="#main">Пропустить меню и перейти к содержанию</a>
 
@@ -753,23 +751,22 @@
 <section id="faq" class="faq" aria-labelledby="faq-title">
   <div class="container">
     <h2 id="faq-title" class="faq-title i18n" data-key="faq_title">Ответы на частые вопросы</h2>
+    <p id="faq-copy-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
 
     <ul class="faq-list" role="list">
       <!-- 1 -->
       <li class="faq-item" id="faq-meet">
         <button class="faq-q" id="q-meet" aria-expanded="false" aria-controls="a-meet">
           <span class="faq-q__text i18n" data-key="faq_q_meet">Как происходит знакомство?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-meet" role="region" aria-labelledby="q-meet">
           <div class="faq-a__inner">
             <ul>
@@ -785,17 +782,15 @@
       <li class="faq-item" id="faq-price">
         <button class="faq-q" id="q-price" aria-expanded="false" aria-controls="a-price">
           <span class="faq-q__text i18n" data-key="faq_q_price">Сколько стоит услуга?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-price" role="region" aria-labelledby="q-price">
           <div class="faq-a__inner">
             <ul>
@@ -811,17 +806,15 @@
       <li class="faq-item" id="faq-documents">
         <button class="faq-q" id="q-documents" aria-expanded="false" aria-controls="a-documents">
           <span class="faq-q__text i18n" data-key="faq_q_docs">Какие документы вы предоставляете?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-documents" role="region" aria-labelledby="q-documents">
           <div class="faq-a__inner">
             <p class="i18n" data-key="faq_a_docs_intro">По запросу на первой встрече показываю оригиналы:</p>
@@ -842,17 +835,15 @@
       <li class="faq-item" id="faq-delay">
         <button class="faq-q" id="q-delay" aria-expanded="false" aria-controls="a-delay">
           <span class="faq-q__text i18n" data-key="faq_q_delay">Что если родитель задерживается?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-delay" role="region" aria-labelledby="q-delay">
           <div class="faq-a__inner">
             <ul>
@@ -868,17 +859,15 @@
       <li class="faq-item" id="faq-pets">
         <button class="faq-q" id="q-pets" aria-expanded="false" aria-controls="a-pets">
           <span class="faq-q__text i18n" data-key="faq_q_pets">Как вы относитесь к домашним животным?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-pets" role="region" aria-labelledby="q-pets">
           <div class="faq-a__inner">
             <p class="i18n" data-key="faq_a_pets">Хорошо отношусь к домашним животным. Если ваши питомцы не рады гостям - для комфорта всем лучше, чтобы они были в отдельной комнате/зоне.</p>
@@ -890,17 +879,15 @@
       <li class="faq-item" id="faq-terms">
         <button class="faq-q" id="q-terms" aria-expanded="false" aria-controls="a-terms">
           <span class="faq-q__text i18n" data-key="faq_q_terms">Какие условия для сотрудничества?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-terms" role="region" aria-labelledby="q-terms">
           <div class="faq-a__inner">
             <p class="i18n" data-key="faq_a_terms">Я не сижу с заболевшим ребёнком (температура, признаки ОРВИ, сыпь, тошнота/рвота). О любых травмах или болезнях прошу сообщать заранее. При отсутствии достоверной информации оставляю за собой право прекратить сотрудничество.</p>
@@ -912,17 +899,15 @@
       <li class="faq-item" id="faq-taxi">
         <button class="faq-q" id="q-taxi" aria-expanded="false" aria-controls="a-taxi">
           <span class="faq-q__text i18n" data-key="faq_q_taxi">Какие условия компенсации проезда?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-taxi" role="region" aria-labelledby="q-taxi">
           <div class="faq-a__inner">
             <p class="i18n" data-key="faq_a_taxi">🚕 Если заказ начинается до 9:00 или заканчивается после 21:00, а также если дорога занимает более 30 минут, то прошу компенсировать расходы на такси от/до дома.</p>
@@ -934,17 +919,15 @@
       <li class="faq-item" id="faq-cancel">
         <button class="faq-q" id="q-cancel" aria-expanded="false" aria-controls="a-cancel">
           <span class="faq-q__text i18n" data-key="faq_q_cancel">Какие условия отмены?</span>
-          <span class="faq-q__actions">
-            <span
-              class="faq-q__copy i18n-attr"
-              title="Скопировать ссылку на вопрос"
-              data-key="faq_copy_link_title"
-              data-i18n-attr="title"
-              aria-hidden="true"
-            ></span>
-            <span class="faq-q__chev" aria-hidden="true"></span>
-          </span>
+          <span class="faq-q__chev" aria-hidden="true"></span>
         </button>
+        <button
+          type="button"
+          class="faq-q__copy i18n-attr"
+          aria-label="Скопировать ссылку на вопрос"
+          data-key="faq_copy_link_title"
+          data-i18n-attr="aria-label"
+        ></button>
         <div class="faq-a" id="a-cancel" role="region" aria-labelledby="q-cancel">
           <div class="faq-a__inner">
             <ul>
