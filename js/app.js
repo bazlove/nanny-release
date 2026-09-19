@@ -2,6 +2,101 @@
 window.initSlots        = window.initSlots        || function(){ /* no-op: slots стартуют сами */ };
 window.initHeroSlider   = window.initHeroSlider   || function(){ /* no-op: слайдер убрали */ };
 
+// ===== Unified request state =====
+(function initRequestState(){
+  const createInitialState = () => ({
+    version: 1,
+    availability: {
+      date: null,
+      ranges: []
+    },
+    calculator: {
+      used: false,
+      hours: null,
+      kids: null,
+      dayType: null,
+      extras: {
+        food: false,
+        cleaning: false,
+        fitness: false
+      }
+    },
+    pricing: {
+      hourlyRate: null,
+      extrasTotal: 0,
+      estimatedTotal: null
+    }
+  });
+
+  const clone = value => {
+    try {
+      if (typeof structuredClone === 'function') return structuredClone(value);
+    } catch (_) {}
+    return JSON.parse(JSON.stringify(value));
+  };
+
+  function mergeState(base, patch){
+    if (!patch || typeof patch !== 'object' || Array.isArray(patch)) return patch;
+
+    const next = { ...base };
+    Object.entries(patch).forEach(([key, value]) => {
+      const current = base?.[key];
+      if (
+        value &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        current &&
+        typeof current === 'object' &&
+        !Array.isArray(current)
+      ) {
+        next[key] = mergeState(current, value);
+      } else {
+        next[key] = value;
+      }
+    });
+    return next;
+  }
+
+  let state = createInitialState();
+
+  function emit(meta = {}){
+    window.dispatchEvent(new CustomEvent('requeststate:change', {
+      detail: {
+        ...meta,
+        state: clone(state)
+      }
+    }));
+  }
+
+  window.RequestState = {
+    get(){
+      return clone(state);
+    },
+
+    patch(partial, meta = {}){
+      state = mergeState(state, partial || {});
+      emit({ source: 'patch', ...meta });
+      return clone(state);
+    },
+
+    reset(meta = {}){
+      state = createInitialState();
+      emit({ source: 'reset', ...meta });
+      return clone(state);
+    },
+
+    subscribe(handler){
+      if (typeof handler !== 'function') return () => {};
+      const listener = event => {
+        const detail = event.detail || {};
+        handler(clone(detail.state || state), detail);
+      };
+      window.addEventListener('requeststate:change', listener);
+      return () => window.removeEventListener('requeststate:change', listener);
+    }
+  };
+})();
+
 // helpers
 const $  = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
@@ -774,7 +869,7 @@ const SlotBusinessTime = (() => {
 
   const makeTimesLine = items => items.map(s => `${safeStart(s)}–${safeEnd(s)}`).join(', ');
   const cardHTML = (date, items)=> `
-    <article class="slot-card">
+    <article class="slot-card" data-slot-date="${date}">
       <div class="slot-date">${fmtDay(date)}</div>
       <div class="slot-time">${makeTimesLine(items)}</div>
       <a class="btn btn-outline btn-lg slot-cta" href="#contact">${t('slots_btn_request')}</a>
@@ -1534,7 +1629,7 @@ const SlotBusinessTime = (() => {
 
 
 
-/* === PHONE MASK & AUTOFILL NEAREST SLOT ============= */
+/* === PHONE MASK & REQUEST-AWARE SLOT PREFILL ============= */
 (function contactEnhance(){
   const phoneInput = document.getElementById('ccontact');
   const timeInput  = document.getElementById('ctime');
@@ -1568,12 +1663,11 @@ const SlotBusinessTime = (() => {
     return out;
   }
 
-  function maybeMaskPhone(e){
+  function maybeMaskPhone(){
     if (!phoneInput) return;
     const v = phoneInput.value.trim();
     // Маску применяем, когда пользователь печатает цифры/плюс (а не, например, @username)
     if (/^[+\d][\d\s()-]*$/.test(v)) {
-      const caretEnd = phoneInput.selectionEnd;
       phoneInput.value = formatSerbiaPhone(v);
       // упрощённо: ставим курсор в конец (хватает для большинства кейсов)
       phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
@@ -1583,12 +1677,12 @@ const SlotBusinessTime = (() => {
   phoneInput?.addEventListener('input', maybeMaskPhone);
   phoneInput?.addEventListener('blur',  maybeMaskPhone);
 
-  /* ---------- 2) Автозаполнение «Желаемой даты/времени» ближайшим слотом ---------- */
+  /* ---------- 2) Availability formatting from structured data ---------- */
   const getContactLocale = () => (window.i18n && window.i18n.locale) || 'ru-RU';
   const formatSlotDay = ymd => SlotBusinessTime.formatBusinessDate(
     ymd,
     getContactLocale(),
-    { weekday:'short', day:'2-digit', month:'2-digit' }
+    { day:'numeric', month:'long' }
   );
   const contactT = (key, params) => {
     if (window.i18n?.t) return window.i18n.t(key, params);
@@ -1596,82 +1690,168 @@ const SlotBusinessTime = (() => {
     return String(dict[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => params?.[k] ?? '');
   };
 
-  function formatAvailabilityValue(slot){
-    if (!slot) return null;
-    const date = formatSlotDay(SlotBusinessTime.getSlotDateKey(slot));
-    const startText = slot.startLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getStartTs(slot), getContactLocale());
-    const endText = slot.endLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getEndTs(slot), getContactLocale());
-    if (!date || !startText || !endText) return null;
-    return contactT('slots_prefill_available', { date, time: `${startText}–${endText}` });
+  function collectAvailabilityForDate(slots, dateKey, now = Date.now()){
+    if (!dateKey) return null;
+
+    const ranges = (Array.isArray(slots) ? slots : [])
+      .filter(slot => SlotBusinessTime.getSlotDateKey(slot) === dateKey)
+      .map(slot => ({
+        startTs: SlotBusinessTime.getStartTs(slot),
+        endTs: SlotBusinessTime.getEndTs(slot)
+      }))
+      .filter(range =>
+        Number.isFinite(range.startTs) &&
+        Number.isFinite(range.endTs) &&
+        range.startTs > now &&
+        range.endTs > range.startTs
+      )
+      .sort((a, b) => a.startTs - b.startTs);
+
+    return ranges.length ? { date: dateKey, ranges } : null;
+  }
+
+  function getNearestAvailability(slots = window.__freeSlots){
+    const now = Date.now();
+    const future = (Array.isArray(slots) ? slots : [])
+      .filter(slot => {
+        const startTs = SlotBusinessTime.getStartTs(slot);
+        const endTs = SlotBusinessTime.getEndTs(slot);
+        return Number.isFinite(startTs) &&
+               Number.isFinite(endTs) &&
+               startTs > now &&
+               endTs > startTs;
+      })
+      .sort((a, b) => SlotBusinessTime.getStartTs(a) - SlotBusinessTime.getStartTs(b));
+
+    const nearest = future[0];
+    if (!nearest) return null;
+
+    return collectAvailabilityForDate(
+      future,
+      SlotBusinessTime.getSlotDateKey(nearest),
+      now
+    );
+  }
+
+  function formatAvailabilityValue(availability){
+    if (!availability?.date || !Array.isArray(availability.ranges) || !availability.ranges.length) {
+      return null;
+    }
+
+    const date = formatSlotDay(availability.date);
+    const ranges = availability.ranges.map(range => {
+      const startText = SlotBusinessTime.formatBusinessTime(range.startTs, getContactLocale());
+      const endText = SlotBusinessTime.formatBusinessTime(range.endTs, getContactLocale());
+      return startText && endText ? `${startText}–${endText}` : '';
+    }).filter(Boolean);
+
+    if (!date || !ranges.length) return null;
+    return contactT('slots_prefill_available', { date, time: ranges.join(', ') });
+  }
+
+  /* ---------- 3) preferred_time ownership ---------- */
+  let suggestedAvailability = null;
+
+  function markPreferredTimeManual(){
+    if (!timeInput) return;
+
+    const generatedValue = timeInput.dataset.generatedValue || '';
+    const isGenerated = timeInput.dataset.requestGenerated === '1';
+
+    if (isGenerated && timeInput.value === generatedValue) return;
+
+    timeInput.dataset.requestGenerated = '0';
+    timeInput.dataset.requestManual = '1';
+    delete timeInput.dataset.generatedValue;
+  }
+
+  function setGeneratedPreferredTime(availability, { force = false } = {}){
+    if (!timeInput) return false;
+
+    const value = formatAvailabilityValue(availability);
+    if (!value) return false;
+
+    const isManual = timeInput.dataset.requestManual === '1';
+    const isGenerated = timeInput.dataset.requestGenerated === '1';
+    const previousGenerated = timeInput.dataset.generatedValue || '';
+    const current = timeInput.value;
+
+    if (!force) {
+      if (isManual) return false;
+      if (current.trim() && !(isGenerated && current === previousGenerated)) return false;
+    }
+
+    timeInput.value = value;
+    timeInput.dataset.requestGenerated = '1';
+    timeInput.dataset.generatedValue = value;
+    delete timeInput.dataset.requestManual;
+    timeInput.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  }
+
+  function syncSelectedAvailability(state = window.RequestState?.get(), meta = {}){
+    const availability = state?.availability;
+    if (!availability?.date || !availability.ranges?.length) return false;
+    return setGeneratedPreferredTime(availability, { force: meta.explicit === true });
   }
 
   function autofillPreferredTime(slots = window.__freeSlots){
-    if (!timeInput || timeInput.value.trim()) return; // не перезаписываем ввод пользователя
-    const arr = Array.isArray(slots) ? slots : [];
-    const nearest = arr[0]; // slots module already normalizes and sorts the shared state
-    const label = formatAvailabilityValue(nearest);
-    if (label) {
-      timeInput.value = label;
-      timeInput.dispatchEvent(new Event('input', { bubbles: true }));
-    }
+    const availability = getNearestAvailability(slots);
+    if (!availability) return;
+
+    suggestedAvailability = availability;
+    setGeneratedPreferredTime(availability);
   }
+
+  timeInput?.addEventListener('input', markPreferredTimeManual);
 
   // Если данные уже есть — используем их сразу. Для async load ждём явное событие.
   autofillPreferredTime();
-  window.addEventListener('slots:loaded', (event) => {
+  window.addEventListener('slots:loaded', event => {
     autofillPreferredTime(event.detail?.slots);
   });
-})();
 
-// === Клик по "Запросить" в карточке слота → заполнить форму и проскроллить к ней
-(function attachSlotPrefill(){
-  const t = (key, params) => {
-    if (window.i18n?.t) return window.i18n.t(key, params);
-    const dict = window.I18N?.ru || {};
-    return String(dict[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => params?.[k] ?? '');
-  };
+  window.addEventListener('langchange', () => {
+    const selected = window.RequestState?.get()?.availability;
+    if (selected?.date && selected.ranges?.length) {
+      setGeneratedPreferredTime(selected);
+      return;
+    }
+    if (suggestedAvailability) setGeneratedPreferredTime(suggestedAvailability);
+  });
 
-  document.addEventListener('click', (ev) => {
+  window.RequestState?.subscribe((state, detail) => {
+    if (detail.source !== 'slot-select') return;
+    syncSelectedAvailability(state, detail);
+  });
+
+  /* ---------- 4) Explicit slot selection ---------- */
+  document.addEventListener('click', ev => {
     const btn = ev.target.closest('.slot-cta');
     if (!btn) return;
 
     const card = btn.closest('.slot-card');
-    if (!card) return;
+    const dateKey = card?.dataset.slotDate || '';
+    if (!dateKey) return;
 
-    // Текст из карточки
-    const dateTxt = (card.querySelector('.slot-date')?.textContent || '').trim();
-    const timeTxt = (card.querySelector('.slot-time')?.textContent || '').trim();
-    if (!dateTxt && !timeTxt) return;
+    // Re-evaluate expiry at click time and preserve every requestable range for this date.
+    const availability = collectAvailabilityForDate(window.__freeSlots, dateKey);
+    if (!availability) return;
 
-    // Availability range, not a request for the whole interval.
-    const wishValue = dateTxt && timeTxt
-      ? t('slots_prefill_available', { date: dateTxt, time: timeTxt })
-      : [dateTxt, timeTxt].filter(Boolean).join(' · ');
+    ev.preventDefault();
 
-    // Находим поле «Желаемая дата/время»
-    const wishInput =
-      document.querySelector('#ctime') ||                                             // ← ваш id
-      document.querySelector('#contact input[name="preferred_time"]') ||              // ← ваше name
-      document.querySelector('#contact input[name="wish"]') ||
-      document.querySelector('#contact input#wish') ||
-      document.querySelector('#contact input#contact-wish') ||
-      document.querySelector('#contact input#wishTime') ||
-      Array.from(document.querySelectorAll('#contact input[type="text"]'))
-        .find(i => (i.placeholder || '').toLowerCase().startsWith('напр'));
-
-    if (wishInput) {
-      ev.preventDefault();                      // теперь можно — слушатель не passive
-      wishInput.value = wishValue;
-      wishInput.dispatchEvent(new Event('input', { bubbles: true }));
-    }
+    window.RequestState?.patch(
+      { availability },
+      { source: 'slot-select', explicit: true }
+    );
 
     // Плавный скролл к форме + фокус
     const formBlock = document.getElementById('contact');
     if (formBlock) {
       formBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(() => wishInput?.focus(), 350);
+      setTimeout(() => timeInput?.focus(), 350);
     }
-  }); // ← без { passive:true }
+  });
 })();
 
 
