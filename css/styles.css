@@ -1,34 +1,11 @@
-/* Legacy/site-only tokens.
-   Global foundations (primary, container, spacing, etc.) are owned by uikit.css.
-   Do not add new global primitives here; migrate component values in controlled batches. */
-:root{
-  --bg:#F6E8D5; --text:#222; --text-2:#555;
-  --card:#fff; --muted:#EFEAE3; --shadow:0 10px 24px rgba(0,0,0,.06);
-  --radius:16px; --accent:#1d4ed8; --line:#e6e2dc;
-  --blue:#0EA5E9; --green:#22c55e; --chip:#f4f6fb;
-  --section-y: 72px;         /* legacy section rhythm; not a foundation token */
-}
+/* Global foundations and generic UI primitives are owned by uikit.css.
+   styles.css starts with site/component rules only. */
 
-@media (max-width:1024px){ :root{ --section-y: 56px; } }
-@media (max-width:640px) { :root{ --section-y: 40px; } }
-
-/* Общая рекомендация по секциям */
-.section{ padding-block: var(--section-y); }
 .section-title{ margin:0 0 var(--space-3); }
 
 *{box-sizing:border-box}
-body{margin:0;font-family:'Nunito',sans-serif;color:var(--text);background:var(--bg)}
 h1,h2,h3{font-family:'Poppins',sans-serif;margin:0 0 .5rem}
-.container{max-width:var(--container);margin:0 auto;padding:0 20px}
 section{padding:64px 0}
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
-
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:14px 20px;border-radius:12px;font-weight:700;text-decoration:none;border:2px solid transparent;cursor:pointer}
-.btn-primary{background:var(--primary)}
-.btn-outline{border-color:var(--primary);color:var(--text)}
-.btn:hover{transform:translateY(-1px);transition:.2s ease}
 
 /* Лого в шапке: ссылка без подчёркивания и белая «плашка» */
 .site-header .brand .logo {
@@ -207,13 +184,6 @@ section{padding:64px 0}
   width:100%;
   height:100%;
 }
-#top .hero-photo img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
 /* === Рейтинг + цитата: стабильная строка без рефлоу === */
 #top .hero-visual .hero-social{
   margin-top:14px;
@@ -568,9 +538,7 @@ section{padding:64px 0}
 
 #why.panel--list{
   background:#fff;
-  margin-inline: calc(-1 * var(--page-pad));
-  padding-inline: var(--page-pad);
-  border-radius: 0;
+  border-radius:0;
 }
 #why.panel--list .why-card{ border-left:0 !important; }
 
@@ -839,9 +807,7 @@ section{padding:64px 0}
 /* ====== EXPERIENCE: белая подложка на всю ширину, как у WHY ====== */
 #experience.section{
   background:#fff;
-  margin-inline: calc(-1 * var(--page-pad));
-  padding-inline: var(--page-pad);
-  border-radius: 0;
+  border-radius:0;
 }
 
 /* палитра для карточек опыта */
@@ -893,7 +859,7 @@ section{padding:64px 0}
 .presets .tag.active .txt { color: #4B5563; }
 
 /* Result card */
-.result-card{margin-top:20px;padding:18px 18px 28px;background:#fff;border-radius:12px;box-shadow:var(--shadow);position:relative;overflow:visible}
+.result-card{margin-top:20px;padding:18px 18px 28px;background:#fff;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.06);position:relative;overflow:visible}
 .result-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--primary);border-top-left-radius:12px;border-bottom-left-radius:12px}
 .result-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .res-sep{height:1px;background:#EEE8E1;margin:12px 0}
@@ -902,8 +868,6 @@ section{padding:64px 0}
 
 /* Error state */
 .field-error{color:#B42318;font-size:12px;margin-top:4px}
-.input.error{border-color:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.15)}
-
 /* Tooltip */
 .hint{position:relative;display:inline-block;width:16px;height:16px}
 .hint .i{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:999px;background:#E9EDF7;color:#334;font-size:12px;font-weight:600}
@@ -1476,17 +1440,6 @@ select:focus{
   text-decoration:none;
 }
 .slot-cta:hover{ background:#eef6ff; }
-
-/* если .brand уже display:flex; просто увеличиваем gap между элементами */
-.header-bar .brand{
-  display: flex;              /* на случай, если не задано */
-  align-items: center;
-  gap: 16px;                  /* было, например, 8–10px */
-}
-
-@media (min-width: 1024px){
-  .header-bar .brand{ gap: 20px; }
-}
 
 /* === Корректный якорный скролл под фикс-хедер ======================= */
 :root{ --header-h: 64px; }          /* поправьте, если у шапки другая высота */
@@ -2337,8 +2290,7 @@ body.lightbox-open{
 /* Контактная форма: высота текстового поля = 2 инпута + зазор */
 .contact .col-message .fld textarea#cmsg{
   /* базовая высота обычного инпута на сайте (под ваши текущие стили) */
-  --input-h: 44px;
-  --gap: 16px;
+--gap: 16px;
   min-height: 124px;
   resize: vertical;         /* можно растянуть вручную при желании */
 }
@@ -2573,52 +2525,6 @@ body.lightbox-open{
   border-radius: 4px;              /* чтобы ореол был скруглённый */
   outline: none;                   /* на всякий случай */
   accent-color: #EF4444;           /* если чекбокс всё же отмечен — галочка будет красной */
-}
-
-/* === Contact: ровная высота строки согласия + без красной рамки по умолчанию === */
-
-/* высота контролов формы = высоте инпутов .input (у тебя min-height: 52px) */
-#contact{ --control-h: 52px; }
-
-/* сама строка согласия: по центру по вертикали, без лишних внутренних отступов */
-#contact .agree{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: var(--control-h);
-  padding: 0 !important;      /* перебиваем старое padding: 6px 8px; */
-  margin: 0;                   /* чтобы зазор сверху/снизу давал только grid-gap */
-  line-height: 1.35;
-}
-
-/* текст как блок (многострочие не «тянет» низ), чекбокс без маргинов */
-#contact .agree > span{ display:block; line-height:1.35; }
-#contact .agree input[type="checkbox"]{
-  margin: 0;
-  transform: none;             /* если раньше увеличивали scale — убираем для ровной базовой линии */
-  accent-color: var(--color-action-primary);       /* зелёная галочка в обычном состоянии */
-}
-
-/* убираем всегда-включённую красную рамку от :invalid */
-#contact .agree input[type="checkbox"]:invalid{
-  outline: none !important;
-}
-
-/* показываем ошибку ТОЛЬКО после попытки отправки формы */
-#contactForm.was-validated .agree input[type="checkbox"]:invalid{
-  outline: 1px solid #ef4444;                 /* тонкая линия по контуру */
-  outline-offset: 1px;                        /* чуть отнесём от чекбокса */
-  box-shadow: 0 0 0 3px rgba(239,68,68,.18);  /* мягкий ореол */
-  border-radius: 4px;                         /* скругление углов, чтобы ореол был аккуратный */
-  accent-color: #EF4444;                      /* (опц.) красный цвет галочки на системных чекбоксах */
-}
-
-#contact .agree input[type="checkbox"].is-error{
-  outline: 1px solid #ef4444;
-  outline-offset: 1px;
-  box-shadow: 0 0 0 3px rgba(239,68,68,.18);
-  border-radius: 4px;
-  accent-color: #EF4444;
 }
 
 /* равные отступы вокруг строки согласия: убираем локальный margin у textarea-блока */
