@@ -258,7 +258,7 @@ document.addEventListener('copy', function (e) {
       slots_badge_next:'Ближайший слот: {date} | {t1}–{t2}',
       slots_badge_none:'Свободно: по запросу',
       slots_btn_request:'Запросить',
-      slots_error:'Слоты временно недоступны. Напишите мне.',
+      slots_error:'Слоты временно недоступны. Попробуйте обновить страницу.',
       slots_prefill_available:'{date} · доступно {time}',
 
       /* CALC */
