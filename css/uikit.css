@@ -52,6 +52,46 @@
   /* — Анимации */
   --trans-1: .12s ease;
   --trans-2: .18s ease;
+
+  /* — Semantic foundations
+     Canonical API for new styles. Short legacy tokens above stay as compatibility
+     aliases until the controlled migration batch. */
+  --color-text-strong:    var(--neutral-900);
+  --color-text-primary:   var(--neutral-800);
+  --color-text-secondary: var(--neutral-600);
+  --color-text-muted:     var(--neutral-500);
+
+  --color-surface-page: #FFF5E9;
+  --color-surface:      var(--white);
+  --color-border:       var(--neutral-300);
+
+  --color-action-primary:       var(--primary);
+  --color-action-primary-hover: var(--primary-700);
+  --color-action-primary-soft:  var(--primary-50);
+  --color-link:                 var(--brand);
+  --color-focus-outline:        #78C6A7;
+
+  --text-xs:   12px;
+  --text-sm:   14px;
+  --text-base: 16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   var(--r-xl);
+  --radius-pill: 999px;
+
+  --shadow-sm: var(--elev-1);
+  --shadow-md: var(--elev-2);
+  --shadow-lg: var(--elev-3);
+
+  --motion-fast: var(--trans-1);
+  --motion-base: var(--trans-2);
+
+  --layout-container: var(--container);
+  --layout-gutter:    var(--gutter);
 }
 
 /* Breakpoints (используем в медиа) */
@@ -62,26 +102,26 @@
 html{ font-size: var(--fz-base); }
 body{
   font-family: var(--font-sans);
-  color: var(--neutral-800);
+  color: var(--color-text-primary);
   line-height: var(--lh-base);
-  background: #FFF5E9; /* общий теплый фон — подложка страницы */
+  background: var(--color-surface-page); /* общий теплый фон — подложка страницы */
   margin: 0;
 }
 
 /* Контейнер/секция (общие, не блок-специфичные) */
 .container{
-  max-width: var(--container);
+  max-width: var(--layout-container);
   margin: 0 auto;
-  padding-inline: var(--gutter);
+  padding-inline: var(--layout-gutter);
   box-sizing: border-box;
 }
 .section{
   padding-block: var(--space-16);
 }
 .section--white{
-  background: var(--white);
+  background: var(--color-surface);
   margin-inline: calc(50% - 50vw);
-  padding-inline: calc(50vw - 50% + var(--gutter));
+  padding-inline: calc(50vw - 50% + var(--layout-gutter));
 }
 
 /* ===================== Типографика ===================== */
@@ -283,7 +323,11 @@ input[type="checkbox"], input[type="radio"]{
 
 /* ===================== Доступность / motion ===================== */
 @media (prefers-reduced-motion: reduce){
-  *, *::before, *::after{ transition: none !important; }
+  *, *::before, *::after{
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 .sr-only{
   position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
@@ -754,10 +798,15 @@ input[type="checkbox"], input[type="radio"]{
 }
 
 
-/* ===== CANON Final: Header + Burger + Overlay (desktop/tablet/mobile) ===== */
+/* ===== CANON Final: Header + Burger + Overlay (desktop/tablet/mobile) =====
+   Responsive contract:
+   640px  — mobile
+   768px  — content/tablet
+   980px  — navigation
+   1024px — desktop layout
+   Other thresholds are component/content breakpoints, not global foundations.
+   CSS custom properties are intentionally not used as @media breakpoints. */
 :root{
-  --bp-mobile: 640px;
-  --bp-tablet: 980px;
   --z-header: 1000;     /* шапка поверх оверлея */
   --z-mnav: 900;        /* оверлей ниже шапки, чтобы шапку было видно */
 }
