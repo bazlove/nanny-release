@@ -1566,8 +1566,8 @@ const SlotBusinessTime = (() => {
     experience: 'services',
     reviews: 'reviews',
     calc: 'calc',
-    faq: 'faq',
     slots: 'slots',
+    faq: 'faq',
     contact: 'contact'
   };
 
