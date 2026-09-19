@@ -1073,6 +1073,7 @@ const SlotBusinessTime = (() => {
     if (parsed.state === 'empty') {
       h.value = String(lastValidHours);
       setHoursValidation('valid');
+      if (forceUsed) recalc({ markUsed: true, source });
       return true;
     }
 
@@ -1371,8 +1372,11 @@ const SlotBusinessTime = (() => {
       });
     });
 
-    $('ctaForm')?.addEventListener('click', () => {
-      recalc({ markUsed: true, source: 'calculator-cta' });
+    $('ctaForm')?.addEventListener('click', event => {
+      if (!commitHours({ source: 'calculator-cta', forceUsed: true })) {
+        event.preventDefault();
+        $('hours')?.focus();
+      }
     });
 
     // share
@@ -2063,6 +2067,10 @@ const SlotBusinessTime = (() => {
   window.RequestState?.subscribe((state, detail) => {
     if (detail.source === 'slot-select') {
       syncSelectedAvailability(state, detail);
+      return;
+    }
+    if (detail.source === 'calculator' && lastGeneratedMessageBlock) {
+      syncCalculatorMessage(state);
       return;
     }
     if (detail.source === 'contact-submit-success') {
