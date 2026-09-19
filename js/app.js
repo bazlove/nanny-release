@@ -293,7 +293,7 @@ document.addEventListener('copy', function (e) {
 
       /* REQUEST SUMMARY */
       request_details_title:'Детали запроса:',
-      request_hours_one:'час', request_hours_few:'часа', request_hours_many:'часов', request_hours_other:'часа',
+      request_hours_one:'час', request_hours_few:'часа', request_hours_many:'часов', request_hours_other:'часов', request_hours_fraction:'часа',
       request_extras:'Дополнительно: {extras}',
       request_extra_food:'лёгкий перекус',
       request_extra_cleaning:'уборка детской комнаты',
@@ -498,7 +498,7 @@ document.addEventListener('copy', function (e) {
 
       /* REQUEST SUMMARY */
       request_details_title:'Detalji zahteva:',
-      request_hours_one:'sat', request_hours_few:'sata', request_hours_many:'sati', request_hours_other:'sata',
+      request_hours_one:'sat', request_hours_few:'sata', request_hours_many:'sati', request_hours_other:'sati', request_hours_fraction:'sata',
       request_extras:'Dodatno: {extras}',
       request_extra_food:'lagana užina',
       request_extra_cleaning:'čišćenje dečije sobe',
@@ -1913,7 +1913,10 @@ const SlotBusinessTime = (() => {
 
     let plural = 'other';
     try { plural = new Intl.PluralRules(getContactLocale()).select(hours); } catch (_) {}
-    const unit = contactT(`request_hours_${plural}`);
+    const unitKey = Number.isInteger(hours)
+      ? `request_hours_${plural}`
+      : 'request_hours_fraction';
+    const unit = contactT(unitKey);
     return `${requestNumber(hours)} ${unit}`;
   }
 
@@ -1954,7 +1957,7 @@ const SlotBusinessTime = (() => {
       lines.push(contactT('request_day_weekend'));
     }
 
-    if (Number.isFinite(Number(pricing?.estimatedTotal))) {
+    if (pricing?.estimatedTotal != null && Number.isFinite(Number(pricing.estimatedTotal))) {
       lines.push(contactT('request_estimated_price', {
         sum: requestMoney(Number(pricing.estimatedTotal))
       }));
