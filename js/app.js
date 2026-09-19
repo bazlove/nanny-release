@@ -160,6 +160,8 @@ document.addEventListener('copy', function (e) {
       slots_badge_next:'Ближайший слот: {date} | {t1}–{t2}',
       slots_badge_none:'Свободно: по запросу',
       slots_btn_request:'Запросить',
+      slots_error:'Слоты временно недоступны. Напишите мне.',
+      slots_prefill_available:'{date} · доступно {time}',
 
       /* CALC */
       calc_title:'Калькулятор стоимости (Нови-Сад)',
@@ -350,6 +352,8 @@ document.addEventListener('copy', function (e) {
       slots_badge_next:'Najbliži termin: {date} | {t1}–{t2}',
       slots_badge_none:'Slobodno: na upit',
       slots_btn_request:'Zatraži',
+      slots_error:'Termini trenutno nisu dostupni. Pišite mi.',
+      slots_prefill_available:'{date} · dostupno {time}',
 
       /* CALC */
       calc_title:'Kalkulator cene (Novi Sad)',
@@ -704,6 +708,19 @@ const SlotBusinessTime = (() => {
   }
   const timeLabel  = s => `${safeStart(s)}–${safeEnd(s)}`;
 
+  // Availability rule: a slot is requestable only before it starts.
+  // Keep one normalized source of truth for grid, badge and contact autofill.
+  function normalizeFutureSlots(slots, now = Date.now()){
+    return (Array.isArray(slots) ? slots : [])
+      .filter(slot => {
+        const startTs = getStartTs(slot);
+        return Number.isFinite(startTs) && startTs > now;
+      })
+      .sort((a,b)=> getStartTs(a) - getStartTs(b));
+  }
+
+  let loadState = 'idle';
+
   /* ---------- badge helpers ---------- */
   const BADGE_SHORT_BP = '(max-width: 420px)';
   function normalizeBadgeText(fullText){
@@ -773,8 +790,7 @@ const SlotBusinessTime = (() => {
     const todayYMD = SlotBusinessTime.getBusinessTodayKey(now);
     const tomorrowYMD = SlotBusinessTime.getBusinessTomorrowKey(now);
 
-    const byStart = arr => arr.slice().sort((a,b)=> getStartTs(a)-getStartTs(b));
-    const future = byStart(list.filter(s => getStartTs(s) > now));
+    const future = list;
 
     const today = future.find(s => getSlotDateKey(s) === todayYMD);
     if (today){
@@ -799,39 +815,56 @@ const SlotBusinessTime = (() => {
   }
 
   // Для обратной совместимости — старые вызовы window.updateBadge(raw)
-  window.updateBadge = renderBadge;
+  window.updateBadge = raw => renderBadge(normalizeFutureSlots(raw));
 
   /* ---------- fetch ---------- */
+  function renderLoadState(){
+    if (loadState === 'loading') {
+      setBadge(t('hdr_badge_checking'), ['is-live']);
+      return;
+    }
+    if (loadState === 'error') {
+      if (wrap) wrap.innerHTML = `<p class="error">${t('slots_error')}</p>`;
+      setBadge(t('slots_badge_none'), ['is-none']);
+      return;
+    }
+    if (loadState === 'loaded' && Array.isArray(window.__freeSlots)) {
+      renderBadge(window.__freeSlots);
+      renderGrid(window.__freeSlots);
+    }
+  }
+
   function fetchAndRender(){
-    const badge = document.querySelector('#headerFreeBadge');
-    const badgeText = badge?.querySelector('.avail-text');
-    if (badge && badgeText) setBadge(t('hdr_badge_checking'), ['is-live']);
+    loadState = 'loading';
+    renderLoadState();
 
     fetch(API_SLOTS_URL + '?t=' + Date.now(), { cache:'no-store', mode:'cors' })
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`Slots API HTTP ${r.status}`);
+        return r.json();
+      })
       .then(data => {
-        const list = Array.isArray(data?.slots) ? data.slots :
-                     Array.isArray(data) ? data : [];
-        window.__freeSlots = list;
-        renderBadge(list);
-        renderGrid(list);
+        const rawSlots = Array.isArray(data?.slots) ? data.slots :
+                         Array.isArray(data) ? data : [];
+        const futureSlots = normalizeFutureSlots(rawSlots);
+        window.__freeSlots = futureSlots;
+        loadState = 'loaded';
+        renderLoadState();
+        window.dispatchEvent(new CustomEvent('slots:loaded', {
+          detail: { slots: futureSlots }
+        }));
       })
       .catch(err => {
         console.warn('Slots API error:', err);
-        if (wrap) wrap.innerHTML = `<p class="error">Слоты временно недоступны. Напишите мне.</p>`;
-        setBadge(t('slots_badge_none'), ['is-none']);
+        window.__freeSlots = [];
+        loadState = 'error';
+        renderLoadState();
       });
   }
 
   /* ---------- react to i18n and resize ---------- */
-  window.addEventListener('i18nready', ()=>{
-    rerenderBadgeShort();
-    if (window.__freeSlots){ renderBadge(window.__freeSlots); renderGrid(window.__freeSlots); }
-  });
-  window.addEventListener('langchange', ()=>{
-    rerenderBadgeShort();
-    if (window.__freeSlots){ renderBadge(window.__freeSlots); renderGrid(window.__freeSlots); }
-  });
+  window.addEventListener('i18nready', renderLoadState);
+  window.addEventListener('langchange', renderLoadState);
   window.addEventListener('resize', rerenderBadgeShort);
 
   /* ---------- boot ---------- */
@@ -1552,63 +1585,47 @@ const SlotBusinessTime = (() => {
     getContactLocale(),
     { weekday:'short', day:'2-digit', month:'2-digit' }
   );
+  const contactT = (key, params) => {
+    if (window.i18n?.t) return window.i18n.t(key, params);
+    const dict = window.I18N?.ru || {};
+    return String(dict[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => params?.[k] ?? '');
+  };
 
-  function getNearestSlotFromGlobal(){
-    // если на странице уже есть модуль слотов и он положил слоты глобально
-    const arr = Array.isArray(window.__freeSlots) ? window.__freeSlots : null;
-    if (!arr || !arr.length) return null;
-    const now = Date.now();
-    const sorted = arr
-      .filter(s => SlotBusinessTime.getStartTs(s) > now)
-      .sort((a,b)=> SlotBusinessTime.getStartTs(a) - SlotBusinessTime.getStartTs(b));
-    const s = sorted[0];
-    if (!s) return null;
-
-    const labelDay = formatSlotDay(SlotBusinessTime.getSlotDateKey(s));
-    const startText = s.startLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getStartTs(s), getContactLocale());
-    const endText = s.endLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getEndTs(s), getContactLocale());
-    return `${labelDay} · ${startText}–${endText}`;
+  function formatAvailabilityValue(slot){
+    if (!slot) return null;
+    const date = formatSlotDay(SlotBusinessTime.getSlotDateKey(slot));
+    const startText = slot.startLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getStartTs(slot), getContactLocale());
+    const endText = slot.endLabel || SlotBusinessTime.formatBusinessTime(SlotBusinessTime.getEndTs(slot), getContactLocale());
+    if (!date || !startText || !endText) return null;
+    return contactT('slots_prefill_available', { date, time: `${startText}–${endText}` });
   }
 
-  function getNearestSlotFromBadge(){
-    const b = document.querySelector('#headerFreeBadge');
-    if (!b) return null;
-    const t = b.textContent.toLowerCase().trim();
-    // варианты:
-    // «Свободно сегодня 09:00–16:00»
-    // «Свободно завтра 09:00–16:00»
-    // «Ближайший слот: вт, 14.10 • 09:00–16:00»
-    const timeRange = (t.match(/\b(\d{2}:\d{2}–\d{2}:\d{2})\b/)||[])[1];
-
-    if (t.includes('сегодня') && timeRange){
-      return `${formatSlotDay(SlotBusinessTime.getBusinessTodayKey())} · ${timeRange}`;
+  function autofillPreferredTime(slots = window.__freeSlots){
+    if (!timeInput || timeInput.value.trim()) return; // не перезаписываем ввод пользователя
+    const arr = Array.isArray(slots) ? slots : [];
+    const nearest = arr[0]; // slots module already normalizes and sorts the shared state
+    const label = formatAvailabilityValue(nearest);
+    if (label) {
+      timeInput.value = label;
+      timeInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
-    if (t.includes('завтра') && timeRange){
-      return `${formatSlotDay(SlotBusinessTime.getBusinessTomorrowKey())} · ${timeRange}`;
-    }
-    // «вт, 14.10 • 09:00–16:00»
-    const day = (t.match(/([а-я]{2},?\s*\d{1,2}\.\d{1,2})/)||[])[1];
-    if (day && timeRange){
-      // приводим «вт, 14.10» → «вт, 14.10»
-      return `${day.replace(/\s+/g,' ')} · ${timeRange}`;
-    }
-    return null;
   }
 
-  function autofillPreferredTime(){
-    if (!timeInput || timeInput.value.trim()) return; // уже заполнено вручную
-    let label = getNearestSlotFromGlobal();
-    if (!label) label = getNearestSlotFromBadge();
-    if (label) timeInput.value = label;
-  }
-
-  // пробуем сразу и после макро-тика (на случай, если модуль слотов подложит данные асинхронно)
+  // Если данные уже есть — используем их сразу. Для async load ждём явное событие.
   autofillPreferredTime();
-  setTimeout(autofillPreferredTime, 600);
+  window.addEventListener('slots:loaded', (event) => {
+    autofillPreferredTime(event.detail?.slots);
+  });
 })();
 
 // === Клик по "Запросить" в карточке слота → заполнить форму и проскроллить к ней
 (function attachSlotPrefill(){
+  const t = (key, params) => {
+    if (window.i18n?.t) return window.i18n.t(key, params);
+    const dict = window.I18N?.ru || {};
+    return String(dict[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => params?.[k] ?? '');
+  };
+
   document.addEventListener('click', (ev) => {
     const btn = ev.target.closest('.slot-cta');
     if (!btn) return;
@@ -1621,8 +1638,10 @@ const SlotBusinessTime = (() => {
     const timeTxt = (card.querySelector('.slot-time')?.textContent || '').trim();
     if (!dateTxt && !timeTxt) return;
 
-    // Строка для поля
-    const wishValue = [dateTxt, timeTxt].filter(Boolean).join(' • ');
+    // Availability range, not a request for the whole interval.
+    const wishValue = dateTxt && timeTxt
+      ? t('slots_prefill_available', { date: dateTxt, time: timeTxt })
+      : [dateTxt, timeTxt].filter(Boolean).join(' · ');
 
     // Находим поле «Желаемая дата/время»
     const wishInput =
