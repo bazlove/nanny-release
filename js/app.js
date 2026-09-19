@@ -291,6 +291,16 @@ document.addEventListener('copy', function (e) {
       calc_eur_toggle:'Показать результат в евро (курс {rate} дин/€)',
       calc_cta:'Уточнить стоимость',
 
+      /* REQUEST SUMMARY */
+      request_details_title:'Детали запроса:',
+      request_hours_one:'час', request_hours_few:'часа', request_hours_many:'часов', request_hours_other:'часа',
+      request_extras:'Дополнительно: {extras}',
+      request_extra_food:'лёгкий перекус',
+      request_extra_cleaning:'уборка детской комнаты',
+      request_extra_fitness:'фитнес-занятие 30 мин',
+      request_day_weekend:'День: выходной/праздник',
+      request_estimated_price:'Предварительная стоимость: {sum} дин',
+
       /* FAQ */
       faq_title:'Ответы на частые вопросы',
       faq_q_meet:'Как происходит знакомство?',
@@ -485,6 +495,16 @@ document.addEventListener('copy', function (e) {
       calc_share_copied:'Link je kopiran',
       calc_eur_toggle:'Prikaz u evrima (kurs {rate} RSD/€)',
       calc_cta:'Precizirati cenu',
+
+      /* REQUEST SUMMARY */
+      request_details_title:'Detalji zahteva:',
+      request_hours_one:'sat', request_hours_few:'sata', request_hours_many:'sati', request_hours_other:'sata',
+      request_extras:'Dodatno: {extras}',
+      request_extra_food:'lagana užina',
+      request_extra_cleaning:'čišćenje dečije sobe',
+      request_extra_fitness:'fitnes-trening 30 min',
+      request_day_weekend:'Dan: vikend/praznik',
+      request_estimated_price:'Okvirna cena: {sum} RSD',
 
       /* FAQ */
       faq_title:'Odgovori na česta pitanja',
@@ -1698,8 +1718,9 @@ const SlotBusinessTime = (() => {
 
 /* === PHONE MASK & REQUEST-AWARE SLOT PREFILL ============= */
 (function contactEnhance(){
-  const phoneInput = document.getElementById('ccontact');
-  const timeInput  = document.getElementById('ctime');
+  const phoneInput   = document.getElementById('ccontact');
+  const timeInput    = document.getElementById('ctime');
+  const messageInput = document.getElementById('cmsg');
 
   /* ---------- 1) Маска телефона (Сербия) ---------- */
   function formatSerbiaPhone(raw){
@@ -1862,6 +1883,150 @@ const SlotBusinessTime = (() => {
     return setGeneratedPreferredTime(availability, { force: meta.explicit === true });
   }
 
+  /* ---------- 4) Calculator summary in message ---------- */
+  let lastGeneratedMessageBlock = '';
+
+  const requestNumber = value => {
+    try {
+      return new Intl.NumberFormat(getContactLocale(), {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1
+      }).format(value);
+    } catch (_) {
+      return String(value);
+    }
+  };
+
+  const requestMoney = value => {
+    try {
+      return new Intl.NumberFormat(getContactLocale(), {
+        maximumFractionDigits: 0
+      }).format(value);
+    } catch (_) {
+      return String(value);
+    }
+  };
+
+  function formatRequestHours(value){
+    const hours = Number(value);
+    if (!Number.isFinite(hours)) return '';
+
+    let plural = 'other';
+    try { plural = new Intl.PluralRules(getContactLocale()).select(hours); } catch (_) {}
+    const unit = contactT(`request_hours_${plural}`);
+    return `${requestNumber(hours)} ${unit}`;
+  }
+
+  function calculatorKidsText(kids){
+    const key = {
+      '1': 'calc_k1',
+      '2': 'calc_k2',
+      '2_infant': 'calc_k2inf',
+      '3': 'calc_k3'
+    }[kids];
+    return key ? contactT(key) : '';
+  }
+
+  function buildCalculatorMessageBlock(state = window.RequestState?.get()){
+    const calculator = state?.calculator;
+    const pricing = state?.pricing;
+    if (!calculator?.used) return '';
+
+    const details = [
+      formatRequestHours(calculator.hours),
+      calculatorKidsText(calculator.kids)
+    ].filter(Boolean).join(' · ');
+
+    const lines = [contactT('request_details_title')];
+    if (details) lines.push(details);
+
+    const extraKeys = [];
+    if (calculator.extras?.food) extraKeys.push('request_extra_food');
+    if (calculator.extras?.cleaning) extraKeys.push('request_extra_cleaning');
+    if (calculator.extras?.fitness) extraKeys.push('request_extra_fitness');
+    if (extraKeys.length) {
+      lines.push(contactT('request_extras', {
+        extras: extraKeys.map(key => contactT(key)).join(', ')
+      }));
+    }
+
+    if (calculator.dayType === 'weekend') {
+      lines.push(contactT('request_day_weekend'));
+    }
+
+    if (Number.isFinite(Number(pricing?.estimatedTotal))) {
+      lines.push(contactT('request_estimated_price', {
+        sum: requestMoney(Number(pricing.estimatedTotal))
+      }));
+    }
+
+    return lines.join('\n');
+  }
+
+  function messageHasManagedPrefix(value = messageInput?.value || ''){
+    if (!lastGeneratedMessageBlock) return false;
+    return value === lastGeneratedMessageBlock ||
+           value.startsWith(lastGeneratedMessageBlock + '\n\n');
+  }
+
+  function markMessageOwnership(){
+    if (!messageInput || !lastGeneratedMessageBlock) return;
+
+    if (messageHasManagedPrefix()) {
+      messageInput.dataset.requestGenerated = '1';
+      messageInput.dataset.generatedValue = lastGeneratedMessageBlock;
+      delete messageInput.dataset.requestManual;
+      return;
+    }
+
+    messageInput.dataset.requestGenerated = '0';
+    messageInput.dataset.requestManual = '1';
+    delete messageInput.dataset.generatedValue;
+  }
+
+  function setGeneratedMessageBlock(block){
+    if (!messageInput || !block) return false;
+
+    const current = messageInput.value;
+
+    if (!lastGeneratedMessageBlock) {
+      messageInput.value = current.trim()
+        ? `${block}\n\n${current}`
+        : block;
+    } else {
+      if (messageInput.dataset.requestGenerated !== '1' || !messageHasManagedPrefix(current)) {
+        return false;
+      }
+      const userTail = current.slice(lastGeneratedMessageBlock.length);
+      messageInput.value = block + userTail;
+    }
+
+    lastGeneratedMessageBlock = block;
+    messageInput.dataset.requestGenerated = '1';
+    messageInput.dataset.generatedValue = block;
+    delete messageInput.dataset.requestManual;
+    messageInput.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  }
+
+  function syncCalculatorMessage(state = window.RequestState?.get()){
+    const block = buildCalculatorMessageBlock(state);
+    if (!block) return false;
+    return setGeneratedMessageBlock(block);
+  }
+
+  function clearRequestOwnership(){
+    suggestedAvailability = null;
+    lastGeneratedMessageBlock = '';
+
+    [timeInput, messageInput].forEach(input => {
+      if (!input) return;
+      delete input.dataset.requestGenerated;
+      delete input.dataset.generatedValue;
+      delete input.dataset.requestManual;
+    });
+  }
+
   function autofillPreferredTime(slots = window.__freeSlots){
     const availability = getNearestAvailability(slots);
     if (!availability) return;
@@ -1871,6 +2036,7 @@ const SlotBusinessTime = (() => {
   }
 
   timeInput?.addEventListener('input', markPreferredTimeManual);
+  messageInput?.addEventListener('input', markMessageOwnership);
 
   // Если данные уже есть — используем их сразу. Для async load ждём явное событие.
   autofillPreferredTime();
@@ -1879,20 +2045,36 @@ const SlotBusinessTime = (() => {
   });
 
   window.addEventListener('langchange', () => {
-    const selected = window.RequestState?.get()?.availability;
+    const state = window.RequestState?.get();
+    const selected = state?.availability;
     if (selected?.date && selected.ranges?.length) {
       setGeneratedPreferredTime(selected);
-      return;
+    } else if (suggestedAvailability) {
+      setGeneratedPreferredTime(suggestedAvailability);
     }
-    if (suggestedAvailability) setGeneratedPreferredTime(suggestedAvailability);
+
+    // Relocalize only a summary that was already explicitly inserted.
+    if (lastGeneratedMessageBlock) syncCalculatorMessage(state);
   });
 
   window.RequestState?.subscribe((state, detail) => {
-    if (detail.source !== 'slot-select') return;
-    syncSelectedAvailability(state, detail);
+    if (detail.source === 'slot-select') {
+      syncSelectedAvailability(state, detail);
+      return;
+    }
+    if (detail.source === 'contact-submit-success') {
+      clearRequestOwnership();
+    }
   });
 
-  /* ---------- 4) Explicit slot selection ---------- */
+  // Calculator target listener runs before this bubbling document listener,
+  // so RequestState already contains used=true and the latest numeric result.
+  document.addEventListener('click', ev => {
+    if (!ev.target.closest('#ctaForm')) return;
+    syncCalculatorMessage(window.RequestState?.get());
+  });
+
+  /* ---------- 5) Explicit slot selection ---------- */
   document.addEventListener('click', ev => {
     const btn = ev.target.closest('.slot-cta');
     if (!btn) return;
@@ -1911,6 +2093,9 @@ const SlotBusinessTime = (() => {
       { availability },
       { source: 'slot-select', explicit: true }
     );
+
+    // If Calculator was explicitly used earlier, carry its details too.
+    syncCalculatorMessage(window.RequestState?.get());
 
     // Плавный скролл к форме + фокус
     const formBlock = document.getElementById('contact');
