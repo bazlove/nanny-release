@@ -2,6 +2,46 @@
 window.initSlots        = window.initSlots        || function(){ /* no-op: slots стартуют сами */ };
 window.initHeroSlider   = window.initHeroSlider   || function(){ /* no-op: слайдер убрали */ };
 
+// ===== Locale routing foundation =====
+window.SiteLocale = (() => {
+  const HOME_PATHS = new Set(['/', '/sr', '/sr/']);
+
+  function getLocaleFromPath(pathname = location.pathname) {
+    const path = String(pathname || '/').replace(/\/{2,}/g, '/');
+    return /^\/sr(?:\/|$)/.test(path) ? 'sr' : 'ru';
+  }
+
+  function getPathForLocale(lang) {
+    return lang === 'sr' ? '/sr/' : '/';
+  }
+
+  function redirectLegacyQuery() {
+    if (!HOME_PATHS.has(location.pathname)) return false;
+
+    const url = new URL(location.href);
+    const requested = (url.searchParams.get('lang') || '').toLowerCase();
+    if (requested !== 'ru' && requested !== 'sr') return false;
+
+    url.searchParams.delete('lang');
+    const rest = url.searchParams.toString();
+    const target = getPathForLocale(requested) + (rest ? `?${rest}` : '') + url.hash;
+    const current = location.pathname + location.search + location.hash;
+
+    if (target === current) return false;
+
+    window.__localeRedirectPending = true;
+    location.replace(target);
+    return true;
+  }
+
+  return {
+    getLocaleFromPath,
+    getPathForLocale,
+    redirectLegacyQuery
+  };
+})();
+
+window.SiteLocale.redirectLegacyQuery();
 // ===== Unified request state =====
 (function initRequestState(){
   const createInitialState = () => ({
@@ -759,19 +799,17 @@ document.addEventListener('copy', function (e) {
   }
 
   function init(){
-    // Определяем язык: ?lang=…, localStorage, системный
-    const q = new URLSearchParams(location.search);
-    const qp = (q.get('lang') || '').toLowerCase();
-    let stored; try { stored = localStorage.getItem('lang'); } catch(_){}
-    const sys = (navigator.language || 'ru').toLowerCase().startsWith('sr') ? 'sr' : 'ru';
-    const lang = (qp === 'sr' || qp === 'ru') ? qp : (stored || sys);
+    if (window.__localeRedirectPending) return;
+
+    // URL path is the source of truth: / => ru, /sr[/...] => sr.
+    const lang = window.SiteLocale?.getLocaleFromPath?.(location.pathname) || 'ru';
 
     applyLang(lang);
 
     // Сообщаем модулям, что i18n готов (однократно после первого applyLang)
     window.dispatchEvent(new Event('i18nready'));
 
-    // Переключение по клику на .lang-btn
+    // Legacy UI buttons remain until Batch 2 converts the switcher to real links.
     document.addEventListener('click', e=>{
       const btn = e.target.closest?.('.lang-btn');
       if (!btn) return;
@@ -1494,6 +1532,8 @@ const SlotBusinessTime = (() => {
   }
 
   function initCalcURLState(){
+    if (window.__localeRedirectPending) return;
+
     const sp = parseParamsFromLocation();
     const hasHashCalcOnly = (location.hash === '#calc');
     if (sp.size > 0) {
@@ -2625,10 +2665,12 @@ const SlotBusinessTime = (() => {
   if (!sw) return;
 
   const getLang = () => {
+    const routeLang = window.SiteLocale?.getLocaleFromPath?.(location.pathname);
+    if (routeLang) return routeLang;
+
     const l = (document.documentElement.getAttribute('lang') || '').toLowerCase();
     if (l.startsWith('sr')) return 'sr';
     if (l.startsWith('ru')) return 'ru';
-    try { const s = localStorage.getItem('lang'); if (s) return s; } catch(_) {}
     return 'ru';
   };
 
