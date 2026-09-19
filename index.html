@@ -843,12 +843,22 @@
       </div>
     </div>
 
-    <!-- Пресеты -->
-    <div class="presets i18n-attr" aria-label="Быстрый выбор" data-key="calc_presets_aria" data-i18n-attr="aria-label">
-      <button type="button" class="tag i18n" id="p2h" data-hours="2" data-key="p2h">2 ч</button>
-      <button type="button" class="tag i18n" id="p3h" data-hours="3" data-key="p3h">3 ч</button>
-      <button type="button" class="tag i18n" id="p4h" data-hours="4" data-key="p4h">4 ч</button>
-      <button type="button" class="tag i18n" id="p5h" data-hours="5" data-key="p5h">5 ч</button>
+    <!-- Пресеты + entry point для регулярного графика -->
+    <div class="calc-presets-row">
+      <div class="presets i18n-attr" aria-label="Быстрый выбор" data-key="calc_presets_aria" data-i18n-attr="aria-label">
+        <button type="button" class="tag i18n" id="p2h" data-hours="2" data-key="p2h">2 ч</button>
+        <button type="button" class="tag i18n" id="p3h" data-hours="3" data-key="p3h">3 ч</button>
+        <button type="button" class="tag i18n" id="p4h" data-hours="4" data-key="p4h">4 ч</button>
+        <button type="button" class="tag i18n" id="p5h" data-hours="5" data-key="p5h">5 ч</button>
+      </div>
+      <button
+        type="button"
+        class="regular-context-link js-regular-request i18n"
+        data-regular-source="calculator"
+        data-key="regular_entry_title"
+        aria-haspopup="dialog"
+        aria-controls="regularRequestModal"
+      >Нужна няня регулярно?</button>
     </div>
 
     <!-- Результат -->
@@ -1356,6 +1366,110 @@
     </nav>
   </div>
 </footer>
+
+<!-- Regular schedule request modal -->
+<div
+  id="regularRequestModal"
+  class="ck-modal regular-request-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="regularRequestTitle"
+  aria-describedby="regularRequestDesc"
+  hidden
+>
+  <div class="ck-panel regular-request-panel" role="document">
+    <header class="ck-head">
+      <h2 id="regularRequestTitle" class="regular-request-title i18n" data-key="regular_modal_title">Регулярная помощь</h2>
+      <button
+        type="button"
+        id="regularRequestClose"
+        class="ck-x i18n-attr"
+        aria-label="Закрыть форму"
+        data-key="regular_modal_close"
+        data-i18n-attr="aria-label"
+      >×</button>
+    </header>
+
+    <p id="regularRequestDesc" class="ck-desc i18n" data-key="regular_modal_desc">
+      Расскажите, какой график вам нужен. Я свяжусь с вами и проверю, получится ли совместить его с моим расписанием.
+    </p>
+
+    <form id="regularRequestForm" class="regular-request-form" novalidate>
+      <input type="hidden" name="request_type" value="regular">
+      <input id="regularRequestSource" type="hidden" name="request_source" value="">
+
+      <div class="fld">
+        <label class="lbl" for="regularName">
+          <span class="i18n" data-key="form_name">Ваше имя</span>
+          <span class="req" aria-hidden="true">*</span>
+        </label>
+        <input
+          class="input"
+          id="regularName"
+          name="name"
+          type="text"
+          required
+          minlength="2"
+          autocomplete="name"
+          autocapitalize="words"
+          aria-describedby="regularErrName"
+          aria-invalid="false"
+        >
+        <small class="err field-error i18n" id="regularErrName" hidden data-key="form_name_err">Укажите имя</small>
+      </div>
+
+      <div class="fld">
+        <label class="lbl" for="regularContact">
+          <span class="i18n" data-key="form_contact">Телефон/мессенджер</span>
+          <span class="req" aria-hidden="true">*</span>
+        </label>
+        <input
+          class="input"
+          id="regularContact"
+          name="contact"
+          type="text"
+          required
+          aria-describedby="regularErrContact"
+          aria-invalid="false"
+        >
+        <small class="err field-error i18n" id="regularErrContact" hidden data-key="form_contact_err">Укажите телефон или @username</small>
+      </div>
+
+      <div class="fld">
+        <label class="lbl" for="regularSchedule">
+          <span class="i18n" data-key="regular_schedule_label">Какой график нужен?</span>
+          <span class="req" aria-hidden="true">*</span>
+        </label>
+        <textarea
+          class="input i18n-attr"
+          id="regularSchedule"
+          name="schedule"
+          rows="4"
+          required
+          placeholder="Например: Пн, Ср и Пт с 15:00 до 19:00, примерно на 2–3 месяца"
+          data-key="regular_schedule_ph"
+          data-i18n-attr="placeholder"
+          aria-describedby="regularErrSchedule"
+          aria-invalid="false"
+        ></textarea>
+        <small class="err field-error i18n" id="regularErrSchedule" hidden data-key="regular_schedule_err">Опишите желаемые дни и часы</small>
+      </div>
+
+      <input class="hp-field" type="text" name="website" autocomplete="off" tabindex="-1" aria-hidden="true">
+
+      <label class="agree">
+        <input type="checkbox" id="regularAgree" name="agree" required aria-describedby="regularErrConsent">
+        <span class="i18n" data-key="form_consent_html" data-i18n-html>
+          Я ознакомился(-ась) с <a href="/privacy/">Политикой конфиденциальности</a>.
+        </span>
+      </label>
+      <small class="err agree-err i18n" id="regularErrConsent" hidden data-key="form_consent_err">Пожалуйста, подтвердите согласие на обработку данных.</small>
+
+      <button id="regularSubmit" type="submit" class="btn btn-primary i18n" data-key="regular_submit">Отправить запрос</button>
+      <div id="regularNotice" class="regular-request-notice" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</div>
 
 <!-- Cookie Banner -->
 <div id="ck-banner" class="ck-banner" role="dialog" aria-live="polite" aria-label="Уведомление о cookie" hidden>
