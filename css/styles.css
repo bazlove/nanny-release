@@ -1269,6 +1269,10 @@ select:focus{
 .faq-list,
 .faq-item { list-style:none; margin:0; padding:0; }
 .faq-list { padding-left:0; }
+.faq-item{
+  position:relative;
+  scroll-margin-top:calc(var(--header-h) + 12px);
+}
 
 /* карточка вопроса */
 .faq-q{
@@ -1303,12 +1307,6 @@ select:focus{
   font-weight:200;
 }
 
-.faq-q__actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
 /* иконки (скрепка и стрелка) через встроенный SVG */
 .faq-q__copy,
 .faq-q__chev{
@@ -1321,11 +1319,29 @@ select:focus{
 .faq-q__copy:hover,
 .faq-q__chev:hover{ opacity:1; }
 
+/* место под sibling copy-button, чтобы текст не заходил под иконку */
+.faq-q__chev{ margin-left:34px; }
+
 /* скрепка */
 .faq-q__copy{
+  appearance:none;
+  position:absolute;
+  top:16px;
+  right:52px;
+  z-index:2;
+  padding:0;
+  border:0;
+  border-radius:6px;
+  background-color:transparent;
+  cursor:pointer;
   background-image:url("data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238a8a8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>\
 <path d='M10 13a5 5 0 0 0 7.07 0l2.12-2.12a5 5 0 1 0-7.07-7.07L10 5'/><path d='M14 11a5 5 0 0 0-7.07 0L4.81 13.12a5 5 0 1 0 7.07 7.07L14 19'/></svg>");
+}
+.faq-q__copy:focus-visible{
+  outline:2px solid #78c6a7;
+  outline-offset:2px;
+  opacity:1;
 }
 .faq-q__copy.copied{
   background-image:url("data:image/svg+xml;utf8,\
@@ -1488,7 +1504,7 @@ select:focus{
 /* === Корректный якорный скролл под фикс-хедер ======================= */
 :root{ --header-h: 64px; }          /* поправьте, если у шапки другая высота */
 html { scroll-behavior: smooth; }   /* плавный скролл по якорям */
-section[id], #services, #calc, #faq, #contact, #main {
+section[id], #services, #calc, #faq, #contact, #main, #faq .faq-item {
   scroll-margin-top: calc(var(--header-h) + 12px);
 }
 
@@ -1504,7 +1520,7 @@ section[id], #services, #calc, #faq, #contact, #main {
 
 /* чёткие focus-стили для ссылок/кнопок в шапке */
 .header-nav a, .lang-btn { outline: none; }
-.header-nav a:focus-visible, .lang-btn:focus-visible, .slot-cta:focus-visible, .faq-q:focus-visible{
+.header-nav a:focus-visible, .lang-btn:focus-visible, .slot-cta:focus-visible, .faq-q:focus-visible, .faq-q__copy:focus-visible{
   outline:2px solid #78c6a7; outline-offset:2px; border-radius:8px;
 }
 
