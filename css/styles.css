@@ -2334,7 +2334,7 @@ body.lightbox-open{
 #contact{
   --inp-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
               "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
-  --inp-size: 13px;
+  --inp-size: 16px;
   --inp-line: 1.35;
   --inp-color: var(--color-text-secondary);
   --inp-focus-color: var(--color-text-primary);
@@ -2456,10 +2456,11 @@ body.lightbox-open{
   font-size: var(--inp-size);
   line-height: var(--inp-line);
 }
-@media (max-width: 640px){
+/* Compact field typography is desktop-only.
+   Touch/coarse-pointer devices keep 16px to avoid iOS Safari auto-zoom. */
+@media (min-width: 641px) and (pointer: fine){
   #contact{
-    --inp-size: 16px;
-    --err-size: 12px;
+    --inp-size: 13px;
   }
 }
 
